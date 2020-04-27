@@ -1,4 +1,6 @@
 # PCC Arena
+## Technical Report password:
+MMVE2020NMSL
 ## Preparation
 ### Algorithms
 1. Clone each projects (Draco, G-PCC, Geo-CNN) into /algorithms folder.
