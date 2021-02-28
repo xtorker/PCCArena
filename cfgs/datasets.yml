@@ -1,0 +1,24 @@
+MN40:
+  dataset_dir:
+  train_pattern:
+  test_pattern:
+  val_pattern:
+
+SNC:
+  geo:
+    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_only_scale1024
+    train_pattern: '**/train/*.ply'
+    test_pattern: '**/test/*.ply'
+    val_pattern: '**/val/*.ply'
+
+  geo_color:
+    dataset_dir:
+    train_pattern:
+    test_pattern:
+    val_pattern:
+
+  geo_color_normal:
+    dataset_dir:
+    train_pattern:
+    test_pattern:
+    val_pattern:

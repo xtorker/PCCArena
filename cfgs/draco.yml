@@ -1,0 +1,8 @@
+draco_encoder: /home/chenghao/bin
+draca_decoder: /home/chenghao/bin
+qp: 1
+qt: 1
+qn: 1
+qg: 1
+cl: 1
+bin_suffix: .drc
