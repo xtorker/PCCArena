@@ -13,7 +13,7 @@ def glob_filename(src_dir, pattern):
     Returns:
         list (PosixPath): Files that match the glob pattern.
     '''
-    filenames = list(Path(src_dir).rglob(pattern))
+    filenames = list(path.relative_to(src_dir) for path in Path(src_dir).rglob(pattern))
     assert len(filenames) > 0
     logger.info(f"Found {len(filenames)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
 

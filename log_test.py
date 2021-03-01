@@ -39,8 +39,8 @@ def main():
     glob_filepath('.', '*.py')
 
     draco = Draco('cfgs')
-    draco.run('02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply')
-    # draco.run_dataset('SNC', 'geo')
+    # draco.run('02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply')
+    draco.run_dataset('SNC', 'geo', '/home/chenghao/PCC_Arena/test')
 
 if __name__ == '__main__':
     main()

@@ -3,7 +3,7 @@ import logging
 
 
 from algs_wrapper.base import Base
-from utils.run_cmds import execute_cmd
+from utils.processing import execute_cmd
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Draco(Base):
             '-qg', str(self.algs_cfg['qg']),
             '-cl', str(self.algs_cfg['cl'])
         ]
-
+        
         assert execute_cmd(cmd)
 
 

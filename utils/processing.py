@@ -18,5 +18,5 @@ def execute_cmd(cmd):
         return True
 
 def parallel(func, filelist):
-    with Pool as pool:
+    with Pool() as pool:
         list(tqdm(pool.imap_unordered(func, filelist), total=len(filelist)))
