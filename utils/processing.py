@@ -18,5 +18,12 @@ def execute_cmd(cmd):
         return True
 
 def parallel(func, filelist):
+    '''
+    Parallel processing with multiprocessing.Pool(). (Works better with functools.partial())
+
+    Parameters:
+        func (function): The target function for parallel processing.
+        filelist (list): The list of files to process with the input function.
+    '''
     with Pool() as pool:
         list(tqdm(pool.imap_unordered(func, filelist), total=len(filelist)))

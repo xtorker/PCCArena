@@ -1,6 +1,13 @@
+import yaml
 from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
+
+def load_cfg(cfg_file):
+    with open(cfg_file, 'r') as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+    
+    return cfg
 
 def glob_filename(src_dir, pattern):
     '''
