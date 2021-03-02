@@ -5,7 +5,7 @@ from functools import partial
 
 from utils.file_io import load_cfg, glob_filename, glob_filepath
 from utils.processing import timer, parallel
-from evaluator.metrics import pc_error_wrapper
+from evaluator.metrics import MetricLogger
 
 logger = logging.getLogger(__name__)
 
@@ -29,22 +29,27 @@ class Base(metaclass=abc.ABCMeta):
     def postprocess(self):
         return NotImplemented
 
-    def set_filepath(self, pcfile, src_dir, nor_dir, exp_dir):
-        '''
-        Set up the experiment file paths, including encoded binary, decoded point cloud, and evaluation log.
+    def set_filepath(
+            self, 
+            pcfile: str or PosixPath,
+            src_dir: str or PosixPath,
+            nor_dir: str or PosixPath,
+            exp_dir: str or PosixPath
+        ):
+        """Set up the experiment file paths, including encoded binary, decoded point cloud, and evaluation log.
 
-        Parameters:
+        Args:
             pcfile (str or PosixPath): The relative path of input point cloud.
             src_dir (str or PosixPath): The directory of input point cloud.
-            nor_dir (str or PosixPath): The directory of input point cloud with normal. (Used to calculate p2plane metrics.)
+            nor_dir (str or PosixPath): The directory of input point cloud with normal. (Necessary for p2plane metrics.)
             exp_dir (str or PosixPath): The directory to store experiments results.
-        
+
         Returns:
             in_pcfile (PosixPath): The absolute path of input point cloud.
             bin_file (PosixPath): The absolute path of encoded binary file.
             out_pcfile (PosixPath): The absolute path of output point cloud.
             evl_log (PosixPath): The absolute path of evaluation log file.
-        '''
+        """
         in_pcfile = Path(src_dir).joinpath(pcfile)
         nor_pcfile = Path(nor_dir).joinpath(pcfile)
         bin_file = Path(exp_dir).joinpath('bin', pcfile).with_suffix(self.algs_cfg['bin_suffix'])
@@ -57,21 +62,25 @@ class Base(metaclass=abc.ABCMeta):
 
         return in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log
 
-    def run(self, pcfile, src_dir, nor_dir, exp_dir, color=0, resolution=1024):
-        '''
-        Run a single experiment on the input point cloud and get the experiment results and evaluation log.
+    def run(
+            self,
+            pcfile: str or PosixPath,
+            src_dir: str or PosixPath,
+            nor_dir: str or PosixPath,
+            exp_dir: str or PosixPath,
+            color=0,
+            resolution=1024
+        ) -> None:
+        """Run a single experiment on the given `pcfile` and save the experiment results and evaluation log into `exp_dir`.
 
-        Parameters:
+        Args:
             pcfile (str or PosixPath): The relative path of input point cloud.
             src_dir (str or PosixPath): The directory of input point cloud.
-            nor_dir (str or PosixPath): The directory of input point cloud with normal. (Used to calculate p2plane metrics.)
+            nor_dir (str or PosixPath): The directory of input point cloud with normal. (Necessary for p2plane metrics.)
             exp_dir (str or PosixPath): The directory to store experiments results.
-        
-        Optionals:
-            color (int): Calculate color distortion or not. (0: false, 1: true)
-            resolution (int): Resolution (scale) of the point cloud.
-        '''
-        
+            color (int, optional): Calculate color distortion or not. (0: false, 1: true). Defaults to 0.
+            resolution (int, optional): Resolution (scale) of the point cloud. Defaults to 1024.
+        """
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = self.set_filepath(pcfile, src_dir, nor_dir, exp_dir)
 
         pre_time = timer(self.preprocess)
@@ -79,27 +88,41 @@ class Base(metaclass=abc.ABCMeta):
         dec_time = timer(self.decode, bin_file, out_pcfile)
         post_time = timer(self.postprocess)
 
-        
+        # grab all the encoded binary files with same filename, but different suffix
+        bin_files = glob_filepath(bin_file.parent, bin_file.stem+'*')
 
-        print(pc_error_wrapper(nor_pcfile, out_pcfile, color, resolution))
+        mLogger = MetricLogger(
+            nor_pcfile,
+            out_pcfile,
+            evl_log,
+            pre_time,
+            enc_time,
+            dec_time,
+            post_time,
+            bin_files,
+            color,
+            resolution
+        )
 
+        mLogger.evaluate_all()
 
-    def run_dataset(self, ds_name, exp_dir, ds_cfg_file=None):
-        '''
-        Run the experiments on the specified dataset in the experiment directory.
+    def run_dataset(
+            self,
+            ds_name: str,
+            exp_dir: str or PosixPath,
+            ds_cfg_file='../cfgs/datasets.yml'
+        ) -> None:
+        """Run the experiments on dataset `ds_name` in the `exp_dir`.
 
-        Parameters:
+        Args:
             ds_name (str): The name of the dataset (refer to cfgs/datasets.yml).
             exp_dir (str or PosixPath): The directory to store experiments results.
-        
-        Optionals:
-            ds_cfg_file (str or PosixPath): The YAML config file of datasets. (default is cfg/datasets.yml)
-        '''
-
+            ds_cfg_file (str or PosixPath, optional): The YAML config file of datasets. Defaults to '../cfgs/datasets.yml'.
+        """
         logger.info(f"Start to run experiments on {ds_name} dataset with {type(self).__name__}")
 
-        if ds_cfg_file is None:
-            ds_cfg_file = Path(__file__).parent.joinpath("../cfgs/datasets.yml").resolve()
+        if ds_cfg_file is '../cfgs/datasets.yml':
+            ds_cfg_file = Path(__file__).parent.joinpath(ds_cfg_file).resolve()
         ds_cfg = load_cfg(ds_cfg_file)
 
         pc_files = glob_filename(

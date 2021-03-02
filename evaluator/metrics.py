@@ -1,102 +1,175 @@
 import re
+import logging
 from pathlib import Path
 import subprocess as sp
 
 from pyntcloud import PyntCloud
 
 from _version import __version__
-from utils.processing import execute_cmd
 
-def log_initializer(ref_pc, target_pc, log_path):
-    lines = [
-        f'PCC-Arena Evaluator {__version__}\n',
-        f'ref_pc: {ref_pc}',
-        f'target_pc: {target_pc}',
-    ]
-    with open(log_path, 'w') as f:
-        f.writelines(lines)
+logger = logging.getLogger(__name__)
 
-def log_time_and_filesize(pre_t, enc_t, dec_t, post_t, src_pcfile, bin_files):
+class MetricLogger():
+    def __init__(
+        self,
+        ref_pc,
+        target_pc,
+        evl_log,
+        pre_t=None,
+        enc_t=None,
+        dec_t=None,
+        post_t=None,
+        bin_files=None,
+        color=0,
+        resolution=1024
+    ):
+        self.ref_pc = ref_pc
+        self.bin_files = bin_files
+        self.target_pc = target_pc
+        self.evl_log = evl_log
+        self.pre_t = pre_t
+        self.enc_t = enc_t
+        self.dec_t = dec_t
+        self.post_t = post_t
+        self.color = color
+        self.resolution = resolution
 
-    cloud = PyntCloud.from_file(src_pcfile)
-    num_points = len(cloud.points['x'])
+    def log_initializer(self):
+        logger.info(f"Logging evaluation results into {self.evl_log}")
+        lines = [
+            f"PCC-Arena Evaluator {__version__}",
+            f"ref_pc: {self.ref_pc}",
+            f"target_pc: {self.target_pc}",
+            "\n"
+        ]
+        with open(self.evl_log, 'w') as f:
+            f.writelines('\n'.join(lines))
 
-    src_pcfile_size = Path(src_pcfile).stat().st_size / 1000 # kB
-    total_bin_size = sum(Path(bin_f).stat().st_size for bin_f in bin_files) / 1000 # kB
-    compression_ratio = total_bin_size / src_pcfile_size # kB
-    bpp = (total_bin_size * 1000 * 8) / num_points
+    def log_time_and_filesize(self):
 
-    lines = [
-        f"========== Time & Binary Size =========="
-        f"Pre-processing time:          {pre_time:0.4f}",
-        f"Encoding time:                {enc_time:0.4f}",
-        f"Decoding time:                {dec_time:0.4f}",
-        f"Post-processing time:         {post_time:0.4f}",
-        f"Source point cloud size (kB): {}",
-        f"Total binary files size (kB): {total_size}",
-        f"bpp (bits per point):         {bpp}"
-    ]
+        cloud = PyntCloud.from_file(str(self.ref_pc))
+        num_points = len(cloud.points['x'])
 
-    with open(evl_log, 'w') as f:
-        f.writelines(lines)
+        ref_pc_size = Path(self.ref_pc).stat().st_size / 1000 # kB
+        total_bin_size = sum(Path(bin_f).stat().st_size for bin_f in self.bin_files) / 1000 # kB
+        compression_ratio = total_bin_size / ref_pc_size # kB
+        bpp = (total_bin_size * 1000 * 8) / num_points
 
-def objective_quality(ref_pc, target_pc, color=0, resolution=1024):
-    ret = pc_error_wrapper(ref_pc, target_pc, color, resolution)
-    
-    chosen_metrics = [
-        'ACD1      \(p2point\): ',
-        'ACD1      \(p2plane\): ',
-        'ACD2      \(p2point\): ',
-        'ACD2      \(p2plane\): ',
-        'CD        \(p2point\): ',
-        'CD,PSNR   \(p2point\): ',
-        'CD        \(p2plane\): ',
-        'CD,PSNR   \(p2plane\): ',
-        'h.        \(p2point\): ',
-        'h.,PSNR   \(p2point\): ',
-        'h.        \(p2plane\): ',
-        'h.,PSNR   \(p2plane\): ',
-        'c\[0\],PSNRF         : ',
-        'c\[1\],PSNRF         : ',
-        'c\[2\],PSNRF         : ',
-        'hybrid geo-color   : '
-    ]
+        lines = [
+            f"========== Time & Binary Size ==========",
+            f"Pre-processing time:          {self.pre_t:0.4f}",
+            f"Encoding time:                {self.enc_t:0.4f}",
+            f"Decoding time:                {self.dec_t:0.4f}",
+            f"Post-processing time:         {self.post_t:0.4f}",
+            f"Source point cloud size (kB): {ref_pc_size}",
+            f"Total binary files size (kB): {total_bin_size}",
+            f"bpp (bits per point):         {bpp}",
+            "\n"
+        ]
 
-    for metric in chosen_metrics:
-        for line in ret.splitlines():
-            if
-        
+        with open(self.evl_log, 'a') as f:
+            f.writelines('\n'.join(lines))
 
-    ret.find(list[])
+    def objective_quality(self):
+        ret = self.pc_error_wrapper()
 
-def pc_error_wrapper(ref_pc, target_pc, color=0, resolution=1024):
-    '''
-    Wrapper of the metric software, modified based on mpeg-pcc-dmetric.
+        chosen_metrics = [
+            'ACD1      \(p2point\): ',
+            'ACD2      \(p2point\): ',
+            'CD        \(p2point\): ',
+            'CD,PSNR   \(p2point\): ',
+            'h.        \(p2point\): ',
+            'ACD1      \(p2plane\): ',
+            'ACD2      \(p2plane\): ',
+            'CD        \(p2plane\): ',
+            'CD,PSNR   \(p2plane\): ',
+            'h.        \(p2plane\): ',
+            'c\[0\],PSNRF         : ',
+            'c\[1\],PSNRF         : ',
+            'c\[2\],PSNRF         : ',
+            'hybrid geo-color   : '
+        ]
 
-    Parameters:
-        ref_pc (str or PosixPath): Reference (source) point cloud.
-        target_pc (str or PosixPath): Target (reconstructed/decoded) point cloud.
-    
-    Optionals:
-        color (int): Calculate color distortion or not. (0: false, 1: true)
-        resolution (int): Resolution (scale) of the point cloud.
-    
-    Returns:
-        string : Logs of objective quality.
-    '''
+        found_val = []
 
-    # metric software modified based on mpeg-pcc-dmetric
-    evl_bin = Path(__file__).parent.joinpath("mpeg-pcc-dmetric-master/test/pc_error").resolve()
+        for pattern in chosen_metrics:
+            isfound = False
+            for line in ret.splitlines():
+                m = re.search(f'(?<={pattern}).*', line)
+                if(m):
+                    found_val.append(m.group())
+                    isfound = True
+                    break
+            if isfound is False:
+                found_val.append('NaN')
 
-    cmd = [
-        evl_bin,
-        f'--fileA={ref_pc}',
-        f'--fileB={target_pc}',
-        f'--color={color}',
-        f'--resolution={resolution}',
-        '--hausdorff=1'
-    ]
+        assert len(found_val) == len(chosen_metrics)
 
-    ret = sp.run(cmd, stdout=sp.PIPE, stderr=sp.DEVNULL, universal_newlines=True)
+        lines = [
+            f"========== Objective Quality ===========",
+            f"Asym. Chamfer dist. (1->2) p2pt: {found_val[0]}",
+            f"Asym. Chamfer dist. (2->1) p2pt: {found_val[1]}",
+            f"Chamfer dist.              p2pt: {found_val[2]}",
+            f"CD-PSNR                    p2pt: {found_val[3]}",
+            f"Hausdorff distance         p2pt: {found_val[4]}",
+            f"----------------------------------------",
+            f"Asym. Chamfer dist. (1->2) p2pl: {found_val[5]}",
+            f"Asym. Chamfer dist. (2->1) p2pl: {found_val[6]}",
+            f"Chamfer dist.              p2pl: {found_val[7]}",
+            f"CD-PSNR                    p2pl: {found_val[8]}",
+            f"Hausdorff distance         p2pl: {found_val[9]}",
+            f"----------------------------------------",
+            f"Y-CPSNR                        : {found_val[10]}",
+            f"U-CPSNR                        : {found_val[11]}",
+            f"V-CPSNR                        : {found_val[12]}",
+            "\n",
+            f"============== QoE Metric ==============",
+            f"Hybrid geo-color               : {found_val[13]}",
+            "\n"
+        ]
 
-    return ret.stdout
+        with open(self.evl_log, 'a') as f:
+            f.writelines('\n'.join(lines))
+
+    def pc_error_wrapper(self):
+        '''
+        Wrapper of the metric software, modified based on mpeg-pcc-dmetric.
+
+        Parameters:
+            ref_pc (str or PosixPath): Reference (source) point cloud.
+            target_pc (str or PosixPath): Target (reconstructed/decoded) point cloud.
+
+        Optionals:
+            color (int): Calculate color distortion or not. (0: false, 1: true)
+            resolution (int): Resolution (scale) of the point cloud.
+
+        Returns:
+            string : Logs of objective quality.
+        '''
+
+        # metric software modified based on mpeg-pcc-dmetric
+        pc_error_bin = Path(__file__).parent.joinpath("mpeg-pcc-dmetric-master/test/pc_error").resolve()
+
+        cmd = [
+            pc_error_bin,
+            f'--fileA={self.ref_pc}',
+            f'--fileB={self.target_pc}',
+            f'--color={self.color}',
+            f'--resolution={self.resolution}',
+            '--hausdorff=1'
+        ]
+
+        ret = sp.run(cmd, stdout=sp.PIPE, stderr=sp.DEVNULL, universal_newlines=True)
+
+        return ret.stdout
+
+    def evaluate_all(self):
+        self.log_initializer()
+
+        # check if any of the values below is not initialized
+        if None in [self.pre_t, self.enc_t, self.dec_t, self.post_t, self.bin_files]:
+            pass
+        else:
+            self.log_time_and_filesize()
+
+        self.objective_quality()
