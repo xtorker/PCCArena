@@ -39,8 +39,14 @@ def main():
     glob_filepath('.', '*.py')
 
     draco = Draco('cfgs')
-    # draco.run('02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply')
-    draco.run_dataset('SNC', '/home/chenghao/PCC_Arena/test')
+    draco.run(
+        '02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply',
+        '/mnt/data6/chenghao/PCC_datasets/ShapeNet/color_scale1024',
+        '/mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024',
+        '/home/chenghao/PCC_Arena/test/aaa',
+        color = 1
+    )
+    # draco.run_dataset('SNC', '/home/chenghao/PCC_Arena/test')
 
 if __name__ == '__main__':
     main()
