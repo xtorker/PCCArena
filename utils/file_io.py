@@ -9,7 +9,7 @@ def load_cfg(cfg_file):
     
     return cfg
 
-def glob_filename(src_dir, pattern):
+def glob_filename(src_dir, pattern, verbose=False):
     '''
     Recursively glob the relative filename to the src_dir with input pattern.
 
@@ -22,11 +22,13 @@ def glob_filename(src_dir, pattern):
     '''
     filenames = list(path.relative_to(src_dir) for path in Path(src_dir).rglob(pattern))
     assert len(filenames) > 0
-    logger.info(f"Found {len(filenames)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
+    
+    if verbose is True:
+        logger.info(f"Found {len(filenames)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
 
     return filenames
 
-def glob_filepath(src_dir, pattern):
+def glob_filepath(src_dir, pattern, verbose=False):
     '''
     Recursively glob the absolute path of files with input pattern.
 
@@ -39,6 +41,8 @@ def glob_filepath(src_dir, pattern):
     '''
     filepaths = list(path.resolve(True) for path in Path(src_dir).rglob(pattern))
     assert len(filepaths) > 0
-    logger.info(f"Found {len(filepaths)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
+    
+    if verbose is True:
+        logger.info(f"Found {len(filepaths)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
 
     return filepaths

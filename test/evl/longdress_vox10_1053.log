@@ -1,0 +1,34 @@
+PCC-Arena Evaluator 1.0.0
+ref_pc: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply/longdress_vox10_1053.ply
+target_pc: /home/chenghao/PCC_Arena/test/dec/longdress_vox10_1053.ply
+
+========== Time & Binary Size ==========
+Pre-processing time:          0.0000
+Encoding time:                10.1932
+Decoding time:                0.6967
+Post-processing time:         0.0000
+Source point cloud size (kB): 17628.566
+Total binary files size (kB): 131.836
+bpp (bits per point):         1.3460224437470567
+
+========== Objective Quality ===========
+Asym. Chamfer dist. (1->2) p2pt: 4.49721
+Asym. Chamfer dist. (2->1) p2pt: 2.24945
+Chamfer dist.              p2pt: 3.37333
+CD-PSNR                    p2pt: 54.9254
+Hausdorff distance         p2pt: 12
+----------------------------------------
+Asym. Chamfer dist. (1->2) p2pl: NaN
+Asym. Chamfer dist. (2->1) p2pl: NaN
+Chamfer dist.              p2pl: NaN
+CD-PSNR                    p2pl: NaN
+Hausdorff distance         p2pl: NaN
+----------------------------------------
+Y-CPSNR                        : 26.9013
+U-CPSNR                        : 36.874
+V-CPSNR                        : 34.8033
+
+
+============== QoE Metric ==============
+Hybrid geo-color               : 0
+

@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class Base(metaclass=abc.ABCMeta):
     def __init__(self, algs_cfg_file):
+        algs_cfg_file = Path(algs_cfg_file).resolve()
         self.algs_cfg = load_cfg(algs_cfg_file)
 
     @abc.abstractmethod
@@ -74,13 +75,15 @@ class Base(metaclass=abc.ABCMeta):
         """Run a single experiment on the given `pcfile` and save the experiment results and evaluation log into `exp_dir`.
 
         Args:
-            pcfile (str or PosixPath): The relative path of input point cloud.
+            pcfile (str or PosixPath): The relative path to `src_dir` of input point cloud.
             src_dir (str or PosixPath): The directory of input point cloud.
             nor_dir (str or PosixPath): The directory of input point cloud with normal. (Necessary for p2plane metrics.)
             exp_dir (str or PosixPath): The directory to store experiments results.
             color (int, optional): Calculate color distortion or not. (0: false, 1: true). Defaults to 0.
             resolution (int, optional): Resolution (scale) of the point cloud. Defaults to 1024.
         """
+        self.color = color
+        
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = self.set_filepath(pcfile, src_dir, nor_dir, exp_dir)
 
         pre_time = timer(self.preprocess)
@@ -110,7 +113,7 @@ class Base(metaclass=abc.ABCMeta):
             self,
             ds_name: str,
             exp_dir: str or PosixPath,
-            ds_cfg_file='../cfgs/datasets.yml'
+            ds_cfg_file='cfgs/datasets.yml'
         ) -> None:
         """Run the experiments on dataset `ds_name` in the `exp_dir`.
 
@@ -119,15 +122,16 @@ class Base(metaclass=abc.ABCMeta):
             exp_dir (str or PosixPath): The directory to store experiments results.
             ds_cfg_file (str or PosixPath, optional): The YAML config file of datasets. Defaults to '../cfgs/datasets.yml'.
         """
-        logger.info(f"Start to run experiments on {ds_name} dataset with {type(self).__name__}")
+        logger.info(f"Start to run experiments on {ds_name} dataset with {type(self).__name__} in {exp_dir}")
 
-        if ds_cfg_file is '../cfgs/datasets.yml':
-            ds_cfg_file = Path(__file__).parent.joinpath(ds_cfg_file).resolve()
+        if ds_cfg_file == 'cfgs/datasets.yml':
+            ds_cfg_file = Path(__file__).parent.parent.joinpath(ds_cfg_file).resolve()
         ds_cfg = load_cfg(ds_cfg_file)
 
         pc_files = glob_filename(
             ds_cfg[ds_name]['dataset_dir'],
-            ds_cfg[ds_name]['test_pattern']
+            ds_cfg[ds_name]['test_pattern'],
+            verbose=True
         )
 
         prun = partial(

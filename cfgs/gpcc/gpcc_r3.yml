@@ -1,0 +1,4 @@
+gpcc_encoder: /home/chenghao/pcc_algs/mpeg-pcc-tmc13-release-v12.0/build/tmc3/tmc3
+gpcc_decoder: /home/chenghao/pcc_algs/mpeg-pcc-tmc13-release-v12.0/build/tmc3/tmc3
+positionBaseQp: 0
+bin_suffix: .bin

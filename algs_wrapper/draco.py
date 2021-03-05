@@ -4,9 +4,8 @@ from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class Draco(Base):
-    def __init__(self, cfg_dir):
-        self.algs_cfg_file = Path(cfg_dir).joinpath('draco.yml')
-        super().__init__(self.algs_cfg_file)
+    def __init__(self, draco_cfg_file):
+        super().__init__(draco_cfg_file)
 
     def preprocess(self):
         pass

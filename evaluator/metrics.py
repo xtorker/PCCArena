@@ -35,7 +35,6 @@ class MetricLogger():
         self.resolution = resolution
 
     def log_initializer(self):
-        logger.info(f"Logging evaluation results into {self.evl_log}")
         lines = [
             f"PCC-Arena Evaluator {__version__}",
             f"ref_pc: {self.ref_pc}",

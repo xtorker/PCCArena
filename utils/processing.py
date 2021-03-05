@@ -1,13 +1,13 @@
 import time
 import logging
-from typing import List
+from typing import List, Iterable
 import subprocess as sp
 from multiprocessing import Pool
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
-def timer(func: function, *args, **kwargs) -> float:
+def timer(func, *args, **kwargs) -> float:
     """Calculate function execution time.
 
     Args:
@@ -40,7 +40,7 @@ def execute_cmd(cmd: List[str]) -> bool:
     else:
         return True
 
-def parallel(func: function, filelist: iterable) -> None:
+def parallel(func, filelist: Iterable[str]) -> None:
     """Parallel processing with multiprocessing.Pool(). (Works better with functools.partial().)
 
     Args:

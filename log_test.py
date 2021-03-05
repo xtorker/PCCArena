@@ -2,6 +2,7 @@ import logging
 from logging import config as logging_config
 from utils.file_io import glob_filename, glob_filepath
 from algs_wrapper.draco import Draco
+from algs_wrapper.gpcc import G_PCC
 from evaluator.metrics import MetricLogger
 from pathlib import Path
 
@@ -39,7 +40,7 @@ def main():
     
     glob_filepath('.', '*.py')
 
-    # draco = Draco('cfgs')
+    gpcc = G_PCC('cfgs/gpcc/gpcc_r1.yml')
     # draco.run(
     #     '02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply',
     #     '/mnt/data6/chenghao/PCC_datasets/ShapeNet/color_scale1024',
@@ -48,14 +49,14 @@ def main():
     #     color = 1
     # )
 
-    mLogger = MetricLogger(
-        "/mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024/02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply",
-        "/home/chenghao/PCC_Arena/test/dec/02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply",
-        "/home/chenghao/PCC_Arena/test_single.log",
-        color = 1
-    )
-    mLogger.evaluate_all()
-    # draco.run_dataset('SNC', '/home/chenghao/PCC_Arena/test')
+    # mLogger = MetricLogger(
+    #     "/mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024/02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply",
+    #     "/home/chenghao/PCC_Arena/test/dec/02691156/test/1a9b552befd6306cc8f2d5fe7449af61.ply",
+    #     "/home/chenghao/PCC_Arena/test_single.log",
+    #     color = 1
+    # )
+    # mLogger.evaluate_all()
+    gpcc.run_dataset('TestMPEG', '/home/chenghao/PCC_Arena/test')
 
 if __name__ == '__main__':
     main()
