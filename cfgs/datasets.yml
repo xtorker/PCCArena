@@ -1,20 +1,15 @@
-MN40:
-    dataset_dir: 
-    dataset_w_normal_dir: 
-    train_pattern: 
-    test_pattern: 
-    val_pattern: 
+ds_rootdir: &ds_rootdir /mnt/data6/chenghao/PCC_datasets/
 
 Test_SNC:
-    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_scale1024/02801938/val
-    dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_normal_scale1024/02801938/val
+    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024/02801938/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024/02801938/val]
     test_pattern: '*.ply'
     color: 0
     resolution: 1024
 
 Test_SNCC:
-    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_scale1024/02801938/val
-    dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024/02801938/val
+    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024/02801938/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024/02801938/val]
     test_pattern: '*.ply'
     color: 1
     resolution: 1024
@@ -27,8 +22,8 @@ TestMPEG:
     resolution: 1024
 
 SNC:
-    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_scale1024
-    dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_normal_scale1024
+    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024]
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'
@@ -36,8 +31,8 @@ SNC:
     resolution: 1024
 
 SNCC:
-    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_scale1024
-    dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024
+    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024]
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'

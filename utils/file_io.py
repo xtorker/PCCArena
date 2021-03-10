@@ -1,9 +1,45 @@
-import yaml
-from pathlib import Path
+import ast
 import logging
+from pathlib import Path
+from typing import Union
+
+import yaml
+
 logger = logging.getLogger(__name__)
 
-def load_cfg(cfg_file):
+def get_logging_config(cfg_file: Union[str, Path]) -> dict:
+    """Get the loggging config dictionary from file.
+
+    Parameters
+    ----------
+    cfg_file : `Union[str, Path]`
+        The logging config file.
+
+    Returns
+    -------
+    `dict`
+        The dictionary for the input of dictConfig()
+    """
+    with open(cfg_file, 'r') as f:
+        ret = f.read()
+        logging_config = ast.literal_eval(ret)
+    
+    return logging_config
+
+def load_cfg(cfg_file: Union[str, Path]) -> dict:
+    """Load the PCC algs config file in YAML format with custom tag 
+    !join.
+
+    Parameters
+    ----------
+    cfg_file : `Union[str, Path]`
+        The YAML config file.
+
+    Returns
+    -------
+    `dict`
+        A dictionary object loaded from the YAML config file.
+    """
     # [ref.] https://stackoverflow.com/a/23212524
     ## define custom tag handler
     def join(loader, node):
@@ -18,40 +54,52 @@ def load_cfg(cfg_file):
     
     return cfg
 
-def glob_filename(src_dir, pattern, verbose=False):
-    '''
-    Recursively glob the relative filename to the src_dir with input pattern.
+def glob_file(
+        src_dir: Union[str, Path],
+        pattern: str,
+        fullpath: bool = False,
+        verbose: bool = False
+    ) -> list[Path]:
+    """Recursively glob the files in ``src_dir`` with input ``pattern``.
 
-    Parameters:
-        src_dir (str or PosixPath): The top directory to glob the files.
-        pattern (str or PosixPath): The pattern to glob the files.
+    Parameters
+    ----------
+    src_dir : `Union[str, Path]`
+        The root directory to glob the files.
+    pattern : `str`
+        The pattern to glob the files.
+    fullpath : `bool`, optional
+        True for full path of files, False for filename only, 
+        by default False
+    verbose : `bool`, optional
+        True to log message, False otherwise, by default False
+
+    Returns
+    -------
+    `list[Path]`
+        Files that match the glob pattern.
+
+    Raises
+    ------
+    `ValueError`
+        No any file match pattern in `src_dir`.
+    """
+    if fullpath is True:
+        files = list(p.resolve(True) for p in Path(src_dir).rglob(pattern))
+    else:
+        files = list(
+            p.relative_to(src_dir) for p in Path(src_dir).rglob(pattern)
+        )
     
-    Returns:
-        list (PosixPath): Files that match the glob pattern.
-    '''
-    filenames = list(path.relative_to(src_dir) for path in Path(src_dir).rglob(pattern))
-    assert len(filenames) > 0
+    if len(files) <= 0:
+        logger.error(
+            f"Not found any files "
+            f"with pattern: {pattern} in {Path(src_dir).resolve(True)}")
+        raise ValueError
     
     if verbose is True:
-        logger.info(f"Found {len(filenames)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
+        logger.info(
+            f"Found {len(files)} files "
+            f"with pattern: {pattern} in {Path(src_dir).resolve(True)}")
 
-    return filenames
-
-def glob_filepath(src_dir, pattern, verbose=False):
-    '''
-    Recursively glob the absolute path of files with input pattern.
-
-    Parameters:
-        src_dir (str or PosixPath): The top directory to glob the files.
-        pattern (str or PosixPath): The pattern to glob the files.
-    
-    Returns:
-        list (PosixPath): Full path of files that match the glob pattern.
-    '''
-    filepaths = list(path.resolve(True) for path in Path(src_dir).rglob(pattern))
-    assert len(filepaths) > 0
-    
-    if verbose is True:
-        logger.info(f"Found {len(filepaths)} files with pattern: {pattern} in {Path(src_dir).resolve(True)}")
-
-    return filepaths
+    return files

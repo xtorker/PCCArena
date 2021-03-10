@@ -1,6 +1,6 @@
-rootdir: &rootdir /home/chenghao/pcc_algs/draco-1.3.6/
-encoder: !join [*rootdir, build/draco_encoder]
-decoder: !join [*rootdir, build/draco_decoder]
+rootdir: &rootdir /home/chenghao/cs3570/CS3570-GrandChallenge-PCC/algs
+encoder: !join [*rootdir, /draco/build/draco_encoder]
+decoder: !join [*rootdir, /draco/build/draco_decoder]
 bin_suffix: .drc
 
 r1:
