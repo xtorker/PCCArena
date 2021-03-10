@@ -1,8 +1,0 @@
-draco_encoder: /home/chenghao/pcc_algs/draco-1.4.1/build/draco_encoder
-draco_decoder: /home/chenghao/pcc_algs/draco-1.4.1/build/draco_decoder
-qp: 4
-qt: 10
-qn: 8
-qg: 8
-cl: 10
-bin_suffix: .drc

@@ -5,7 +5,14 @@ MN40:
     test_pattern: 
     val_pattern: 
 
-Test:
+Test_SNC:
+    dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_scale1024/02801938/val
+    dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_normal_scale1024/02801938/val
+    test_pattern: '*.ply'
+    color: 0
+    resolution: 1024
+
+Test_SNCC:
     dataset_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_scale1024/02801938/val
     dataset_w_normal_dir: /mnt/data6/chenghao/PCC_datasets/ShapeNet/color_normal_scale1024/02801938/val
     test_pattern: '*.ply'

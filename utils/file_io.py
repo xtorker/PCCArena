@@ -4,6 +4,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 def load_cfg(cfg_file):
+    # [ref.] https://stackoverflow.com/a/23212524
+    ## define custom tag handler
+    def join(loader, node):
+        seq = loader.construct_sequence(node)
+        return ''.join([str(i) for i in seq])
+
+    ## register the tag handler
+    yaml.add_constructor('!join', join)
+    
     with open(cfg_file, 'r') as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     

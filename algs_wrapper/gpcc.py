@@ -3,19 +3,17 @@ from pathlib import Path
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
-class G_PCC(Base):
-    def __init__(self, gpcc_cfg_file):
-        super().__init__(gpcc_cfg_file)
-
-    def preprocess(self):
-        pass
+class GPCC(Base):
+    def __init__(self, rate):
+        super().__init__("cfgs/gpcc.yml")
+        self.rate = rate
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
-            self.algs_cfg['gpcc_encoder'],
+            self.algs_cfg['encoder'],
             f'--uncompressedDataPath={in_pcfile}',
             f'--compressedStreamPath={bin_file}',
-            f'--positionQuantizationScale={self.algs_cfg["positionQuantizationScale"]}',
+            f'--positionQuantizationScale={self.algs_cfg[self.rate]["positionQuantizationScale"]}',
             '--mergeDuplicatedPoints=1',
             '--mode=0'
         ]
@@ -29,16 +27,13 @@ class G_PCC(Base):
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
-            self.algs_cfg['gpcc_decoder'],
+            self.algs_cfg['decoder'],
             f'--compressedStreamPath={bin_file}',
             f'--reconstructedDataPath={out_pcfile}',
             '--mode=1'
         ]
 
         assert execute_cmd(cmd)
-
-    def postprocess(self):
-        pass
 
 
 

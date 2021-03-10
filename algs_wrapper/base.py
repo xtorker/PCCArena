@@ -15,19 +15,11 @@ class Base(metaclass=abc.ABCMeta):
         self.algs_cfg = load_cfg(algs_cfg_file)
 
     @abc.abstractmethod
-    def preprocess(self):
-        return NotImplemented
-
-    @abc.abstractmethod
     def encode(self):
         return NotImplemented
 
     @abc.abstractmethod
     def decode(self):
-        return NotImplemented
-
-    @abc.abstractmethod
-    def postprocess(self):
         return NotImplemented
 
     def set_filepath(
@@ -83,13 +75,12 @@ class Base(metaclass=abc.ABCMeta):
             resolution (int, optional): Resolution (scale) of the point cloud. Defaults to 1024.
         """
         self.color = color
+        self.resolution = resolution
         
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = self.set_filepath(pcfile, src_dir, nor_dir, exp_dir)
 
-        pre_time = timer(self.preprocess)
-        enc_time = timer(self.encode, in_pcfile, bin_file)
-        dec_time = timer(self.decode, bin_file, out_pcfile)
-        post_time = timer(self.postprocess)
+        enc_time = timer(self.encode, str(in_pcfile), str(bin_file))
+        dec_time = timer(self.decode, str(bin_file), str(out_pcfile))
 
         # grab all the encoded binary files with same filename, but different suffix
         bin_files = glob_filepath(bin_file.parent, bin_file.stem+'*')
@@ -98,10 +89,8 @@ class Base(metaclass=abc.ABCMeta):
             nor_pcfile,
             out_pcfile,
             evl_log,
-            pre_time,
             enc_time,
             dec_time,
-            post_time,
             bin_files,
             color,
             resolution
@@ -113,6 +102,7 @@ class Base(metaclass=abc.ABCMeta):
             self,
             ds_name: str,
             exp_dir: str or PosixPath,
+            use_gpu=False,
             ds_cfg_file='cfgs/datasets.yml'
         ) -> None:
         """Run the experiments on dataset `ds_name` in the `exp_dir`.
@@ -120,6 +110,7 @@ class Base(metaclass=abc.ABCMeta):
         Args:
             ds_name (str): The name of the dataset (refer to cfgs/datasets.yml).
             exp_dir (str or PosixPath): The directory to store experiments results.
+            use_gpu (bool, optional): Running PCC algorithm on GPU or not. Defaults to False.
             ds_cfg_file (str or PosixPath, optional): The YAML config file of datasets. Defaults to '../cfgs/datasets.yml'.
         """
         logger.info(f"Start to run experiments on {ds_name} dataset with {type(self).__name__} in {exp_dir}")
@@ -143,4 +134,4 @@ class Base(metaclass=abc.ABCMeta):
             resolution=ds_cfg[ds_name]['resolution']
         )
 
-        parallel(prun, pc_files)
+        parallel(prun, pc_files, use_gpu)

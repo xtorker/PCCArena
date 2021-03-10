@@ -1,0 +1,34 @@
+python: /home/chenghao/anaconda3/envs/pcgc_v1/bin/python
+rootdir: &rootdir /home/chenghao/pcc_algs/PCGCv1/
+test_script: !join [*rootdir, test.py]
+bin_suffix: ''
+
+r1:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
+  scale: 0.625
+  rho: 1.15
+
+r2:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
+  scale: 1
+  rho: 1.15
+
+r3:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a2b3]
+  scale: 1
+  rho: 1
+
+r4:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a3.5b3]
+  scale: 1
+  rho: 1
+
+r5:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a6b3]
+  scale: 1
+  rho: 1
+
+r6:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a10b3]
+  scale: 1
+  rho: 1

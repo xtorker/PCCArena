@@ -3,6 +3,8 @@ import logging
 from typing import List, Iterable
 import subprocess as sp
 from multiprocessing import Pool
+
+import GPUtil
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ def execute_cmd(cmd: List[str]) -> bool:
     ret = sp.run(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
     try:
         assert ret.returncode == 0
-    except AssertionError as err:
+    except AssertionError:
         logger.info(f"The stdout and stderr of executed command: {''.join(str(s)+' ' for s in cmd)}")
         print(f"\n {ret.stdout.decode('utf-8')}")
         print(f"\n {ret.stderr.decode('utf-8')}")
@@ -40,12 +42,34 @@ def execute_cmd(cmd: List[str]) -> bool:
     else:
         return True
 
-def parallel(func, filelist: Iterable[str]) -> None:
+def parallel(func, filelist: Iterable[str], use_gpu=False) -> None:
     """Parallel processing with multiprocessing.Pool(). (Works better with functools.partial().)
 
     Args:
         func (function): The target function for parallel processing.
         filelist (iterable): The file list to process with the input function.
+        use_gpu (bool, optional): Parallel based on available GPUs. Defaults to False.
     """
-    with Pool() as pool:
+    if use_gpu is True:
+        # Get the number of available GPUs
+        deviceIDs = GPUtil.getAvailable(
+            order = 'first',
+            limit = 8,
+            maxLoad = 0.5,
+            maxMemory = 0.1,
+            includeNan=False,
+            excludeID=[],
+            excludeUUID=[]
+        )
+        process = len(deviceIDs)
+        
+        try:
+            assert process > 0
+        except AssertionError:
+            logger.error("No available GPU.")
+            raise
+    else:
+        process = None
+
+    with Pool(process) as pool:
         list(tqdm(pool.imap_unordered(func, filelist), total=len(filelist)))

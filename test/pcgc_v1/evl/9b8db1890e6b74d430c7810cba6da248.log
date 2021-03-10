@@ -1,0 +1,32 @@
+PCC-Arena Evaluator 1.0.0
+ref_pc: /mnt/data6/chenghao/PCC_datasets/ShapeNet/geo_normal_scale1024/02801938/val/9b8db1890e6b74d430c7810cba6da248.ply
+target_pc: /home/chenghao/PCC_Arena/test/pcgc_v1/dec/9b8db1890e6b74d430c7810cba6da248.ply
+
+========== Time & Binary Size ==========
+Encoding time:                57.9520
+Decoding time:                59.8265
+Source point cloud size (kB): 12000.318
+Total binary files size (kB): 39.762
+bpp (bits per point):         0.6361843657876105
+
+========== Objective Quality ===========
+Asym. Chamfer dist. (1->2) p2pt: 177.946
+Asym. Chamfer dist. (2->1) p2pt: 14.2027
+Chamfer dist.              p2pt: 96.0742
+CD-PSNR                    p2pt: 40.3799
+Hausdorff distance         p2pt: 3135.88
+----------------------------------------
+Asym. Chamfer dist. (1->2) p2pl: 5.89532
+Asym. Chamfer dist. (2->1) p2pl: 9.45123
+Chamfer dist.              p2pl: 7.67328
+CD-PSNR                    p2pl: 51.3562
+Hausdorff distance         p2pl: 1647.9
+----------------------------------------
+Y-CPSNR                        : NaN
+U-CPSNR                        : NaN
+V-CPSNR                        : NaN
+
+
+============== QoE Metric ==============
+Hybrid geo-color               : NaN
+

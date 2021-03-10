@@ -1,0 +1,60 @@
+rootdir: &rootdir /home/chenghao/pcc_algs/draco-1.3.6/
+encoder: !join [*rootdir, build/draco_encoder]
+decoder: !join [*rootdir, build/draco_decoder]
+bin_suffix: .drc
+
+r1:
+  qp: 4
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r2:
+  qp: 5
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r3:
+  qp: 6
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r4:
+  qp: 7
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r5:
+  qp: 8
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r6:
+  qp: 9
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r7:
+  qp: 10
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10
+
+r8:
+  qp: 11
+  qt: 10
+  qn: 8
+  qg: 8
+  cl: 10

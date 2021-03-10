@@ -1,0 +1,19 @@
+python: /home/chenghao/anaconda3/envs/pcgc_v2/bin/python
+encoder: /home/chenghao/pcc_algs/geocnn_v2/src/compress_octree.py
+decoder: /home/chenghao/pcc_algs/geocnn_v2/src/decompress_octree.py
+bin_suffix: .bin
+checkpoint_dir: /home/chenghao/pcc_algs/geocnn_v2/models/shapenet/c3p/
+model_config: c3p
+opt_metrics: d1_mse
+
+r1:
+  resolution: 1024
+
+r2:
+  resolution: 512
+
+r3:
+  resolution: 256
+
+r4:
+  resolution: 128

@@ -1,0 +1,28 @@
+rootdir: &rootdir /home/chenghao/pcc_algs/mpeg-pcc-tmc13-release-v12.0/
+encoder: !join [*rootdir, build/tmc3/tmc3]
+decoder: !join [*rootdir, build/tmc3/tmc3]
+bin_suffix: .bin
+
+r1:
+  positionQuantizationScale: 0.25
+
+r2:
+  positionQuantizationScale: 0.5
+
+r3:
+  positionQuantizationScale: 0.75
+
+r4:
+  positionQuantizationScale: 1
+
+r5:
+  positionQuantizationScale: 0.25
+
+r6:
+  positionQuantizationScale: 0.25
+
+r7:
+  positionQuantizationScale: 0.25
+
+r8:
+  positionQuantizationScale: 0.25

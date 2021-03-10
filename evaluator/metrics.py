@@ -15,10 +15,8 @@ class MetricLogger():
         ref_pc,
         target_pc,
         evl_log,
-        pre_t=None,
         enc_t=None,
         dec_t=None,
-        post_t=None,
         bin_files=None,
         color=0,
         resolution=1024
@@ -27,14 +25,12 @@ class MetricLogger():
         self.bin_files = bin_files
         self.target_pc = target_pc
         self.evl_log = evl_log
-        self.pre_t = pre_t
         self.enc_t = enc_t
         self.dec_t = dec_t
-        self.post_t = post_t
         self.color = color
         self.resolution = resolution
 
-    def log_initializer(self):
+    def log_header(self):
         lines = [
             f"PCC-Arena Evaluator {__version__}",
             f"ref_pc: {self.ref_pc}",
@@ -56,10 +52,8 @@ class MetricLogger():
 
         lines = [
             f"========== Time & Binary Size ==========",
-            f"Pre-processing time:          {self.pre_t:0.4f}",
             f"Encoding time:                {self.enc_t:0.4f}",
             f"Decoding time:                {self.dec_t:0.4f}",
-            f"Post-processing time:         {self.post_t:0.4f}",
             f"Source point cloud size (kB): {ref_pc_size}",
             f"Total binary files size (kB): {total_bin_size}",
             f"bpp (bits per point):         {bpp}",
@@ -163,10 +157,10 @@ class MetricLogger():
         return ret.stdout
 
     def evaluate_all(self):
-        self.log_initializer()
+        self.log_header()
 
         # check if any of the values below is not initialized
-        if None in [self.pre_t, self.enc_t, self.dec_t, self.post_t, self.bin_files]:
+        if None in [self.enc_t, self.dec_t, self.bin_files]:
             pass
         else:
             self.log_time_and_filesize()
