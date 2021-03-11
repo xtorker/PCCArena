@@ -4,9 +4,8 @@ from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class PCGCv1(Base):
-    def __init__(self, rate):
+    def __init__(self, ):
         super().__init__("cfgs/pcgc_v1.yml")
-        self.rate = rate
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

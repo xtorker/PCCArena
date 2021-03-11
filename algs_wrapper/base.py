@@ -1,3 +1,4 @@
+import re
 import abc
 import logging
 from pathlib import Path
@@ -6,13 +7,13 @@ from functools import partial
 
 from utils.file_io import load_cfg, glob_file
 from utils.processing import timer, parallel
-from evaluator.metrics import MetricLogger
+from evaluator.metrics import ViewIndependentMetrics
 
 logger = logging.getLogger(__name__)
 
 class Base(metaclass=abc.ABCMeta):
     def __init__(self, algs_cfg_file) -> None:
-        self.algs_cfg = load_cfg(Path(algs_cfg_file).resolve())
+        self._algs_cfg = load_cfg(Path(algs_cfg_file).resolve())
 
     @abc.abstractmethod
     def encode(self):
@@ -21,6 +22,28 @@ class Base(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def decode(self):
         return NotImplemented
+
+    @property
+    def rate(self) -> str:
+        """Specify the set of bitrate control coding parameters. 
+        The related coding parameters need to be configured in the 
+        corresponding PCC algs config file.
+        
+        Returns
+        -------
+        `str`
+            Tag of the rate control set.
+        """
+        return self._rate
+
+    @rate.setter
+    def rate(self, rate: str) -> None:
+        m = re.search('^r[1-9]+', rate, re.MULTILINE)
+        if m is None:
+            logger.warning(
+                f"Invalid rate control parameters. Use 'r1', 'r2', etc."
+            )
+        self._rate = m.group()
 
     def run_dataset(
             self,
@@ -44,7 +67,7 @@ class Base(metaclass=abc.ABCMeta):
             The YAML config file of datasets. Defaults to 
             'cfgs/datasets.yml'.
         """
-        exp_dir = Path(exp_dir).joinpath(self.rate)
+        exp_dir = Path(exp_dir).joinpath(self._rate)
         
         logger.info(
             f"Start to run experiments on {ds_name} dataset "
@@ -81,7 +104,7 @@ class Base(metaclass=abc.ABCMeta):
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path],
             color: int = 0,
-            resolution: int = 1024
+            resolution: int = None
         ) -> None:
         """Run a single experiment on the given ``pcfile`` and save the 
         experiment results and evaluation log into ``exp_dir``.
@@ -100,11 +123,12 @@ class Base(metaclass=abc.ABCMeta):
         color : `int`, optional
             1 for calculating color metric, 0 otherwise. Defaults to 0.
         resolution : `int`, optional
-            Bounding box size of the point cloud (Max length among xyz 
-            axises). Defaults to 1024.
+            Maximum NN distance of the ``pcfile``. If the resolution is 
+            not specified, it will be calculated on the fly. Defaults to
+            None.
         """
-        self.color = color
-        self.resolution = resolution
+        self._color = color
+        self._resolution = resolution
         
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = (
             self.__set_filepath(pcfile, src_dir, nor_dir, exp_dir)
@@ -119,8 +143,8 @@ class Base(metaclass=abc.ABCMeta):
             bin_file.parent, bin_file.stem+'*', fullpath=True
         )
 
-        mLogger = MetricLogger()
-        mLogger.evaluate_and_log(
+        VIMetrics = ViewIndependentMetrics()
+        VIMetrics.calculate_and_log(
             nor_pcfile,
             out_pcfile,
             evl_log,
@@ -163,7 +187,7 @@ class Base(metaclass=abc.ABCMeta):
         nor_pcfile = Path(nor_dir).joinpath(pcfile)
         bin_file = (
             Path(exp_dir)
-            .joinpath('bin', pcfile).with_suffix(self.algs_cfg['bin_suffix'])
+            .joinpath('bin', pcfile).with_suffix(self._algs_cfg['bin_suffix'])
         )
         out_pcfile = Path(exp_dir).joinpath('dec', pcfile)
         evl_log = Path(exp_dir).joinpath('evl', pcfile).with_suffix('.log')

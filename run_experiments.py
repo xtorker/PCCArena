@@ -17,10 +17,12 @@ def main():
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger(__name__)
 
-    draco = Draco('r7')
+    draco = Draco()
+    draco.rate = 'r7'
     draco.run_dataset('Test_SNCC', 'experiments/draco/Test_SNCC')
     
-    geocnn_v2 = GeoCNNv2('r4')
+    geocnn_v2 = GeoCNNv2()
+    geocnn_v2.rate = 'r4'
     geocnn_v2.run_dataset('Test_SNC', 'experiments/geocnn_v2/Test_SNCC', use_gpu=True)
 
 if __name__ == '__main__':
