@@ -1,19 +1,34 @@
 python: /home/chenghao/anaconda3/envs/pcgc_v2/bin/python
-encoder: /home/chenghao/pcc_algs/geocnn_v2/src/compress_octree.py
-decoder: /home/chenghao/pcc_algs/geocnn_v2/src/decompress_octree.py
-bin_suffix: .bin
-checkpoint_dir: /home/chenghao/pcc_algs/geocnn_v2/models/shapenet/c3p/
-model_config: c3p
-opt_metrics: d1_mse
+rootdir: &rootdir /home/chenghao/pcc_algs/PCGCv2/
+test_script: !join [*rootdir, test.py]
+bin_suffix: ''
 
 r1:
-  resolution: 1024
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
+  scale: 0.625
+  rho: 1.15
 
 r2:
-  resolution: 512
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
+  scale: 1
+  rho: 1.15
 
 r3:
-  resolution: 256
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a2b3]
+  scale: 1
+  rho: 1
 
 r4:
-  resolution: 128
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a3.5b3]
+  scale: 1
+  rho: 1
+
+r5:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a6b3]
+  scale: 1
+  rho: 1
+
+r6:
+  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a10b3]
+  scale: 1
+  rho: 1

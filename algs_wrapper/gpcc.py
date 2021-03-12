@@ -9,10 +9,10 @@ class GPCC(Base):
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
-            self.algs_cfg['encoder'],
+            self._algs_cfg['encoder'],
             f'--uncompressedDataPath={in_pcfile}',
             f'--compressedStreamPath={bin_file}',
-            f'--positionQuantizationScale={self.algs_cfg[self.rate]["positionQuantizationScale"]}',
+            f'--positionQuantizationScale={self._algs_cfg[self.rate]["positionQuantizationScale"]}',
             '--mergeDuplicatedPoints=1',
             '--mode=0'
         ]
@@ -26,7 +26,7 @@ class GPCC(Base):
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
-            self.algs_cfg['decoder'],
+            self._algs_cfg['decoder'],
             f'--compressedStreamPath={bin_file}',
             f'--reconstructedDataPath={out_pcfile}',
             '--mode=1'

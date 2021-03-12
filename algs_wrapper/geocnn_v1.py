@@ -1,11 +1,12 @@
 from pathlib import Path
+from re import T
 
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class GeoCNNv1(Base):
     def __init__(self):
-        super().__init__("cfgs/geocnn_v1.yml")
+        super().__init__("cfgs/geocnn_v1.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

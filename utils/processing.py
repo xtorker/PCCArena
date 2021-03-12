@@ -84,7 +84,7 @@ def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
             order = 'first',
             limit = 8,
             maxLoad = 0.5,
-            maxMemory = 0.1,
+            maxMemory = 0.2,
             includeNan=False,
             excludeID=[],
             excludeUUID=[]
@@ -92,7 +92,10 @@ def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
         process = len(deviceIDs)
         
         if process <= 0:
-            logger.error("No available GPU.")
+            logger.error(
+                "No available GPU. Check with the threshold parameters "
+                "of ``GPUtil.getAvailable()``"
+            )
             raise ValueError
     else:
         process = None

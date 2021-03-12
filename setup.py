@@ -17,15 +17,19 @@ def setup_config(args):
     )
     ds_cfg_file = 'cfgs/datasets.yml'
 
+    # Set dataset root directory
     find_and_replace(
         ds_cfg_file, 'ds_rootdir: &ds_rootdir ', args.ds_rootdir
     )
     
     for cfg in algs_cfg_files:
+        # Set root directory for each PCC algorithms
         find_and_replace(
             str(cfg), 'rootdir: &rootdir ', 
             str(Path(__file__).parent.resolve().joinpath('algs'))
         )
+        # If the PCC algorithm have specified environments setup, also set 
+        # the python path to corresponding conda environments.
         find_and_replace(
             str(cfg), 'python: ',
             f"/home/{getpass.getuser()}/anaconda3/envs/{Path(cfg).stem}/bin/python"

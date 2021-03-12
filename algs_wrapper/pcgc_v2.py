@@ -5,7 +5,7 @@ from utils.processing import execute_cmd
 
 class PCGCv2(Base):
     def __init__(self):
-        super().__init__("cfgs/pcgc_v2.yml")
+        super().__init__("cfgs/pcgc_v2.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

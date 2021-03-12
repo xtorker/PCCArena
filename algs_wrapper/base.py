@@ -12,8 +12,9 @@ from evaluator.metrics import ViewIndependentMetrics
 logger = logging.getLogger(__name__)
 
 class Base(metaclass=abc.ABCMeta):
-    def __init__(self, algs_cfg_file) -> None:
+    def __init__(self, algs_cfg_file, use_gpu=False) -> None:
         self._algs_cfg = load_cfg(Path(algs_cfg_file).resolve())
+        self._use_gpu = use_gpu
 
     @abc.abstractmethod
     def encode(self):
@@ -49,7 +50,6 @@ class Base(metaclass=abc.ABCMeta):
             self,
             ds_name: str,
             exp_dir: Union[str, Path],
-            use_gpu: bool = False,
             ds_cfg_file: Union[str, Path] = 'cfgs/datasets.yml'
         ) -> None:
         """Run the experiments on dataset `ds_name` in the ``exp_dir``.
@@ -95,7 +95,7 @@ class Base(metaclass=abc.ABCMeta):
             resolution=ds_cfg[ds_name]['resolution']
         )
 
-        parallel(prun, pc_files, use_gpu)
+        parallel(prun, pc_files, self._use_gpu)
 
     def run(
             self,
@@ -144,16 +144,17 @@ class Base(metaclass=abc.ABCMeta):
         )
 
         VIMetrics = ViewIndependentMetrics()
-        VIMetrics.calculate_and_log(
+        ret = VIMetrics.evaluate(
             nor_pcfile,
             out_pcfile,
-            evl_log,
             color,
             resolution,
             enc_time,
             dec_time,
             bin_files
         )
+        with open(evl_log, 'w') as f:
+            f.write(ret)
 
     def __set_filepath(
             self, 
