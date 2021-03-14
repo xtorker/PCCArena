@@ -4,19 +4,18 @@ from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class PCGCv2(Base):
-    def __init__(self):
+    def __init__(self, ):
         super().__init__("cfgs/pcgc_v2.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
-            self.algs_cfg['python'],
-            self.algs_cfg['encoder'],
-            '--input_files', in_pcfile,
-            '--output_files', bin_file,
-            '--checkpoint_dir', self.algs_cfg['checkpoint_dir'],
-            '--model_config', self.algs_cfg['model_config'],
-            '--opt_metrics', self.algs_cfg['opt_metrics'],
-            '--resolution', str(self.algs_cfg[self.rate]['resolution'])
+            self._algs_cfg['python'],
+            self._algs_cfg['test_script'],
+            'compress',
+            in_pcfile,
+            bin_file,
+            '--ckpt_dir', self._algs_cfg[self.rate]['ckpt_dir'],
+            '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size'])
         ]
         
         assert execute_cmd(cmd)
@@ -24,14 +23,14 @@ class PCGCv2(Base):
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
-            self.algs_cfg['python'],
-            self.algs_cfg['decoder'],
-            '--input_files', bin_file,
-            '--output_files', out_pcfile,
-            '--checkpoint_dir', self.algs_cfg['checkpoint_dir'],
-            '--model_config', self.algs_cfg['model_config']
+            self._algs_cfg['python'],
+            self._algs_cfg['test_script'],
+            'decompress',
+            bin_file,
+            out_pcfile,
+            '--ckpt_dir', self._algs_cfg[self.rate]['ckpt_dir'],
+            '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size']),
+            '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
 
         assert execute_cmd(cmd)
-
-

@@ -8,6 +8,7 @@ from typing import Union
 from pyntcloud import PyntCloud
 
 from _version import __version__
+from evaluator.gdiam_wrapper import findMaxNNdistance
 
 logger = logging.getLogger(__name__)
 
@@ -266,17 +267,19 @@ class ViewIndependentMetrics(BaseMetrics):
         `str`
             The result of objective quality metrics.
         """
+        # [TODO]
+        # Integrate findMaxNNdistance into mpeg-pcc-dmetric
+        if self._resolution is None:
+            self._resolution = findMaxNNdistance(self._ref_pc)
+
         cmd = [
             self._pc_error_bin,
             f'--fileA={self._ref_pc}',
             f'--fileB={self._target_pc}',
             f'--color={self._color}',
             '--hausdorff=1',
+            f'--resolution={self._resolution}',
         ]
-        if self._resolution is not None:
-            cmd += [
-                f'--resolution={self._resolution}'
-            ]
 
         ret = sp.run(cmd, capture_output=True, universal_newlines=True)
 

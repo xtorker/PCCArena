@@ -1,34 +1,39 @@
 python: /home/chenghao/anaconda3/envs/pcgc_v2/bin/python
 rootdir: &rootdir /home/chenghao/pcc_algs/PCGCv2/
 test_script: !join [*rootdir, test.py]
-bin_suffix: ''
+bin_suffix: '.bin'
 
 r1:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
-  scale: 0.625
-  rho: 1.15
+  ckpt_dir: !join [*rootdir, ckpts/c8_a025_32000.pth]
+  voxel_size: 1
+  rho: 1
 
 r2:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a0.75b3]
-  scale: 1
-  rho: 1.15
+  ckpt_dir: !join [*rootdir, ckpts/c8_a05_32000.pth]
+  voxel_size: 1
+  rho: 1
 
 r3:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a2b3]
-  scale: 1
+  ckpt_dir: !join [*rootdir, ckpts/c8_a1_32000.pth]
+  voxel_size: 1
   rho: 1
 
 r4:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a3.5b3]
-  scale: 1
+  ckpt_dir: !join [*rootdir, ckpts/c8_a2_32000.pth]
+  voxel_size: 1
   rho: 1
 
 r5:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a6b3]
-  scale: 1
+  ckpt_dir: !join [*rootdir, ckpts/c8_a4_32000.pth]
+  voxel_size: 1
   rho: 1
 
 r6:
-  ckpt_dir: !join [*rootdir, checkpoints/pretrained/hyper/a10b3]
-  scale: 1
+  ckpt_dir: !join [*rootdir, ckpts/c8_a6_32000.pth]
+  voxel_size: 1
+  rho: 1
+
+r7:
+  ckpt_dir: !join [*rootdir, ckpts/c8_a10_32000.pth]
+  voxel_size: 1
   rho: 1

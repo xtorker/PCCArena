@@ -35,5 +35,3 @@ class PCGCv1(Base):
         ]
 
         assert execute_cmd(cmd)
-
-
