@@ -4,36 +4,36 @@ test_script: !join [*rootdir, test.py]
 bin_suffix: '.bin'
 
 r1:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a025_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a025_32000.pth]
   voxel_size: 1
   rho: 1
 
 r2:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a05_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a05_32000.pth]
   voxel_size: 1
   rho: 1
 
 r3:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a1_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a1_32000.pth]
   voxel_size: 1
   rho: 1
 
 r4:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a2_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a2_32000.pth]
   voxel_size: 1
   rho: 1
 
 r5:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a4_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a4_32000.pth]
   voxel_size: 1
   rho: 1
 
 r6:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a6_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a6_32000.pth]
   voxel_size: 1
   rho: 1
 
 r7:
-  ckpt_dir: !join [*rootdir, ckpts/c8_a10_32000.pth]
+  ckptdir: !join [*rootdir, ckpts/c8_a10_32000.pth]
   voxel_size: 1
   rho: 1

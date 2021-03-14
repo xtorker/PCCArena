@@ -5,7 +5,7 @@ from utils.processing import execute_cmd
 
 class Draco(Base):
     def __init__(self):
-        super().__init__("cfgs/draco.yml")
+        super().__init__("cfgs/algs/draco.yml")
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

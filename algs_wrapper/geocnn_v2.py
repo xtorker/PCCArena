@@ -5,7 +5,7 @@ from utils.processing import execute_cmd
 
 class GeoCNNv2(Base):
     def __init__(self, ):
-        super().__init__("cfgs/geocnn_v2.yml", use_gpu=True)
+        super().__init__("cfgs/algs/geocnn_v2.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

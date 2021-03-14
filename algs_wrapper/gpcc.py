@@ -5,7 +5,7 @@ from utils.processing import execute_cmd
 
 class GPCC(Base):
     def __init__(self, ):
-        super().__init__("cfgs/gpcc.yml")
+        super().__init__("cfgs/algs/gpcc.yml")
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

@@ -1,13 +1,17 @@
 from pathlib import Path
 
+import GPUtil
+
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class PCGCv1(Base):
     def __init__(self, ):
-        super().__init__("cfgs/pcgc_v1.yml", use_gpu=True)
+        super().__init__("cfgs/algs/pcgc_v1.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
+        deviceID = GPUtil.getFirstAvailable(order = 'first', maxLoad=0.5, maxMemory=0.5, attempts=1, interval=900, verbose=False)
+
         cmd = [
             self._algs_cfg['python'],
             self._algs_cfg['test_script'],

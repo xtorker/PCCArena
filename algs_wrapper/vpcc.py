@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class VPCC(Base):
     def __init__(self):
-        super().__init__("cfgs/vpcc.yml")
+        super().__init__("cfgs/algs/vpcc.yml")
 
     def encode(self, in_pcfile, bin_file):
         cmd = [

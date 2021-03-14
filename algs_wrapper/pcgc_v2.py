@@ -5,7 +5,7 @@ from utils.processing import execute_cmd
 
 class PCGCv2(Base):
     def __init__(self, ):
-        super().__init__("cfgs/pcgc_v2.yml", use_gpu=True)
+        super().__init__("cfgs/algs/pcgc_v2.yml", use_gpu=True)
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
@@ -14,7 +14,7 @@ class PCGCv2(Base):
             'compress',
             in_pcfile,
             bin_file,
-            '--ckpt_dir', self._algs_cfg[self.rate]['ckpt_dir'],
+            '--ckptdir', self._algs_cfg[self.rate]['ckptdir'],
             '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size'])
         ]
         
@@ -28,7 +28,7 @@ class PCGCv2(Base):
             'decompress',
             bin_file,
             out_pcfile,
-            '--ckpt_dir', self._algs_cfg[self.rate]['ckpt_dir'],
+            '--ckptdir', self._algs_cfg[self.rate]['ckptdir'],
             '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size']),
             '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
