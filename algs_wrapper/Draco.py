@@ -1,11 +1,9 @@
-from pathlib import Path
-
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class Draco(Base):
     def __init__(self):
-        super().__init__("cfgs/algs/draco.yml")
+        super().__init__()
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
@@ -20,8 +18,7 @@ class Draco(Base):
             '-cl', str(self._algs_cfg[self.rate]['cl'])
         ]
         
-        assert execute_cmd(cmd)
-
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
@@ -30,4 +27,4 @@ class Draco(Base):
             '-o', out_pcfile
         ]
 
-        assert execute_cmd(cmd)
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])

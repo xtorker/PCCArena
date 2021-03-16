@@ -23,12 +23,7 @@ def setup_config(args):
     )
     
     for cfg in algs_cfg_files:
-        # Set root directory for each PCC algorithms
-        find_and_replace(
-            str(cfg), 'rootdir: &rootdir ', 
-            str(Path(__file__).parent.resolve().joinpath('algs'))
-        )
-        # If the PCC algorithm have specified environments setup, also set 
+        # If the PCC algorithm have specified environments setup, set 
         # the python path to corresponding conda environments.
         find_and_replace(
             str(cfg), 'python: ',

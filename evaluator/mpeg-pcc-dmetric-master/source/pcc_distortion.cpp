@@ -64,10 +64,12 @@ typedef double distance_type;
 // calculations to be performed using double precision floats.
 // NB: by default nanoflann::metric_L2 will be used with the metric
 //     type of T = num_t (the coordinate type).
-struct metric_L2_double {
-  template<class T, class DataSource>
-  struct traits {
-    typedef nanoflann::L2_Adaptor<T,DataSource,double> distance_t;
+struct metric_L2_double
+{
+  template <class T, class DataSource>
+  struct traits
+  {
+    typedef nanoflann::L2_Adaptor<T, DataSource, double> distance_t;
   };
 };
 
@@ -77,7 +79,8 @@ typedef KDTreeVectorOfVectorsAdaptor<
     3,                                   // num dimensions
     metric_L2_double,                    // distance class
     index_type                           // index type (eg size_t)
-    > my_kd_tree_t;
+    >
+    my_kd_tree_t;
 
 #define PRINT_TIMING 0
 
@@ -100,11 +103,10 @@ typedef KDTreeVectorOfVectorsAdaptor<
  * \author
  *   Dong Tian, MERL
  */
-void
-findNNdistances(PccPointCloud &cloudA, double &minDist, double &maxDist)
+void findNNdistances(PccPointCloud &cloudA, double &minDist, double &maxDist)
 {
-  maxDist =  numeric_limits<double>::min();
-  minDist =  numeric_limits<double>::max();
+  maxDist = numeric_limits<double>::min();
+  minDist = numeric_limits<double>::max();
   double distTmp = 0;
   mutex myMutex;
 
@@ -116,8 +118,8 @@ findNNdistances(PccPointCloud &cloudA, double &minDist, double &maxDist)
     // cout << "*** " << i << endl;
     // do a knn search
     const size_t num_results = 3;
-    std::array<index_type,num_results> indices;
-    std::array<distance_type,num_results> sqrDist;
+    std::array<index_type, num_results> indices;
+    std::array<distance_type, num_results> sqrDist;
 
     mat_index.query(&cloudA.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]);
 
@@ -132,7 +134,7 @@ findNNdistances(PccPointCloud &cloudA, double &minDist, double &maxDist)
     {
       // Use the second one. assume the first one is the current point
       myMutex.lock();
-      distTmp = sqrt( sqrDist[1] );
+      distTmp = sqrt(sqrDist[1]);
       if (distTmp > maxDist)
         maxDist = distTmp;
       if (distTmp < minDist)
@@ -157,11 +159,10 @@ findNNdistances(PccPointCloud &cloudA, double &minDist, double &maxDist)
  * \author
  *   Dong Tian, MERL
  */
-float
-getPSNR(float dist2, float p, float factor = 1.0)
+float getPSNR(float dist2, float p, float factor = 1.0)
 {
   float max_energy = p * p;
-  float psnr = 10 * log10( (factor * max_energy) / dist2 );
+  float psnr = 10 * log10((factor * max_energy) / dist2);
 
   return psnr;
 }
@@ -181,8 +182,7 @@ getPSNR(float dist2, float p, float factor = 1.0)
  * \author
  *   Dong Tian, MERL
  */
-void
-scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud &cloudNormalsB, bool bAverageNormals)
+void scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud &cloudNormalsB, bool bAverageNormals)
 {
   // Prepare the buffer to compute the average normals
 #if PRINT_TIMING
@@ -192,23 +192,28 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
   cloudNormalsB.normal.init(cloudB.size);
   vector<int> counts(cloudB.size);
 
-  if (1) {
+  if (1)
+  {
     my_kd_tree_t mat_indexB(3, cloudB.xyz.p, 10); // dim, cloud, max leaf
     for (long i = 0; i < cloudNormalsA.size; i++)
     {
-      if( bAverageNormals ) {
+      if (bAverageNormals)
+      {
         const size_t num_results_max = 30;
         const size_t num_results_incr = 5;
         size_t num_results = 0;
 
-        std::array<index_type,num_results_max> indices;
-        std::array<distance_type,num_results_max> sqrDist;
-        do {
-          num_results  += num_results_incr;
+        std::array<index_type, num_results_max> indices;
+        std::array<distance_type, num_results_max> sqrDist;
+        do
+        {
+          num_results += num_results_incr;
           mat_indexB.query(&cloudNormalsA.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]);
-        } while( sqrDist[0] == sqrDist[num_results-1] && num_results + num_results_incr <= num_results_max );
-        for( size_t j=0;j<num_results;j++){
-          if( sqrDist[0] == sqrDist[j] ) {
+        } while (sqrDist[0] == sqrDist[num_results - 1] && num_results + num_results_incr <= num_results_max);
+        for (size_t j = 0; j < num_results; j++)
+        {
+          if (sqrDist[0] == sqrDist[j])
+          {
             cloudNormalsB.normal.n[indices[j]][0] += cloudNormalsA.normal.n[i][0];
             cloudNormalsB.normal.n[indices[j]][1] += cloudNormalsA.normal.n[i][1];
             cloudNormalsB.normal.n[indices[j]][2] += cloudNormalsA.normal.n[i][2];
@@ -219,8 +224,8 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
       else
       {
         const size_t num_results = 1;
-        std::array<index_type,num_results> indices;
-        std::array<distance_type,num_results> sqrDist;
+        std::array<index_type, num_results> indices;
+        std::array<distance_type, num_results> sqrDist;
 
         mat_indexB.query(&cloudNormalsA.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]);
 
@@ -237,7 +242,7 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
   for (long i = 0; i < cloudB.size; i++)
   {
     int nCount = counts[i];
-    if (nCount > 0)      // main branch
+    if (nCount > 0) // main branch
     {
       cloudNormalsB.normal.n[i][0] = cloudNormalsB.normal.n[i][0] / nCount;
       cloudNormalsB.normal.n[i][1] = cloudNormalsB.normal.n[i][1] / nCount;
@@ -245,20 +250,23 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
     }
     else
     {
-      if( bAverageNormals ) 
+      if (bAverageNormals)
       {
         const size_t num_results_max = 30;
         const size_t num_results_incr = 5;
         size_t num_results = 0;
-        std::array<index_type,num_results_max> indices;
-        std::array<distance_type,num_results_max> sqrDist;
-        do {
-          num_results  += num_results_incr;
+        std::array<index_type, num_results_max> indices;
+        std::array<distance_type, num_results_max> sqrDist;
+        do
+        {
+          num_results += num_results_incr;
           mat_indexA.query(&cloudB.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]);
-        } while( sqrDist[0] == sqrDist[num_results-1] && num_results + num_results_incr <= num_results_max );
+        } while (sqrDist[0] == sqrDist[num_results - 1] && num_results + num_results_incr <= num_results_max);
         size_t num = 0;
-        for( size_t j=0;j<num_results;j++){
-          if( sqrDist[0] == sqrDist[j] ) {
+        for (size_t j = 0; j < num_results; j++)
+        {
+          if (sqrDist[0] == sqrDist[j])
+          {
             cloudNormalsB.normal.n[i][0] += cloudNormalsA.normal.n[indices[j]][0];
             cloudNormalsB.normal.n[i][1] += cloudNormalsA.normal.n[indices[j]][1];
             cloudNormalsB.normal.n[i][2] += cloudNormalsA.normal.n[indices[j]][2];
@@ -272,8 +280,8 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
       else
       {
         const size_t num_results = 1;
-        std::array<index_type,num_results> indices;
-        std::array<distance_type,num_results> sqrDist;
+        std::array<index_type, num_results> indices;
+        std::array<distance_type, num_results> sqrDist;
 
         mat_indexA.query(&cloudB.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]);
 
@@ -289,7 +297,7 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
 
 #if PRINT_TIMING
   clock_t t2 = clock();
-  cout << "   Converting normal vector DONE. It takes " << (t2-t1)/CLOCKS_PER_SEC << " seconds (in CPU time)." << endl;
+  cout << "   Converting normal vector DONE. It takes " << (t2 - t1) / CLOCKS_PER_SEC << " seconds (in CPU time)." << endl;
 #endif
 }
 
@@ -297,7 +305,8 @@ scaleNormals(PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, PccPointCloud 
    \brief helper function to convert RGB to YUV (BT.709 or YCoCg-R)
  */
 void convertRGBtoYUV(int type, const std::array<unsigned char, 3> &in_rgb,
-                           float *out_yuv) {
+                     float *out_yuv)
+{
   // color space conversion to YUV
 
   if (type == 0)
@@ -353,8 +362,7 @@ void convertRGBtoYUV(int type, const std::array<unsigned char, 3> &in_rgb,
  * \author
  *   Dong Tian, MERL
  */
-void
-findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPointCloud &cloudNormalsB, qMetric &metric)
+void findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPointCloud &cloudNormalsB, qMetric &metric)
 {
   mutex myMutex;
 
@@ -376,7 +384,7 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
 
   my_kd_tree_t mat_indexB(3, cloudB.xyz.p, 10); // dim, cloud, max leaf
 
-  const size_t num_results_max  = 30;
+  const size_t num_results_max = 30;
   const size_t num_results_incr = 5;
 #if DUPLICATECOLORS_DEBUG
   long NbNeighborsDst[num_results_max] = {};
@@ -387,34 +395,40 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
   {
     size_t num_results = num_results_incr;
     // For point 'i' in A, find its nearest neighbor in B. store it in 'j'
-    std::array<index_type,num_results_max> indices;
-    std::array<distance_type,num_results_max> sqrDist;
-    do {
+    std::array<index_type, num_results_max> indices;
+    std::array<distance_type, num_results_max> sqrDist;
+    do
+    {
       num_results += num_results_incr;
       if (!mat_indexB.query(&cloudA.xyz.p[i][0], num_results, &indices[0], &sqrDist[0]))
       {
         cout << " WARNING: requested neighbors could not be found " << endl;
       }
-    } while( sqrDist[0] == sqrDist[num_results-1] && cPar.bAverageNormals && num_results + num_results_incr <= num_results_max );
+    } while (sqrDist[0] == sqrDist[num_results - 1] && cPar.bAverageNormals && num_results + num_results_incr <= num_results_max);
 
     int j = indices[0];
     if (j < 0)
       continue;
 
     std::vector<size_t> sameDistPoints;
-    if (cPar.bColor || (!cPar.c2c_only && cloudNormalsB.bNormal) ) {
-      sameDistPoints.push_back( indices[0] );
-      for (size_t n = 1; n < num_results; n++) {
-        if (fabs(sqrDist[n] - sqrDist[n - 1]) < 1e-8) {
-          sameDistPoints.push_back( indices[n] );
-        } else {
+    if (cPar.bColor || (!cPar.c2c_only && cloudNormalsB.bNormal))
+    {
+      sameDistPoints.push_back(indices[0]);
+      for (size_t n = 1; n < num_results; n++)
+      {
+        if (fabs(sqrDist[n] - sqrDist[n - 1]) < 1e-8)
+        {
+          sameDistPoints.push_back(indices[n]);
+        }
+        else
+        {
           break;
         }
       }
     }
 
     // Compute the error vector
-    std::array<double,3> errVector;
+    std::array<double, 3> errVector;
     errVector[0] = cloudA.xyz.p[i][0] - cloudB.xyz.p[j][0];
     errVector[1] = cloudA.xyz.p[i][1] - cloudB.xyz.p[j][1];
     errVector[2] = cloudA.xyz.p[i][2] - cloudB.xyz.p[j][2];
@@ -425,32 +439,44 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
     // Compute point-to-plane
     // Normals in B will be used for point-to-plane
     double distProj = 0.0;
-    if (!cPar.c2c_only && cloudNormalsB.bNormal) {
-      if( cPar.bAverageNormals ) {
-        for ( auto& index : sameDistPoints ) {
-          if ( !isnan( cloudNormalsB.normal.n[index][0] ) &&
-               !isnan( cloudNormalsB.normal.n[index][1] ) &&
-               !isnan( cloudNormalsB.normal.n[index][2] ) ) {
-            double dist = pow( ( cloudA.xyz.p[i][0] - cloudB.xyz.p[index][0] ) * cloudNormalsB.normal.n[index][0] +
-                               ( cloudA.xyz.p[i][1] - cloudB.xyz.p[index][1] ) * cloudNormalsB.normal.n[index][1] +
-                               ( cloudA.xyz.p[i][2] - cloudB.xyz.p[index][2] ) * cloudNormalsB.normal.n[index][2], 2.f );
+    if (!cPar.c2c_only && cloudNormalsB.bNormal)
+    {
+      if (cPar.bAverageNormals)
+      {
+        for (auto &index : sameDistPoints)
+        {
+          if (!isnan(cloudNormalsB.normal.n[index][0]) &&
+              !isnan(cloudNormalsB.normal.n[index][1]) &&
+              !isnan(cloudNormalsB.normal.n[index][2]))
+          {
+            double dist = pow((cloudA.xyz.p[i][0] - cloudB.xyz.p[index][0]) * cloudNormalsB.normal.n[index][0] +
+                                  (cloudA.xyz.p[i][1] - cloudB.xyz.p[index][1]) * cloudNormalsB.normal.n[index][1] +
+                                  (cloudA.xyz.p[i][2] - cloudB.xyz.p[index][2]) * cloudNormalsB.normal.n[index][2],
+                              2.f);
             distProj += dist;
-          } else {
-            distProj += cloudA.xyz.p[i][0] - cloudB.xyz.p[index][0] + 
+          }
+          else
+          {
+            distProj += cloudA.xyz.p[i][0] - cloudB.xyz.p[index][0] +
                         cloudA.xyz.p[i][1] - cloudB.xyz.p[index][1] +
                         cloudA.xyz.p[i][2] - cloudB.xyz.p[index][2];
           }
         }
         distProj /= (double)sameDistPoints.size();
-      } else {
-        if ( !isnan( cloudNormalsB.normal.n[j][0] ) &&
-             !isnan( cloudNormalsB.normal.n[j][1] ) &&
-             !isnan( cloudNormalsB.normal.n[j][2] ) ) {
-          distProj = ( errVector[0] * cloudNormalsB.normal.n[j][0] +
-                       errVector[1] * cloudNormalsB.normal.n[j][1] +
-                       errVector[2] * cloudNormalsB.normal.n[j][2] );
-          distProj *= distProj;  // power 2 for MSE
-        } else {
+      }
+      else
+      {
+        if (!isnan(cloudNormalsB.normal.n[j][0]) &&
+            !isnan(cloudNormalsB.normal.n[j][1]) &&
+            !isnan(cloudNormalsB.normal.n[j][2]))
+        {
+          distProj = (errVector[0] * cloudNormalsB.normal.n[j][0] +
+                      errVector[1] * cloudNormalsB.normal.n[j][1] +
+                      errVector[2] * cloudNormalsB.normal.n[j][2]);
+          distProj *= distProj; // power 2 for MSE
+        }
+        else
+        {
           distProj = distProj_c2c;
         }
       }
@@ -465,7 +491,7 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
       // add Y-value of the point into histogram
       float yuv[3];
       convertRGBtoYUV(1, cloudA.rgb.c[i], yuv);
-      metric.y_hist[ int( round( yuv[0] * 255 ) ) ]++;
+      metric.y_hist[int(round(yuv[0] * 255))]++;
 
       float out[3];
       float in[3];
@@ -474,60 +500,61 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
       if (cPar.neighborsProc)
       {
         unsigned int r = 0, g = 0, b = 0;
-        std::array<unsigned char,3> color;
+        std::array<unsigned char, 3> color;
         switch (cPar.neighborsProc)
         {
-          case 0:
-            break;
-          case 1:     // Average
-          case 2:     // Weighted average
-          {
-            int nbdupcumul = 0;
-            for ( auto& index : sameDistPoints ) {
-              int nbdup = cloudB.xyz.nbdup[ index ];
-              r += nbdup * cloudB.rgb.c[index][0];
-              g += nbdup * cloudB.rgb.c[index][1];
-              b += nbdup * cloudB.rgb.c[index][2];
-              nbdupcumul += nbdup;
-            }
-            assert(nbdupcumul);
-            color[0] = (unsigned char)round((double)r / nbdupcumul);
-            color[1] = (unsigned char)round((double)g / nbdupcumul);
-            color[2] = (unsigned char)round((double)b / nbdupcumul);
-          }
+        case 0:
           break;
-          case 3:   // Min
+        case 1: // Average
+        case 2: // Weighted average
+        {
+          int nbdupcumul = 0;
+          for (auto &index : sameDistPoints)
           {
-            unsigned int distColorMin = (std::numeric_limits<unsigned int>::max)();
-            size_t indexMin = 0;
-            for ( auto& index : sameDistPoints ) {
-              unsigned int distRGB = (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) * (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0])
-                                   + (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) * (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1])
-                                   + (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]) * (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]);
-              if ( distRGB < distColorMin) {
-                distColorMin = distRGB;
-                indexMin = index;
-              }
-            }
-            color = cloudB.rgb.c[indexMin];
+            int nbdup = cloudB.xyz.nbdup[index];
+            r += nbdup * cloudB.rgb.c[index][0];
+            g += nbdup * cloudB.rgb.c[index][1];
+            b += nbdup * cloudB.rgb.c[index][2];
+            nbdupcumul += nbdup;
           }
-          break;
-          case 4:   // Max
+          assert(nbdupcumul);
+          color[0] = (unsigned char)round((double)r / nbdupcumul);
+          color[1] = (unsigned char)round((double)g / nbdupcumul);
+          color[2] = (unsigned char)round((double)b / nbdupcumul);
+        }
+        break;
+        case 3: // Min
+        {
+          unsigned int distColorMin = (std::numeric_limits<unsigned int>::max)();
+          size_t indexMin = 0;
+          for (auto &index : sameDistPoints)
           {
-            unsigned int distColorMax = 0;
-            size_t indexMax = 0;
-            for ( auto& index : sameDistPoints ) {
-              unsigned int distRGB = (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) * (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0])
-                                   + (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) * (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1])
-                                   + (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]) * (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]);
-              if (distRGB > distColorMax) {
-                distColorMax = distRGB;
-                indexMax = index;
-              }
+            unsigned int distRGB = (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) * (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) + (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) * (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) + (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]) * (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]);
+            if (distRGB < distColorMin)
+            {
+              distColorMin = distRGB;
+              indexMin = index;
             }
-            color = cloudB.rgb.c[indexMax];
           }
-          break;
+          color = cloudB.rgb.c[indexMin];
+        }
+        break;
+        case 4: // Max
+        {
+          unsigned int distColorMax = 0;
+          size_t indexMax = 0;
+          for (auto &index : sameDistPoints)
+          {
+            unsigned int distRGB = (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) * (cloudA.rgb.c[i][0] - cloudB.rgb.c[index][0]) + (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) * (cloudA.rgb.c[i][1] - cloudB.rgb.c[index][1]) + (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]) * (cloudA.rgb.c[i][2] - cloudB.rgb.c[index][2]);
+            if (distRGB > distColorMax)
+            {
+              distColorMax = distRGB;
+              indexMax = index;
+            }
+          }
+          color = cloudB.rgb.c[indexMax];
+        }
+        break;
         }
 
         convertRGBtoYUV(cPar.mseSpace, color, out);
@@ -597,10 +624,10 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
   cout << " DEBUG: " << NbNeighborsDst[1] << " points (" << (float)NbNeighborsDst[1] * 100.0 / cloudA.size << "%) found with at least 2 neighbors at the same minimum distance" << endl;
 #endif
 
-  metric.c2p_acd = float( sse_dist_b_c2p / num );
-  metric.c2c_acd = float( sse_dist_b_c2c / num );
-  metric.c2p_hausdorff = float( max_dist_b_c2p );
-  metric.c2c_hausdorff = float( max_dist_b_c2c );
+  metric.c2p_acd = float(sse_dist_b_c2p / num);
+  metric.c2c_acd = float(sse_dist_b_c2c / num);
+  metric.c2p_hausdorff = float(max_dist_b_c2p);
+  metric.c2c_hausdorff = float(max_dist_b_c2c);
 
   if (cPar.bColor)
   {
@@ -610,15 +637,15 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
     {
       y_hist_sum += metric.y_hist[i];
     }
-    
+
     for (int i = 0; i < 256; i++)
     {
       metric.y_hist[i] = metric.y_hist[i] / y_hist_sum;
     }
-    
-    metric.color_mse[0] = float( sse_color[0] / num );
-    metric.color_mse[1] = float( sse_color[1] / num );
-    metric.color_mse[2] = float( sse_color[2] / num );
+
+    metric.color_mse[0] = float(sse_color[0] / num);
+    metric.color_mse[1] = float(sse_color[1] / num);
+    metric.color_mse[2] = float(sse_color[2] / num);
 
     if (cPar.mseSpace == 1) //YCbCr
     {
@@ -639,26 +666,26 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
       metric.color_psnr[2] = getPSNR(metric.color_mse[2], 511);
     }
 
-    metric.color_rgb_hausdorff[0] = float( max_colorRGB[0] );
-    metric.color_rgb_hausdorff[1] = float( max_colorRGB[1] );
-    metric.color_rgb_hausdorff[2] = float( max_colorRGB[2] );
+    metric.color_rgb_hausdorff[0] = float(max_colorRGB[0]);
+    metric.color_rgb_hausdorff[1] = float(max_colorRGB[1]);
+    metric.color_rgb_hausdorff[2] = float(max_colorRGB[2]);
 
-    metric.color_rgb_hausdorff_psnr[0] = getPSNR( metric.color_rgb_hausdorff[0], 255.0 );
-    metric.color_rgb_hausdorff_psnr[1] = getPSNR( metric.color_rgb_hausdorff[1], 255.0 );
-    metric.color_rgb_hausdorff_psnr[2] = getPSNR( metric.color_rgb_hausdorff[2], 255.0 );
+    metric.color_rgb_hausdorff_psnr[0] = getPSNR(metric.color_rgb_hausdorff[0], 255.0);
+    metric.color_rgb_hausdorff_psnr[1] = getPSNR(metric.color_rgb_hausdorff[1], 255.0);
+    metric.color_rgb_hausdorff_psnr[2] = getPSNR(metric.color_rgb_hausdorff[2], 255.0);
   }
 
   if (cPar.bLidar)
   {
-    metric.reflectance_mse = float( sse_reflectance / num );
-    metric.reflectance_psnr = getPSNR( float( metric.reflectance_mse ), float( std::numeric_limits<unsigned short>::max() ) );
-    metric.reflectance_hausdorff = float( max_reflectance );
-    metric.reflectance_hausdorff_psnr = getPSNR(metric.reflectance_hausdorff, std::numeric_limits<unsigned short>::max() );
+    metric.reflectance_mse = float(sse_reflectance / num);
+    metric.reflectance_psnr = getPSNR(float(metric.reflectance_mse), float(std::numeric_limits<unsigned short>::max()));
+    metric.reflectance_hausdorff = float(max_reflectance);
+    metric.reflectance_hausdorff_psnr = getPSNR(metric.reflectance_hausdorff, std::numeric_limits<unsigned short>::max());
   }
 
 #if PRINT_TIMING
   clock_t t3 = clock();
-  cout << "   Error computing takes " << (t3-t2)/CLOCKS_PER_SEC << " seconds (in CPU time)." << endl;
+  cout << "   Error computing takes " << (t3 - t2) / CLOCKS_PER_SEC << " seconds (in CPU time)." << endl;
 #endif
 }
 
@@ -678,7 +705,8 @@ findMetric(PccPointCloud &cloudA, PccPointCloud &cloudB, commandPar &cPar, PccPo
 
 commandPar::commandPar()
 {
-  file1 = ""; file2 = "";
+  file1 = "";
+  file2 = "";
   normIn = "";
   singlePass = false;
   hausdorff = false;
@@ -701,8 +729,10 @@ commandPar::commandPar()
 
 qMetric::qMetric()
 {
-  c2c_acd = 0; c2c_hausdorff = 0;
-  c2p_acd = 0; c2p_hausdorff = 0;
+  c2c_acd = 0;
+  c2c_hausdorff = 0;
+  c2p_acd = 0;
+  c2p_hausdorff = 0;
 
   color_mse[0] = color_mse[1] = color_mse[2] = 0.0;
   color_psnr[0] = color_psnr[1] = color_psnr[2] = 0.0;
@@ -736,8 +766,7 @@ qMetric::qMetric()
  * \author
  *   Dong Tian, MERL
  */
-void
-pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, commandPar &cPar, qMetric &qual_metric)
+void pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNormalsA, PccPointCloud &cloudB, commandPar &cPar, qMetric &qual_metric)
 {
   float pPSNR;
 
@@ -746,12 +775,12 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
     cout << "Imported intrinsic resoluiton: " << cPar.resolution << endl;
     pPSNR = cPar.resolution;
   }
-  else                          // Compute the peak value on the fly
+  else // Compute the peak value on the fly
   {
     double minDist;
     double maxDist;
     findNNdistances(cloudA, minDist, maxDist);
-    pPSNR = float( maxDist );
+    pPSNR = float(maxDist);
     cout << "Minimum and maximum NN distances (intrinsic resolutions): " << minDist << ", " << maxDist << endl;
   }
 
@@ -767,13 +796,13 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
     cout << "Point cloud sizes for org version, dec version, and the scaling ratio: " << orgSize << ", " << newSize << ", " << ratio << endl;
   }
 
-  if (cPar.file2 == "" ) // If no file2 provided, return just after checking the NN
+  if (cPar.file2 == "") // If no file2 provided, return just after checking the NN
     return;
 
   // Based on normals on original point cloud, derive normals on reconstructed point cloud
   PccPointCloud cloudNormalsB;
   if (!cPar.c2c_only)
-    scaleNormals( cloudNormalsA, cloudB, cloudNormalsB, cPar.bAverageNormals );
+    scaleNormals(cloudNormalsA, cloudB, cloudNormalsB, cPar.bAverageNormals);
   cout << "Normals prepared." << endl;
   cout << endl;
 
@@ -798,14 +827,14 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
   cout << "1. Use infile1 (A) as reference, loop over A, use normals on B. (A->B).\n";
   qMetric metricA;
   metricA.pPSNR = pPSNR;
-  findMetric( cloudA, cloudB, cPar, cloudNormalsB, metricA );
+  findMetric(cloudA, cloudB, cPar, cloudNormalsB, metricA);
 
   cout << "   ACD1      (p2point): " << metricA.c2c_acd << endl;
   if (!cPar.c2c_only)
   {
     cout << "   ACD1      (p2plane): " << metricA.c2p_acd << endl;
   }
-  if ( cPar.hausdorff )
+  if (cPar.hausdorff)
   {
     cout << "   h.       1(p2point): " << metricA.c2c_hausdorff << endl;
     if (!cPar.c2c_only)
@@ -813,7 +842,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
       cout << "   h.       1(p2plane): " << metricA.c2p_hausdorff << endl;
     }
   }
-  if ( cPar.bColor )
+  if (cPar.bColor)
   {
     cout << "   c[0],    1         : " << metricA.color_mse[0] << endl;
     cout << "   c[1],    1         : " << metricA.color_mse[1] << endl;
@@ -821,7 +850,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
     cout << "   c[0],PSNR1         : " << metricA.color_psnr[0] << endl;
     cout << "   c[1],PSNR1         : " << metricA.color_psnr[1] << endl;
     cout << "   c[2],PSNR1         : " << metricA.color_psnr[2] << endl;
-    if ( cPar.hausdorff )
+    if (cPar.hausdorff)
     {
       cout << " h.c[0],    1         : " << metricA.color_rgb_hausdorff[0] << endl;
       cout << " h.c[1],    1         : " << metricA.color_rgb_hausdorff[1] << endl;
@@ -831,13 +860,13 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
       cout << " h.c[2],PSNR1         : " << metricA.color_rgb_hausdorff_psnr[2] << endl;
     }
   }
-  if ( cPar.bLidar )
+  if (cPar.bLidar)
   {
-    cout << "   r,       1         : " << metricA.reflectance_mse  << endl;
+    cout << "   r,       1         : " << metricA.reflectance_mse << endl;
     cout << "   r,PSNR   1         : " << metricA.reflectance_psnr << endl;
-    if ( cPar.hausdorff )
+    if (cPar.hausdorff)
     {
-      cout << " h.r,       1         : " << metricA.reflectance_hausdorff  << endl;
+      cout << " h.r,       1         : " << metricA.reflectance_hausdorff << endl;
       cout << " h.r,PSNR   1         : " << metricA.reflectance_hausdorff_psnr << endl;
     }
   }
@@ -848,14 +877,14 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
     cout << "2. Use infile2 (B) as reference, loop over B, use normals on A. (B->A).\n";
     qMetric metricB;
     metricB.pPSNR = pPSNR;
-    findMetric( cloudB, cloudA, cPar, cloudNormalsA, metricB );
+    findMetric(cloudB, cloudA, cPar, cloudNormalsA, metricB);
 
     cout << "   ACD2      (p2point): " << metricB.c2c_acd << endl;
     if (!cPar.c2c_only)
     {
       cout << "   ACD2      (p2plane): " << metricB.c2p_acd << endl;
     }
-    if ( cPar.hausdorff )
+    if (cPar.hausdorff)
     {
       cout << "   h.       2(p2point): " << metricB.c2c_hausdorff << endl;
       if (!cPar.c2c_only)
@@ -863,7 +892,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
         cout << "   h.       2(p2plane): " << metricB.c2p_hausdorff << endl;
       }
     }
-    if ( cPar.bColor)
+    if (cPar.bColor)
     {
       cout << "   c[0],    2         : " << metricB.color_mse[0] << endl;
       cout << "   c[1],    2         : " << metricB.color_mse[1] << endl;
@@ -871,7 +900,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
       cout << "   c[0],PSNR2         : " << metricB.color_psnr[0] << endl;
       cout << "   c[1],PSNR2         : " << metricB.color_psnr[1] << endl;
       cout << "   c[2],PSNR2         : " << metricB.color_psnr[2] << endl;
-      if ( cPar.hausdorff)
+      if (cPar.hausdorff)
       {
         cout << " h.c[0],    2         : " << metricB.color_rgb_hausdorff[0] << endl;
         cout << " h.c[1],    2         : " << metricB.color_rgb_hausdorff[1] << endl;
@@ -881,46 +910,45 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
         cout << " h.c[2],PSNR2         : " << metricB.color_rgb_hausdorff_psnr[2] << endl;
       }
     }
-    if ( cPar.bLidar )
+    if (cPar.bLidar)
     {
-      cout << "   r,       2         : " << metricB.reflectance_mse  << endl;
+      cout << "   r,       2         : " << metricB.reflectance_mse << endl;
       cout << "   r,PSNR   2         : " << metricB.reflectance_psnr << endl;
-      if ( cPar.hausdorff )
+      if (cPar.hausdorff)
       {
-        cout << " h.r,       2         : " << metricB.reflectance_hausdorff  << endl;
+        cout << " h.r,       2         : " << metricB.reflectance_hausdorff << endl;
         cout << " h.r,PSNR   2         : " << metricB.reflectance_hausdorff_psnr << endl;
       }
-
     }
 
     // Derive the final symmetric metric
-    qual_metric.c2c_cd = 0.5 * ( metricA.c2c_acd + metricB.c2c_acd );
-    qual_metric.c2p_cd = 0.5 * ( metricA.c2p_acd + metricB.c2p_acd );
-    qual_metric.c2c_cd_psnr = getPSNR( qual_metric.c2c_cd, qual_metric.pPSNR, 1.0 );
-    qual_metric.c2p_cd_psnr = getPSNR( qual_metric.c2p_cd, qual_metric.pPSNR, 1.0 );
+    qual_metric.c2c_cd = 0.5 * (metricA.c2c_acd + metricB.c2c_acd);
+    qual_metric.c2p_cd = 0.5 * (metricA.c2p_acd + metricB.c2p_acd);
+    qual_metric.c2c_cd_psnr = getPSNR(qual_metric.c2c_cd, qual_metric.pPSNR, 1.0);
+    qual_metric.c2p_cd_psnr = getPSNR(qual_metric.c2p_cd, qual_metric.pPSNR, 1.0);
 
-    qual_metric.c2c_hausdorff = max( metricA.c2c_hausdorff, metricB.c2c_hausdorff  );
-    qual_metric.c2p_hausdorff = max( metricA.c2p_hausdorff, metricB.c2p_hausdorff );
-    qual_metric.c2c_hausdorff_psnr = getPSNR( qual_metric.c2c_hausdorff, qual_metric.pPSNR, 1.0 );
-    qual_metric.c2p_hausdorff_psnr = getPSNR( qual_metric.c2p_hausdorff, qual_metric.pPSNR, 1.0 );
+    qual_metric.c2c_hausdorff = max(metricA.c2c_hausdorff, metricB.c2c_hausdorff);
+    qual_metric.c2p_hausdorff = max(metricA.c2p_hausdorff, metricB.c2p_hausdorff);
+    qual_metric.c2c_hausdorff_psnr = getPSNR(qual_metric.c2c_hausdorff, qual_metric.pPSNR, 1.0);
+    qual_metric.c2p_hausdorff_psnr = getPSNR(qual_metric.c2p_hausdorff, qual_metric.pPSNR, 1.0);
 
-    if ( cPar.bColor )
+    if (cPar.bColor)
     {
-      qual_metric.color_mse[0] = max( metricA.color_mse[0], metricB.color_mse[0] );
-      qual_metric.color_mse[1] = max( metricA.color_mse[1], metricB.color_mse[1] );
-      qual_metric.color_mse[2] = max( metricA.color_mse[2], metricB.color_mse[2] );
+      qual_metric.color_mse[0] = max(metricA.color_mse[0], metricB.color_mse[0]);
+      qual_metric.color_mse[1] = max(metricA.color_mse[1], metricB.color_mse[1]);
+      qual_metric.color_mse[2] = max(metricA.color_mse[2], metricB.color_mse[2]);
 
-      qual_metric.color_psnr[0] = min( metricA.color_psnr[0], metricB.color_psnr[0] );
-      qual_metric.color_psnr[1] = min( metricA.color_psnr[1], metricB.color_psnr[1] );
-      qual_metric.color_psnr[2] = min( metricA.color_psnr[2], metricB.color_psnr[2] );
+      qual_metric.color_psnr[0] = min(metricA.color_psnr[0], metricB.color_psnr[0]);
+      qual_metric.color_psnr[1] = min(metricA.color_psnr[1], metricB.color_psnr[1]);
+      qual_metric.color_psnr[2] = min(metricA.color_psnr[2], metricB.color_psnr[2]);
 
-      qual_metric.color_rgb_hausdorff[0] = max( metricA.color_rgb_hausdorff[0], metricB.color_rgb_hausdorff[0] );
-      qual_metric.color_rgb_hausdorff[1] = max( metricA.color_rgb_hausdorff[1], metricB.color_rgb_hausdorff[1] );
-      qual_metric.color_rgb_hausdorff[2] = max( metricA.color_rgb_hausdorff[2], metricB.color_rgb_hausdorff[2] );
+      qual_metric.color_rgb_hausdorff[0] = max(metricA.color_rgb_hausdorff[0], metricB.color_rgb_hausdorff[0]);
+      qual_metric.color_rgb_hausdorff[1] = max(metricA.color_rgb_hausdorff[1], metricB.color_rgb_hausdorff[1]);
+      qual_metric.color_rgb_hausdorff[2] = max(metricA.color_rgb_hausdorff[2], metricB.color_rgb_hausdorff[2]);
 
-      qual_metric.color_rgb_hausdorff_psnr[0] = min( metricA.color_rgb_hausdorff_psnr[0], metricB.color_rgb_hausdorff_psnr[0] );
-      qual_metric.color_rgb_hausdorff_psnr[1] = min( metricA.color_rgb_hausdorff_psnr[1], metricB.color_rgb_hausdorff_psnr[1] );
-      qual_metric.color_rgb_hausdorff_psnr[2] = min( metricA.color_rgb_hausdorff_psnr[2], metricB.color_rgb_hausdorff_psnr[2] );
+      qual_metric.color_rgb_hausdorff_psnr[0] = min(metricA.color_rgb_hausdorff_psnr[0], metricB.color_rgb_hausdorff_psnr[0]);
+      qual_metric.color_rgb_hausdorff_psnr[1] = min(metricA.color_rgb_hausdorff_psnr[1], metricB.color_rgb_hausdorff_psnr[1]);
+      qual_metric.color_rgb_hausdorff_psnr[2] = min(metricA.color_rgb_hausdorff_psnr[2], metricB.color_rgb_hausdorff_psnr[2]);
 
       if (!cPar.c2c_only)
       {
@@ -933,12 +961,12 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
         qual_metric.hybrid_gc = cPar.hybrid_alpha * qual_metric.c2p_cd + (1 - cPar.hybrid_alpha) * sqrt(accu_yhist);
       }
     }
-    if ( cPar.bLidar )
+    if (cPar.bLidar)
     {
-      qual_metric.reflectance_mse  = max( metricA.reflectance_mse,  metricB.reflectance_mse  );
-      qual_metric.reflectance_psnr = min( metricA.reflectance_psnr, metricB.reflectance_psnr );
-      qual_metric.reflectance_hausdorff  = max( metricA.reflectance_hausdorff,  metricB.reflectance_hausdorff  );
-      qual_metric.reflectance_hausdorff_psnr = min( metricA.reflectance_hausdorff_psnr, metricB.reflectance_hausdorff_psnr );
+      qual_metric.reflectance_mse = max(metricA.reflectance_mse, metricB.reflectance_mse);
+      qual_metric.reflectance_psnr = min(metricA.reflectance_psnr, metricB.reflectance_psnr);
+      qual_metric.reflectance_hausdorff = max(metricA.reflectance_hausdorff, metricB.reflectance_hausdorff);
+      qual_metric.reflectance_hausdorff_psnr = min(metricA.reflectance_hausdorff_psnr, metricB.reflectance_hausdorff_psnr);
     }
 
     cout << "3. Final (symmetric).\n";
@@ -949,7 +977,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
       cout << "   CD        (p2plane): " << qual_metric.c2p_cd << endl;
       cout << "   CD,PSNR   (p2plane): " << qual_metric.c2p_cd_psnr << endl;
     }
-    if ( cPar.hausdorff )
+    if (cPar.hausdorff)
     {
       cout << "   h.        (p2point): " << qual_metric.c2c_hausdorff << endl;
       cout << "   h.,PSNR   (p2point): " << qual_metric.c2c_hausdorff_psnr << endl;
@@ -959,7 +987,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
         cout << "   h.,PSNR   (p2plane): " << qual_metric.c2p_hausdorff_psnr << endl;
       }
     }
-    if ( cPar.bColor )
+    if (cPar.bColor)
     {
       cout << "   c[0],    F         : " << qual_metric.color_mse[0] << endl;
       cout << "   c[1],    F         : " << qual_metric.color_mse[1] << endl;
@@ -967,7 +995,7 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
       cout << "   c[0],PSNRF         : " << qual_metric.color_psnr[0] << endl;
       cout << "   c[1],PSNRF         : " << qual_metric.color_psnr[1] << endl;
       cout << "   c[2],PSNRF         : " << qual_metric.color_psnr[2] << endl;
-      if ( cPar.hausdorff )
+      if (cPar.hausdorff)
       {
         cout << " h.c[0],    F         : " << qual_metric.color_rgb_hausdorff[0] << endl;
         cout << " h.c[1],    F         : " << qual_metric.color_rgb_hausdorff[1] << endl;
@@ -976,15 +1004,18 @@ pcc_quality::computeQualityMetric(PccPointCloud &cloudA, PccPointCloud &cloudNor
         cout << " h.c[1],PSNRF         : " << qual_metric.color_rgb_hausdorff_psnr[1] << endl;
         cout << " h.c[2],PSNRF         : " << qual_metric.color_rgb_hausdorff_psnr[2] << endl;
       }
-      cout << "   hybrid geo-color   : " << qual_metric.hybrid_gc << endl;
-    }
-    if ( cPar.bLidar )
-    {
-      cout << "   r,       F         : " << qual_metric.reflectance_mse  << endl;
-      cout << "   r,PSNR   F         : " << qual_metric.reflectance_psnr << endl;
-      if ( cPar.hausdorff )
+      if (!cPar.c2c_only)
       {
-        cout << " h.r,       F         : " << qual_metric.reflectance_hausdorff  << endl;
+        cout << "   hybrid geo-color   : " << qual_metric.hybrid_gc << endl;
+      }
+    }
+    if (cPar.bLidar)
+    {
+      cout << "   r,       F         : " << qual_metric.reflectance_mse << endl;
+      cout << "   r,PSNR   F         : " << qual_metric.reflectance_psnr << endl;
+      if (cPar.hausdorff)
+      {
+        cout << " h.r,       F         : " << qual_metric.reflectance_hausdorff << endl;
         cout << " h.r,PSNR   F         : " << qual_metric.reflectance_hausdorff_psnr << endl;
       }
     }

@@ -7,7 +7,7 @@ from typing import Union
 
 from pyntcloud import PyntCloud
 
-from _version import __version__
+from utils._version import __version__
 from evaluator.gdiam_wrapper import findMaxNNdistance
 
 logger = logging.getLogger(__name__)
@@ -71,8 +71,8 @@ class BaseMetrics(metaclass=abc.ABCMeta):
         dec_t : `float`
             Total decoding time.
         bin_files : `list[Union[str, Path]]`
-            Full path of the encoded binary file. Used for calculate the
-            compression ratio and bpp.
+            List of the full path of the encoded binary file. Used for 
+            calculate the compression ratio and bpp.
         """
         self._attributes_validator()
         
@@ -144,7 +144,7 @@ class ViewIndependentMetrics(BaseMetrics):
             resolution: int = None,
             enc_t: float = None,
             dec_t: float = None,
-            bin_files: Union[str, Path] = None
+            bin_files: list[Union[str, Path]] = None
         ) -> str:
         """Run the evaluation and generate the formatted evaluation 
         results.
@@ -166,9 +166,9 @@ class ViewIndependentMetrics(BaseMetrics):
             Total encoding time. Defaults to None.
         dec_t : `float`, optional
             Total decoding time. Defaults to None.
-        bin_files : `Union[str, Path]`, optional
-            Full path of the encoded binary file. Used for calculate the
-            compression ratio. Defaults to None.
+        bin_files : `list[Union[str, Path]]`, optional
+            List of the full path of the encoded binary file. Used for 
+            calculate the compression ratio and bpp.
         
         Returns
         -------

@@ -4,6 +4,7 @@ Test_SNC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024/02801938/val]
     dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024/02801938/val]
     test_pattern: '*.ply'
+    scale: 1024
     color: 0
     resolution: null
 
@@ -11,6 +12,7 @@ Test_SNCC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024/02801938/val]
     dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024/02801938/val]
     test_pattern: '*.ply'
+    scale: 1024
     color: 1
     resolution: null
 
@@ -18,6 +20,7 @@ TestMPEG:
     dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
     dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
     test_pattern: 'longdress_vox10_105*.ply'
+    scale: 1024
     color: 1
     resolution: 1024
 
@@ -27,6 +30,7 @@ SNC:
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'
+    scale: 1024
     color: 0
     resolution: null
 
@@ -36,5 +40,6 @@ SNCC:
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'
+    scale: 1024
     color: 1
     resolution: null

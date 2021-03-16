@@ -1,11 +1,9 @@
-from pathlib import Path
-
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class GPCC(Base):
-    def __init__(self, ):
-        super().__init__("cfgs/algs/gpcc.yml")
+    def __init__(self):
+        super().__init__()
 
     def encode(self, in_pcfile, bin_file):
         cmd = [
@@ -21,8 +19,7 @@ class GPCC(Base):
                 '--attribute=color'
             ]
         
-        assert execute_cmd(cmd)
-
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
@@ -32,7 +29,7 @@ class GPCC(Base):
             '--mode=1'
         ]
 
-        assert execute_cmd(cmd)
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
 
 
 

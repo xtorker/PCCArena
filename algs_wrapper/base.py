@@ -4,17 +4,23 @@ import logging
 from pathlib import Path
 from typing import Union
 from functools import partial
+from multiprocessing.managers import BaseProxy
 
 from utils.file_io import load_cfg, glob_file
 from utils.processing import timer, parallel
+from evaluator.summary import summary_one_setup
 from evaluator.metrics import ViewIndependentMetrics
 
 logger = logging.getLogger(__name__)
 
 class Base(metaclass=abc.ABCMeta):
-    def __init__(self, algs_cfg_file, use_gpu=False) -> None:
-        self._algs_cfg = load_cfg(Path(algs_cfg_file).resolve())
-        self._use_gpu = use_gpu
+    def __init__(self) -> None:
+        algs_cfg_file = (
+            Path(__file__).parents[1]
+            .joinpath(f'cfgs/algs/{type(self).__name__}.yml').resolve()
+        )
+        self._algs_cfg = load_cfg(algs_cfg_file)
+        self._use_gpu = self._algs_cfg['use_gpu']
 
     @abc.abstractmethod
     def encode(self):
@@ -60,14 +66,15 @@ class Base(metaclass=abc.ABCMeta):
             The name of the dataset (stored in 'cfgs/datasets.yml').
         exp_dir : `Union[str, Path]`
             The directory to store experiments results.
-        use_gpu : `bool`, optional
-            True for running GPU-depentdent PCC algorithm, False 
-            otherwise. Defaults to False.
         ds_cfg_file : `Union[str, Path]`, optional
             The YAML config file of datasets. Defaults to 
             'cfgs/datasets.yml'.
         """
-        exp_dir = Path(exp_dir).joinpath(self._rate)
+        exp_dir = (
+            Path(exp_dir)
+            .joinpath(f'{type(self).__name__}/{ds_name}/{self._rate}')
+            .resolve()
+        )
         
         logger.info(
             f"Start to run experiments on {ds_name} dataset "
@@ -76,7 +83,7 @@ class Base(metaclass=abc.ABCMeta):
 
         if ds_cfg_file == 'cfgs/datasets.yml':
             ds_cfg_file = (
-                Path(__file__).parent.parent.joinpath(ds_cfg_file).resolve()
+                Path(__file__).parents[1].joinpath(ds_cfg_file).resolve()
             )
         ds_cfg = load_cfg(ds_cfg_file)
 
@@ -91,11 +98,14 @@ class Base(metaclass=abc.ABCMeta):
             src_dir=ds_cfg[ds_name]['dataset_dir'],
             nor_dir=ds_cfg[ds_name]['dataset_w_normal_dir'],
             exp_dir=exp_dir,
+            scale=ds_cfg[ds_name]['scale'],
             color=ds_cfg[ds_name]['color'],
             resolution=ds_cfg[ds_name]['resolution']
         )
 
         parallel(prun, pc_files, self._use_gpu)
+        
+        summary_one_setup(Path(exp_dir).joinpath('evl'))
 
     def run(
             self,
@@ -103,8 +113,10 @@ class Base(metaclass=abc.ABCMeta):
             src_dir: Union[str, Path],
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path],
+            scale: int,
             color: int = 0,
-            resolution: int = None
+            resolution: int = None,
+            gpu_queue: BaseProxy = None
         ) -> None:
         """Run a single experiment on the given ``pcfile`` and save the 
         experiment results and evaluation log into ``exp_dir``.
@@ -120,28 +132,37 @@ class Base(metaclass=abc.ABCMeta):
             for p2plane metrics.)
         exp_dir : `Union[str, Path]`
             The directory to store experiments results.
+        scale : `int`
+            The maximum length of the ``pcfile`` among x, y, and z axes.
+            Used as an encoding parameter in several PCC algorithms.
         color : `int`, optional
-            1 for calculating color metric, 0 otherwise. Defaults to 0.
+            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 0.
         resolution : `int`, optional
-            Maximum NN distance of the ``pcfile``. If the resolution is 
-            not specified, it will be calculated on the fly. Defaults to
-            None.
+            Maximum NN distance of the ``pcfile``. Only used for 
+            evaluation. If the resolution is not specified, it will be 
+            calculated on the fly. Defaults to None.
+        gpu_queue : `BaseProxy`, optional
+            A multiprocessing Manager.Queue() object. The queue stores 
+            the GPU device IDs get from GPUtil.getAvailable(). Must be 
+            assigned if running a PCC algorithm using GPUs.
         """
+        self._pc_scale = scale
         self._color = color
-        self._resolution = resolution
         
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = (
-            self.__set_filepath(pcfile, src_dir, nor_dir, exp_dir)
+            self._set_filepath(pcfile, src_dir, nor_dir, exp_dir)
         )
 
-        enc_time = timer(self.encode, str(in_pcfile), str(bin_file))
-        dec_time = timer(self.decode, str(bin_file), str(out_pcfile))
-
-        # grab all the encoded binary files with same filename, but 
-        # different suffix
-        bin_files = glob_file(
-            bin_file.parent, bin_file.stem+'*', fullpath=True
-        )
+        if self._use_gpu is True:
+            gpu_id = gpu_queue.get()
+            enc_time = timer(
+                self.encode, in_pcfile, bin_file, gpu_id)
+            dec_time = timer(
+                self.decode, bin_file, out_pcfile, gpu_id)
+            gpu_queue.put(gpu_id)
+        else:
+            enc_time = timer(self.encode, in_pcfile, bin_file)
+            dec_time = timer(self.decode, bin_file, out_pcfile)
 
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
@@ -151,18 +172,18 @@ class Base(metaclass=abc.ABCMeta):
             resolution,
             enc_time,
             dec_time,
-            bin_files
+            [bin_file]
         )
         with open(evl_log, 'w') as f:
             f.write(ret)
 
-    def __set_filepath(
+    def _set_filepath(
             self, 
             pcfile: Union[str, Path],
             src_dir: Union[str, Path],
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path]
-        ) -> tuple[Path, Path, Path, Path]:
+        ) -> tuple[str, str, str, str, str]:
         """Set up the experiment file paths, including encoded binary, 
         decoded point cloud, and evaluation log.
         
@@ -180,9 +201,10 @@ class Base(metaclass=abc.ABCMeta):
         
         Returns
         -------
-        `tuple[Path, Path, Path, Path]`
-            The full path of input point cloud, encoded binary file,
-            output point cloud, and evaluation log file.
+        `tuple[str, str, str, str, str]`
+            The full path of input point cloud, input point cloud with 
+            normal, encoded binary file, output point cloud, and 
+            evaluation log file.
         """
         in_pcfile = Path(src_dir).joinpath(pcfile)
         nor_pcfile = Path(nor_dir).joinpath(pcfile)
@@ -197,4 +219,7 @@ class Base(metaclass=abc.ABCMeta):
         out_pcfile.parent.mkdir(parents=True, exist_ok=True)
         evl_log.parent.mkdir(parents=True, exist_ok=True)
 
-        return in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log
+        return (
+            str(in_pcfile), str(nor_pcfile), str(bin_file), str(out_pcfile), 
+            str(evl_log)
+        )

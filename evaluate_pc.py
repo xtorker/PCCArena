@@ -13,7 +13,7 @@ def evaluate_pc(args):
     print(ret)
     
 if __name__ == '__main__':
-    LOGGING_CONFIG = get_logging_config('logging.conf')
+    LOGGING_CONFIG = get_logging_config('utils/logging.conf')
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger(__name__)
     

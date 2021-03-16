@@ -1,8 +1,10 @@
+import os
 import time
 import logging
 import subprocess as sp
-from multiprocessing import Pool
+from functools import partial
 from typing import Callable, Iterable
+from multiprocessing import Pool, Manager
 
 import GPUtil
 from tqdm import tqdm
@@ -28,7 +30,12 @@ def timer(func: Callable, *args, **kwargs) -> float:
     
     return end_time
 
-def execute_cmd(cmd: list[str], shell: bool = False, cwd: str = None) -> bool:
+def execute_cmd(
+        cmd: list[str], 
+        shell: bool = False,
+        cwd: str = None,
+        gpu_id: int = None
+    ) -> bool:
     """Wrapper for executing a command with subprocess.
 
     Parameters
@@ -39,13 +46,23 @@ def execute_cmd(cmd: list[str], shell: bool = False, cwd: str = None) -> bool:
         True to run in shell mode, False otherwise, by default False.
     cwd : `str`, optional
         Specify command working directory, by default None.
+    gpu_id : `int`, optional
+        GPU device id for environment variable ``CUDA_VISIBLE_DEVICES``
+        injection.
+        Defaults to None.
 
     Returns
     -------
     `bool`
         True if successful, False otherwise.
     """
-    ret = sp.run(cmd, capture_output=True, shell=shell, cwd=cwd)
+    if gpu_id is not None:
+        # Inject environment variable `CUDA_VISIBLE_DEVICES` to ``cmd``.
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu_id))
+    else:
+        env = os.environ
+
+    ret = sp.run(cmd, capture_output=True, shell=shell, cwd=cwd, env=env)
     try:
         assert ret.returncode == 0
     except AssertionError:
@@ -62,6 +79,12 @@ def execute_cmd(cmd: list[str], shell: bool = False, cwd: str = None) -> bool:
 def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
     """Parallel processing with multiprocessing.Pool(), works better 
     with functools.partial().
+    
+    If ``use_gpu`` is True, ``gpu_queue`` will be passed to ``func`` as 
+    a keyword argument. The input ``func`` needs to handle the keyword
+    parameter ``gpu_queue`` and select the GPU with gpu_queue.get(). 
+    Don't forget to put the GPU id back to the gpu_queue at the end of
+    ``func``.
     
     Parameters
     ----------
@@ -97,8 +120,15 @@ def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
                 "of ``GPUtil.getAvailable()``"
             )
             raise ValueError
+        
+        manager = Manager()
+        gpu_queue = manager.Queue()
+        for id in deviceIDs:
+            gpu_queue.put(id)
+        pfunc = partial(func, gpu_queue=gpu_queue)
     else:
         process = None
-
+        pfunc = func
+    
     with Pool(process) as pool:
-        list(tqdm(pool.imap_unordered(func, filelist), total=len(filelist)))
+        list(tqdm(pool.imap_unordered(pfunc, filelist), total=len(filelist)))

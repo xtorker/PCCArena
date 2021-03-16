@@ -1,13 +1,11 @@
-from pathlib import Path
-
 from algs_wrapper.base import Base
 from utils.processing import execute_cmd
 
 class PCGCv2(Base):
-    def __init__(self, ):
-        super().__init__("cfgs/algs/pcgc_v2.yml", use_gpu=True)
+    def __init__(self):
+        super().__init__()
 
-    def encode(self, in_pcfile, bin_file):
+    def encode(self, in_pcfile, bin_file, gpu_id):
         cmd = [
             self._algs_cfg['python'],
             self._algs_cfg['test_script'],
@@ -18,10 +16,9 @@ class PCGCv2(Base):
             '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size'])
         ]
         
-        assert execute_cmd(cmd)
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
 
-
-    def decode(self, bin_file, out_pcfile):
+    def decode(self, bin_file, out_pcfile, gpu_id):
         cmd = [
             self._algs_cfg['python'],
             self._algs_cfg['test_script'],
@@ -33,4 +30,4 @@ class PCGCv2(Base):
             '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
 
-        assert execute_cmd(cmd)
+        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
