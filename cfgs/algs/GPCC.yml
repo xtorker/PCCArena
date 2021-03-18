@@ -1,0 +1,29 @@
+rootdir: /home/chenghao/pcc_algs/mpeg-pcc-tmc13-release-v12.0/
+encoder: build/tmc3/tmc3
+decoder: build/tmc3/tmc3
+bin_suffix: .bin
+use_gpu: False
+
+r1:
+  positionQuantizationScale: 0.125
+
+r2:
+  positionQuantizationScale: 0.25
+
+r3:
+  positionQuantizationScale: 0.375
+
+r4:
+  positionQuantizationScale: 0.5
+
+r5:
+  positionQuantizationScale: 0.625
+
+r6:
+  positionQuantizationScale: 0.75
+
+r7:
+  positionQuantizationScale: 0.875
+
+r8:
+  positionQuantizationScale: 1

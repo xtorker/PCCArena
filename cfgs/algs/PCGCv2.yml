@@ -1,0 +1,40 @@
+python: /home/chenghao/anaconda3/envs/pcgc_v2/bin/python
+rootdir: /home/chenghao/pcc_algs/PCGCv2/
+test_script: test.py
+bin_suffix: '.bin'
+use_gpu: True
+
+r1:
+  ckptdir: ckpts/c8_a025_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r2:
+  ckptdir: ckpts/c8_a05_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r3:
+  ckptdir: ckpts/c8_a1_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r4:
+  ckptdir: ckpts/c8_a2_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r5:
+  ckptdir: ckpts/c8_a4_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r6:
+  ckptdir: ckpts/c8_a6_32000.pth
+  voxel_size: 1
+  rho: 1
+
+r7:
+  ckptdir: ckpts/c8_a10_32000.pth
+  voxel_size: 1
+  rho: 1

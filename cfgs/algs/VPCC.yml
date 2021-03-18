@@ -1,0 +1,24 @@
+rootdir: /home/chenghao/pcc_algs/mpeg-pcc-tmc2-release-v12.0/
+encoder: bin/PccAppEncoder
+decoder: bin/PccAppDecoder
+bin_suffix: .bin
+use_gpu: False
+videoEncoder: bin/PccAppHMVideoEncoder
+videoDecoder: bin/PccAppHMVideoDecoder
+condition_cfg: cfg/condition/ctc-all-intra.cfg
+inverseColorSpaceConversionConfig: cfg/hdrconvert/yuv420torgb444.cfg
+
+r1:
+  rate_cfg: cfg/rate/ctc-r1.cfg
+
+r2:
+  rate_cfg: cfg/rate/ctc-r2.cfg
+
+r3:
+  rate_cfg: cfg/rate/ctc-r3.cfg
+
+r4:
+  rate_cfg: cfg/rate/ctc-r4.cfg
+
+r5:
+  rate_cfg: cfg/rate/ctc-r5.cfg
