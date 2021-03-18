@@ -2,7 +2,8 @@ __pycache__/
 build/
 .vscode/
 datasets/
+experiments
 experiments/
-algorithms/
+algorithms/*
 mpeg-pcc-dmetric-master/
 libgdiam-1.0.3/
