@@ -51,7 +51,7 @@ def summary_one_setup(log_dir):
                     if m:
                         if m.group() == 'inf':
                             found_val[idx].append(float(max_val[pattern]))
-                        elif m.group() == 'NaN':
+                        elif m.group() == 'nan':
                             found_val[idx].append(np.nan)
                         else:
                             found_val[idx].append(float(m.group()))
@@ -202,3 +202,11 @@ def summary_one_setup(log_dir):
         ]
         f.writelines('\n'.join(lines))
     return 0
+
+def summary_all_get_csv(exp_dir):
+    summary_log_files = glob_file(exp_dir, '_summary.log', fullpath=True)
+    for log in summary_log_files:
+        alg_name = Path(log).parents[2]
+        ds_name = Path(log).parents[1]
+        rate = Path(log).parents[0]
+        ret[alg_name][ds_name][rate] = parsfdsadfvalue

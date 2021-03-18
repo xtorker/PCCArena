@@ -22,7 +22,8 @@ class VPCC(Base):
             f'--videoEncoderGeometryPath={self._algs_cfg["videoEncoder"]}',
             f'--videoEncoderAttributePath={self._algs_cfg["videoEncoder"]}',
             '--frameCount=1',
-            '--computeMetrics=0'
+            '--computeMetrics=0',
+            '--computeChecksum=0'
         ]
         try:
             assert self._color == 1
@@ -41,7 +42,8 @@ class VPCC(Base):
             f'--videoDecoderGeometryPath={self._algs_cfg["videoDecoder"]}',
             f'--videoDecoderAttributePath={self._algs_cfg["videoDecoder"]}',
             f'--inverseColorSpaceConversionConfig={self._algs_cfg["inverseColorSpaceConversionConfig"]}',
-            '--computeMetrics=0'
+            '--computeMetrics=0',
+            '--computeChecksum=0'
         ]
 
         assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])

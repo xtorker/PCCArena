@@ -1,16 +1,16 @@
 ds_rootdir: &ds_rootdir /mnt/data6/chenghao/PCC_datasets/
 
-Test_SNC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024/02801938/val]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024/02801938/val]
+Debug_SNC:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024/02954340/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024/02954340/val]
     test_pattern: '*.ply'
     scale: 1024
     color: 0
     resolution: null
 
-Test_SNCC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024/02801938/val]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024/02801938/val]
+Debug_SNCC:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024/02954340/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024/02954340/val]
     test_pattern: '*.ply'
     scale: 1024
     color: 1

@@ -90,13 +90,13 @@ class PCGCv1(Base):
         if self._use_gpu is True:
             gpu_id = gpu_queue.get()
             enc_time = timer(
-                self.encode, str(in_pcfile), str(bin_file), gpu_id)
+                self.encode, in_pcfile, bin_file, gpu_id)
             dec_time = timer(
-                self.decode, str(bin_file), str(out_pcfile), gpu_id)
+                self.decode, bin_file, out_pcfile, gpu_id)
             gpu_queue.put(gpu_id)
         else:
-            enc_time = timer(self.encode, str(in_pcfile), str(bin_file))
-            dec_time = timer(self.decode, str(bin_file), str(out_pcfile))
+            enc_time = timer(self.encode, in_pcfile, bin_file)
+            dec_time = timer(self.decode, bin_file, out_pcfile)
 
         # [TODO] Consider to extract a method to collect bin files to 
         # avoid overwrite the run() method.
@@ -104,7 +104,7 @@ class PCGCv1(Base):
         # grab all the encoded binary files with same filename, but 
         # different suffix
         bin_files = glob_file(
-            bin_file.parent, bin_file.stem+'*', fullpath=True
+            Path(bin_file).parent, Path(bin_file).stem+'*', fullpath=True
         )
 
         VIMetrics = ViewIndependentMetrics()

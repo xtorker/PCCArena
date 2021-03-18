@@ -14,49 +14,54 @@ def main():
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger(__name__)
 
+    # GPCC/SNCC/r4 start
+
     # draco = Draco()
     # for rate in range(8):
     #    draco.rate = f'r{rate+1}'
-    #    draco.run_dataset('SNC', 'experiments')
-    #    draco.run_dataset('SNCC', 'experiments')
+    #    draco.run_dataset('Debug_SNC', 'experiments')
+    #    draco.run_dataset('Debug_SNCC', 'experiments')
     
-    # gpcc = GPCC()
-    # for rate in range(8):
-    #     gpcc.rate = f'r{rate+1}'
-    #     gpcc.run_dataset('SNC', 'experiments')
-    #     gpcc.run_dataset('SNCC', 'experiments')
+    gpcc = GPCC()
+    for rate in range(5):
+        gpcc.rate = f'r{rate+4}'
+        # gpcc.run_dataset('Debug_SNC', 'experiments')
+        # gpcc.run_dataset('Debug_SNCC', 'experiments')
+        gpcc.run_dataset('SNC', 'experiments')
+        gpcc.run_dataset('SNCC', 'experiments')
 
-    # vpcc = VPCC()
-    # for rate in range(5):
-    #     vpcc.rate = f'r{rate+1}'
-    #     vpcc.run_dataset('Test_SNCC', 'experiments')
+    vpcc = VPCC()
+    for rate in range(5):
+        vpcc.rate = f'r{rate+1}'
+        # vpcc.run_dataset('Debug_SNCC', 'experiments')
+        vpcc.run_dataset('SNCC', 'experiments')
 
     # [TODO]
     # Wait for training the models
+    # fix about paralllel running
     # geocnn_v1 = GeoCNNv1()
-    # for rate in range(4):
+    # for rate in range(3):
     #     geocnn_v1.rate = f'r{rate+1}'
-    #     geocnn_v1.run_dataset('Test_SNC', 'experiments')
-    #     geocnn_v1.run_dataset('Test_SNCC', 'experiments')
+    #     geocnn_v1.run_dataset('Debug_SNC', 'experiments')
 
     # geocnn_v2 = GeoCNNv2()
     # for rate in range(4):
     #     geocnn_v2.rate = f'r{rate+1}'
-    #     geocnn_v2.run_dataset('Test_SNC', 'experiments')
+    #     geocnn_v2.run_dataset('Debug_SNC', 'experiments')
 
-    pcgc_v1 = PCGCv1()
-    pcgc_v1.rate = 'r1'
-    pcgc_v1.run_dataset('Test_SNC', 'experiments')
+    # pcgc_v1 = PCGCv1()
+    # # pcgc_v1.rate = 'r1'
+    # # pcgc_v1.run_dataset('Debug_SNC', 'experiments')
     # for rate in range(6):
     #     pcgc_v1.rate = f'r{rate+1}'
-    #     pcgc_v1.run_dataset('Test_SNC', 'experiments')
+    #     pcgc_v1.run_dataset('Debug_SNC', 'experiments')
     
     # pcgc_v2 = PCGCv2()
     # pcgc_v2.rate = 'r1'
-    # pcgc_v2.run_dataset('Test_SNCC', 'experiments')
+    # pcgc_v2.run_dataset('Debug_SNCC', 'experiments')
     # for rate in range(4):
     #     pcgc_v2.rate = f'r{rate+1}'
-    #     pcgc_v2.run_dataset('Test_SNCC', 'experiments')
+    #     pcgc_v2.run_dataset('Debug_SNCC', 'experiments')
 
 
 if __name__ == '__main__':

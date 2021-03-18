@@ -14,7 +14,7 @@ class GeoCNNv2(Base):
             '--checkpoint_dir', self._algs_cfg[self.rate]['checkpoint_dir'],
             '--model_config', self._algs_cfg['model_config'],
             '--opt_metrics', self._algs_cfg['opt_metrics'],
-            '--resolution', self._pc_scale
+            '--resolution', str(self._pc_scale)
         ]
         
         assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)

@@ -17,7 +17,10 @@ from pyntcloud import PyntCloud
 import subprocess as sp
 
 def findMaxNNdistance(pc_file):
-    gdiam_bin = Path(__file__).parent.joinpath('libgdiam-1.0.3/gdiam_test').resolve()
+    gdiam_bin = (
+        Path(__file__).parent
+        .joinpath('libgdiam-1.0.3/build/gdiam_test').resolve()
+    )
     tmp_file = Path(pc_file).with_suffix('.xyz')
     pc = PyntCloud.from_file(str(pc_file))
     coords = ['x', 'y', 'z']
@@ -33,6 +36,3 @@ def findMaxNNdistance(pc_file):
             return m.group()
     print("Failed to find diameter.")
     return False
-
-if __name__ == '__main__':
-    findMaxNNdistance("/mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply/longdress_vox10_1051.ply")

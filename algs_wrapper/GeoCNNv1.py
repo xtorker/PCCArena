@@ -19,7 +19,7 @@ class GeoCNNv1(Base):
             input_pattern,
             output_dir,
             self._algs_cfg[self.rate]['checkpoint_dir'],
-            '--resolution', self._pc_scale,
+            '--resolution', str(self._pc_scale),
             '--preprocess_threads', '1',
         ]
         

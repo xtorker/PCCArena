@@ -229,7 +229,7 @@ class ViewIndependentMetrics(BaseMetrics):
                     isfound = True
                     break
             if isfound is False:
-                found_val.append('NaN')
+                found_val.append('nan')
 
         assert len(found_val) == len(chosen_metrics)
 
