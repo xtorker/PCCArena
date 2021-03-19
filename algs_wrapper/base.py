@@ -8,7 +8,7 @@ from multiprocessing.managers import BaseProxy
 
 from utils.file_io import load_cfg, glob_file
 from utils.processing import timer, parallel
-from evaluator.summary import summary_one_setup
+from evaluator.summary import summarize_one_setup
 from evaluator.metrics import ViewIndependentMetrics
 
 logger = logging.getLogger(__name__)
@@ -105,7 +105,7 @@ class Base(metaclass=abc.ABCMeta):
 
         parallel(prun, pc_files, self._use_gpu)
         
-        summary_one_setup(Path(exp_dir).joinpath('evl'))
+        summarize_one_setup(Path(exp_dir).joinpath('evl'))
 
     def run(
             self,

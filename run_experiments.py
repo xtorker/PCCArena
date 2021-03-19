@@ -12,7 +12,6 @@ from algs_wrapper.PCGCv2 import PCGCv2
 def main():
     LOGGING_CONFIG = get_logging_config('utils/logging.conf')
     logging.config.dictConfig(LOGGING_CONFIG)
-    logger = logging.getLogger(__name__)
 
     # GPCC/SNCC/r4 start
 
@@ -22,27 +21,27 @@ def main():
     #    draco.run_dataset('Debug_SNC', 'experiments')
     #    draco.run_dataset('Debug_SNCC', 'experiments')
     
-    gpcc = GPCC()
-    for rate in range(5):
-        gpcc.rate = f'r{rate+4}'
-        # gpcc.run_dataset('Debug_SNC', 'experiments')
-        # gpcc.run_dataset('Debug_SNCC', 'experiments')
-        gpcc.run_dataset('SNC', 'experiments')
-        gpcc.run_dataset('SNCC', 'experiments')
+    # gpcc = GPCC()
+    # for rate in range(5):
+    #     gpcc.rate = f'r{rate+4}'
+    #     # gpcc.run_dataset('Debug_SNC', 'experiments')
+    #     # gpcc.run_dataset('Debug_SNCC', 'experiments')
+    #     gpcc.run_dataset('SNC', 'experiments')
+    #     gpcc.run_dataset('SNCC', 'experiments')
 
-    vpcc = VPCC()
-    for rate in range(5):
-        vpcc.rate = f'r{rate+1}'
-        # vpcc.run_dataset('Debug_SNCC', 'experiments')
-        vpcc.run_dataset('SNCC', 'experiments')
+    # vpcc = VPCC()
+    # for rate in range(5):
+    #     vpcc.rate = f'r{rate+1}'
+    #     # vpcc.run_dataset('Debug_SNCC', 'experiments')
+    #     vpcc.run_dataset('SNCC', 'experiments')
 
     # [TODO]
     # Wait for training the models
     # fix about paralllel running
-    # geocnn_v1 = GeoCNNv1()
-    # for rate in range(3):
-    #     geocnn_v1.rate = f'r{rate+1}'
-    #     geocnn_v1.run_dataset('Debug_SNC', 'experiments')
+    geocnn_v1 = GeoCNNv1()
+    for rate in range(3):
+        geocnn_v1.rate = f'r{rate+1}'
+        geocnn_v1.run_dataset('Debug_SNC', 'experiments')
 
     # geocnn_v2 = GeoCNNv2()
     # for rate in range(4):

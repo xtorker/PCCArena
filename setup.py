@@ -45,7 +45,7 @@ def setup_config(args):
         find_and_replace(
             str(cfg), 'rootdir: ', 
             str(Path(__file__).parent.resolve()
-                .joinpath(f'algs/{Path(cfg).stem}'))
+                .joinpath(f'algorithms/{Path(cfg).stem}'))
         )
         # If the PCC algorithm have specified environments setup, also set 
         # the python path to corresponding conda environments.

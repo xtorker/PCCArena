@@ -30,7 +30,7 @@ cd ..
 
 
 
-cd algs
+cd algorithms
 # ========== In [root]/algs/ ==========
 
 ## Draco
