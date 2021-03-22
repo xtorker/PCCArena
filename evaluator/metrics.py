@@ -88,12 +88,12 @@ class BaseMetrics(metaclass=abc.ABCMeta):
 
         lines = [
             f"========== Time & Binary Size ==========",
-            f"Encoding time:                {enc_t:0.4f}",
-            f"Decoding time:                {dec_t:0.4f}",
+            f"Encoding time (s)           : {enc_t:0.4f}",
+            f"Decoding time (s)           : {dec_t:0.4f}",
             f"Source point cloud size (kB): {ref_pc_size}",
             f"Total binary files size (kB): {total_bin_size}",
-            f"Compression ratio:            {compression_ratio}",
-            f"bpp (bits per point):         {bpp}",
+            f"Compression ratio           : {compression_ratio}",
+            f"bpp (bits per point)        : {bpp}",
             "\n",
         ]
 
@@ -202,21 +202,26 @@ class ViewIndependentMetrics(BaseMetrics):
         ret = self._pc_error_wrapper()
 
         chosen_metrics = [
-            'ACD1      \(p2point\): ',
-            'ACD2      \(p2point\): ',
-            'CD        \(p2point\): ',
-            'CD,PSNR   \(p2point\): ',
-            'h.        \(p2point\): ',
-            'ACD1      \(p2plane\): ',
-            'ACD2      \(p2plane\): ',
-            'CD        \(p2plane\): ',
-            'CD,PSNR   \(p2plane\): ',
-            'h.        \(p2plane\): ',
-            'c\[0\],PSNRF         : ',
-            'c\[1\],PSNRF         : ',
-            'c\[2\],PSNRF         : ',
-            'hybrid geo-color   : ',
+            'ACD1      (p2point): ',
+            'ACD2      (p2point): ',
+            'CD        (p2point): ',
+            'CD,PSNR   (p2point): ',
+            'h.        (p2point): ',
+            'ACD1      (p2plane): ',
+            'ACD2      (p2plane): ',
+            'CD        (p2plane): ',
+            'CD,PSNR   (p2plane): ',
+            'h.        (p2plane): ',
         ]
+        if self._color == 1:
+            chosen_metrics += [
+                'c[0],PSNRF         : ',
+                'c[1],PSNRF         : ',
+                'c[2],PSNRF         : ',
+                'hybrid geo-color   : ',
+            ]
+
+        chosen_metrics = [re.escape(pattern) for pattern in chosen_metrics]
 
         found_val = []
 
@@ -238,23 +243,26 @@ class ViewIndependentMetrics(BaseMetrics):
             f"Asym. Chamfer dist. (1->2) p2pt: {found_val[0]}",
             f"Asym. Chamfer dist. (2->1) p2pt: {found_val[1]}",
             f"Chamfer dist.              p2pt: {found_val[2]}",
-            f"CD-PSNR                    p2pt: {found_val[3]}",
+            f"CD-PSNR (dB)               p2pt: {found_val[3]}",
             f"Hausdorff distance         p2pt: {found_val[4]}",
             f"----------------------------------------",
             f"Asym. Chamfer dist. (1->2) p2pl: {found_val[5]}",
             f"Asym. Chamfer dist. (2->1) p2pl: {found_val[6]}",
             f"Chamfer dist.              p2pl: {found_val[7]}",
-            f"CD-PSNR                    p2pl: {found_val[8]}",
+            f"CD-PSNR (dB)               p2pl: {found_val[8]}",
             f"Hausdorff distance         p2pl: {found_val[9]}",
-            f"----------------------------------------",
-            f"Y-CPSNR                        : {found_val[10]}",
-            f"U-CPSNR                        : {found_val[11]}",
-            f"V-CPSNR                        : {found_val[12]}",
-            "\n",
-            f"============== QoE Metric ==============",
-            f"Hybrid geo-color               : {found_val[13]}",
-            "\n",
         ]
+        if self._color == 1:
+            lines += [
+                f"----------------------------------------",
+                f"Y-CPSNR (dB)                   : {found_val[10]}",
+                f"U-CPSNR (dB)                   : {found_val[11]}",
+                f"V-CPSNR (dB)                   : {found_val[12]}",
+                "\n",
+                f"============== QoE Metric ==============",
+                f"Hybrid geo-color               : {found_val[13]}",
+                "\n",
+            ]
 
         self._results += lines
 

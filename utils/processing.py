@@ -1,7 +1,9 @@
 import os
 import time
 import logging
+import datetime
 import subprocess as sp
+from pathlib import Path
 from functools import partial
 from typing import Callable, Iterable
 from multiprocessing import Pool, Manager
@@ -10,25 +12,6 @@ import GPUtil
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
-
-def timer(func: Callable, *args, **kwargs) -> float:
-    """Calculate function execution time.
-
-    Parameters
-    ----------
-    func : `Callable`
-        Function to execute.
-
-    Returns
-    -------
-    `float`
-        Execution time in seconds.
-    """
-    start_time = time.time()
-    func(*args, **kwargs)
-    end_time = time.time() - start_time
-    
-    return end_time
 
 def execute_cmd(
         cmd: list[str], 
@@ -66,17 +49,41 @@ def execute_cmd(
     try:
         assert ret.returncode == 0
     except AssertionError:
-        logger.info(
-            f"The stdout and stderr of executed command: "
-            f"{''.join(str(s)+' ' for s in cmd)}"
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H:%M:%S')
+        log_file = (
+            Path(__file__).parents[1]
+            .joinpath(f'logs/execute_cmd_{timestamp}.log')
         )
-        print(f"\n {ret.stdout.decode('utf-8')}")
-        print(f"\n {ret.stderr.decode('utf-8')}")
+        
+        with open(log_file, 'w') as f:
+            lines = [
+                f"The stdout and stderr of executed command: ",
+                f"{''.join(str(s)+' ' for s in cmd)}",
+                "\n",
+                "===== stdout =====",
+                f"{ret.stdout.decode('utf-8')}",
+                "\n",
+                "===== stderr =====",
+                f"{ret.stderr.decode('utf-8')}",
+            ]
+            f.writelines('\n'.join(lines))
+        
+        logger.error(
+            f"Error occurs when executing command: "
+            f"{''.join(str(s)+' ' for s in cmd)}"
+            "\n"
+            f"Check {log_file} for more informations."
+        )
         return False
     else:
         return True
 
-def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
+def parallel(
+        func: Callable,
+        filelist:Iterable,
+        use_gpu: bool = False,
+        nbprocesses: int = None
+    ) -> None:
     """Parallel processing with multiprocessing.Pool(), works better 
     with functools.partial().
     
@@ -95,6 +102,9 @@ def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
     use_gpu : `bool`, optional
         True for running NN-based PCC algs., False otherwise. 
         Defaults to False.
+    nbprocesses : `int`, optional
+        Specify the number of cpu parallel processes. If None, it will 
+        equal to the cpu count. Defaults to None.
     
     Raises
     ------
@@ -127,7 +137,7 @@ def parallel(func: Callable, filelist:Iterable, use_gpu: bool = False) -> None:
             gpu_queue.put(id)
         pfunc = partial(func, gpu_queue=gpu_queue)
     else:
-        process = None
+        process = nbprocesses
         pfunc = func
     
     with Pool(process) as pool:

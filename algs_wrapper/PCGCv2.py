@@ -1,5 +1,4 @@
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 class PCGCv2(Base):
     def __init__(self):
@@ -16,7 +15,7 @@ class PCGCv2(Base):
             '--voxel_size', str(self._algs_cfg[self.rate]['voxel_size'])
         ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd
 
     def decode(self, bin_file, out_pcfile, gpu_id):
         cmd = [
@@ -30,4 +29,4 @@ class PCGCv2(Base):
             '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd

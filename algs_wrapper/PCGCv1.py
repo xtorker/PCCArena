@@ -4,7 +4,6 @@ from multiprocessing.managers import BaseProxy
 
 from algs_wrapper.base import Base
 from utils.file_io import glob_file
-from utils.processing import execute_cmd, timer
 from evaluator.metrics import ViewIndependentMetrics
 
 class PCGCv1(Base):
@@ -23,7 +22,7 @@ class PCGCv1(Base):
             '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd
 
     def decode(self, bin_file, out_pcfile, gpu_id):
         cmd = [
@@ -37,7 +36,7 @@ class PCGCv1(Base):
             '--rho', str(self._algs_cfg[self.rate]['rho'])
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd
     
     # Overwriting the base class method due to the compressed binary 
     # file format of PCGCv1.
@@ -70,7 +69,7 @@ class PCGCv1(Base):
             The maximum length of the ``pcfile`` among x, y, and z axes.
             Used as an encoding parameter in several PCC algorithms.
         color : `int`, optional
-            1 for calculating color metric, 0 otherwise. Defaults to 0.
+            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 0.
         resolution : `int`, optional
             Maximum NN distance of the ``pcfile``. Only used for 
             evaluation. If the resolution is not specified, it will be 
@@ -86,18 +85,7 @@ class PCGCv1(Base):
         in_pcfile, nor_pcfile, bin_file, out_pcfile, evl_log = (
             self._set_filepath(pcfile, src_dir, nor_dir, exp_dir)
         )
-
-        if self._use_gpu is True:
-            gpu_id = gpu_queue.get()
-            enc_time = timer(
-                self.encode, in_pcfile, bin_file, gpu_id)
-            dec_time = timer(
-                self.decode, bin_file, out_pcfile, gpu_id)
-            gpu_queue.put(gpu_id)
-        else:
-            enc_time = timer(self.encode, in_pcfile, bin_file)
-            dec_time = timer(self.decode, bin_file, out_pcfile)
-
+        
         # [TODO] Consider to extract a method to collect bin files to 
         # avoid overwrite the run() method.
         
@@ -107,6 +95,23 @@ class PCGCv1(Base):
             Path(bin_file).parent, Path(bin_file).stem+'*', fullpath=True
         )
 
+        enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
+        dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
+
+        if self._use_gpu is True:
+            gpu_id = gpu_queue.get()
+            returncode, enc_time = self._run_command(enc_cmd, gpu_id)
+            returncode, dec_time = self._run_command(dec_cmd, gpu_id)
+            gpu_queue.put(gpu_id)
+        else:
+            returncode, enc_time = self._run_command(enc_cmd)
+            returncode, dec_time = self._run_command(dec_cmd)
+
+        if returncode != 0:
+            # failed on running encoding/decoding commands
+            # skip the evaluation and logging phase
+            return
+        
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,

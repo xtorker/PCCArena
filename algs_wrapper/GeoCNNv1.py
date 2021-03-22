@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Union
 
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 class GeoCNNv1(Base):
     def __init__(self):
@@ -20,10 +19,9 @@ class GeoCNNv1(Base):
             output_dir,
             self._algs_cfg[self.rate]['checkpoint_dir'],
             '--resolution', str(self._pc_scale),
-            '--preprocess_threads', '1',
         ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
     def decode(self, bin_file, out_pcfile):
         input_dir = Path(bin_file).parent
@@ -36,10 +34,9 @@ class GeoCNNv1(Base):
             input_pattern,
             output_dir,
             self._algs_cfg[self.rate]['checkpoint_dir'],
-            '--preprocess_threads', '1',
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
     # GeoCNNv1 directly adds .bin after the point cloud file name, and 
     # adds .ply after the binary file.

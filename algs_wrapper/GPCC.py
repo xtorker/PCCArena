@@ -1,5 +1,4 @@
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 class GPCC(Base):
     def __init__(self):
@@ -19,7 +18,7 @@ class GPCC(Base):
                 '--attribute=color'
             ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
@@ -29,7 +28,7 @@ class GPCC(Base):
             '--mode=1'
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
 
 

@@ -1,6 +1,13 @@
 #! /bin/bash
 set -euo pipefail
 
+# check mpeg-pcc-dmetric-master.tar.gz exists
+if [ ! -f evaluator/mpeg-pcc-dmetric-master.tar.gz ]; then
+    echo "[File not found] evaluator/mpeg-pcc-dmetric-master.tar.gz"
+    echo "Please download it from http://mpegx.int-evry.fr/software/MPEG/PCC/mpeg-pcc-dmetric"
+    exit 0
+fi
+
 # ========== In [root] ==========
 conda env create -f cfgs/conda_env/GeoCNNv1.yml
 conda env create -f cfgs/conda_env/GeoCNNv2.yml

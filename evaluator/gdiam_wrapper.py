@@ -11,12 +11,35 @@
 
 import re
 import os
+import logging
 import numpy as np
-from pathlib import Path
-from pyntcloud import PyntCloud
 import subprocess as sp
+from pathlib import Path
+from typing import Union
 
-def findMaxNNdistance(pc_file):
+from pyntcloud import PyntCloud
+
+logger = logging.getLogger(__name__)
+
+def findMaxNNdistance(pc_file: Union[str, Path]) -> str:
+    """A wrapper of libgdiam-1.0.3, calculating the max NN distance in 
+    the point cloud ``pc_file``.
+    
+    Parameters
+    ----------
+    pc_file : `Union[str, Path]`
+        Input point cloud.
+    
+    Returns
+    -------
+    `str`
+        Max NN distance found in the point cloud.
+    
+    Raises
+    ------
+    `RuntimeError`
+        Failed to calculate the max NN distance.
+    """
     gdiam_bin = (
         Path(__file__).parent
         .joinpath('libgdiam-1.0.3/build/gdiam_test').resolve()
@@ -34,5 +57,5 @@ def findMaxNNdistance(pc_file):
         m = re.search(f'(?<=Diameter distance: ).*', line)
         if m:
             return m.group()
-    print("Failed to find diameter.")
-    return False
+    logger.warning(f"Failed to find diameter in {pc_file}")
+    raise RuntimeError

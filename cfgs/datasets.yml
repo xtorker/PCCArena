@@ -24,6 +24,22 @@ TestMPEG:
     color: 1
     resolution: 1024
 
+SNC_Test1000:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024_test_sample1000]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024_test_sample1000]
+    test_pattern: '**/test/*.ply'
+    scale: 1024
+    color: 0
+    resolution: null
+
+SNCC_Test1000:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024_test_sample1000]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024_test_sample1000]
+    test_pattern: '**/test/*.ply'
+    scale: 1024
+    color: 1
+    resolution: null
+
 SNC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024]
     dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024]

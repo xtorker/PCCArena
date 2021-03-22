@@ -1,4 +1,4 @@
-name: geocnn_v2
+name: GeoCNNv2
 channels:
   - defaults
 dependencies:
@@ -64,4 +64,4 @@ dependencies:
     - werkzeug==1.0.1
     - wrapt==1.12.1
     - zipp==3.4.1
-prefix: /home/chenghao/anaconda3/envs/geocnn_v2
+prefix: /home/chenghao/anaconda3/envs/GeoCNNv2

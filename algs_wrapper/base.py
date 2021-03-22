@@ -1,13 +1,17 @@
+import os
 import re
 import abc
+import time
 import logging
+import datetime
+import subprocess as sp
 from pathlib import Path
 from typing import Union
 from functools import partial
 from multiprocessing.managers import BaseProxy
 
+from utils.processing import parallel
 from utils.file_io import load_cfg, glob_file
-from utils.processing import timer, parallel
 from evaluator.summary import summarize_one_setup
 from evaluator.metrics import ViewIndependentMetrics
 
@@ -21,13 +25,15 @@ class Base(metaclass=abc.ABCMeta):
         )
         self._algs_cfg = load_cfg(algs_cfg_file)
         self._use_gpu = self._algs_cfg['use_gpu']
+        self._failure_cnt = 0
+        self._debug = False
 
     @abc.abstractmethod
-    def encode(self):
+    def make_encode_cmd(self) -> list[str]:
         return NotImplemented
 
     @abc.abstractmethod
-    def decode(self):
+    def make_decode_cmd(self) -> list[str]:
         return NotImplemented
 
     @property
@@ -47,15 +53,40 @@ class Base(metaclass=abc.ABCMeta):
     def rate(self, rate: str) -> None:
         m = re.search('^r[1-9]+', rate, re.MULTILINE)
         if m is None:
-            logger.warning(
+            logger.error(
                 f"Invalid rate control parameters. Use 'r1', 'r2', etc."
             )
+            raise ValueError
         self._rate = m.group()
+
+    @property
+    def debug(self) -> bool:
+        return self._debug
+    
+    @debug.setter
+    def debug(self, debug: bool) -> None:
+        if type(debug) is not bool:
+            logger.error("`debug` flag must be a boolean value.")
+            raise ValueError
+        
+        if debug is True:
+            self._debug = True
+            logger.info(
+                "Debug mode is on. Experiments will be terminated when any "
+                "error occurs."
+            )
+        else:
+            self.debug = False
+            logger.info(
+                "Debug mode is off. Any failure during the experiments will "
+                "be counted and skipped."
+            )
 
     def run_dataset(
             self,
             ds_name: str,
             exp_dir: Union[str, Path],
+            nbprocesses: int = None,
             ds_cfg_file: Union[str, Path] = 'cfgs/datasets.yml'
         ) -> None:
         """Run the experiments on dataset `ds_name` in the ``exp_dir``.
@@ -66,6 +97,9 @@ class Base(metaclass=abc.ABCMeta):
             The name of the dataset (stored in 'cfgs/datasets.yml').
         exp_dir : `Union[str, Path]`
             The directory to store experiments results.
+        nbprocesses : `int`, optional
+            Specify the number of cpu parallel processes. If None, it will 
+            equal to the cpu count. Defaults to None.
         ds_cfg_file : `Union[str, Path]`, optional
             The YAML config file of datasets. Defaults to 
             'cfgs/datasets.yml'.
@@ -103,7 +137,7 @@ class Base(metaclass=abc.ABCMeta):
             resolution=ds_cfg[ds_name]['resolution']
         )
 
-        parallel(prun, pc_files, self._use_gpu)
+        parallel(prun, pc_files, self._use_gpu, nbprocesses)
         
         summarize_one_setup(Path(exp_dir).joinpath('evl'))
 
@@ -153,17 +187,23 @@ class Base(metaclass=abc.ABCMeta):
             self._set_filepath(pcfile, src_dir, nor_dir, exp_dir)
         )
 
+        enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
+        dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
+
         if self._use_gpu is True:
             gpu_id = gpu_queue.get()
-            enc_time = timer(
-                self.encode, in_pcfile, bin_file, gpu_id)
-            dec_time = timer(
-                self.decode, bin_file, out_pcfile, gpu_id)
+            returncode, enc_time = self._run_command(enc_cmd, gpu_id)
+            returncode, dec_time = self._run_command(dec_cmd, gpu_id)
             gpu_queue.put(gpu_id)
         else:
-            enc_time = timer(self.encode, in_pcfile, bin_file)
-            dec_time = timer(self.decode, bin_file, out_pcfile)
+            returncode, enc_time = self._run_command(enc_cmd)
+            returncode, dec_time = self._run_command(dec_cmd)
 
+        if returncode != 0:
+            # failed on running encoding/decoding commands
+            # skip the evaluation and logging phase
+            return
+        
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
@@ -223,3 +263,55 @@ class Base(metaclass=abc.ABCMeta):
             str(in_pcfile), str(nor_pcfile), str(bin_file), str(out_pcfile), 
             str(evl_log)
         )
+
+    def _run_command(self, cmd: list[str], gpu_id=None) -> float:
+        if gpu_id is not None:
+            # Inject environment variable `CUDA_VISIBLE_DEVICES` to ``cmd``.
+            env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu_id))
+        else:
+            env = os.environ
+        
+        try:
+            start_time = time.time()
+            ret = sp.run(
+                cmd, 
+                cwd=self._algs_cfg['rootdir'],
+                env=env, 
+                capture_output=True,
+                check=True
+            )
+            end_time = time.time()
+        except sp.CalledProcessError as e:
+            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H:%M:%S')
+            log_file = (
+                Path(__file__).parents[1]
+                .joinpath(f'logs/execute_cmd_{timestamp}.log')
+            )
+            
+            with open(log_file, 'w') as f:
+                lines = [
+                    f"The stdout and stderr of executed command: ",
+                    f"{''.join(str(s)+' ' for s in cmd)}",
+                    "\n",
+                    "===== stdout =====",
+                    f"{e.stdout.decode('utf-8')}",
+                    "\n",
+                    "===== stderr =====",
+                    f"{e.stderr.decode('utf-8')}",
+                ]
+                f.writelines('\n'.join(lines))
+            
+            logger.error(
+                f"Error occurs when executing command: ",
+                f"{''.join(str(s)+' ' for s in cmd)}",
+                "\n"
+                f"Check {log_file} for more informations."
+            )
+            
+            if self._debug is True:
+                raise e
+            else:
+                self._failure_cnt += 1
+                return 1, -1
+        else:
+            return 0, end_time - start_time

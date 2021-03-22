@@ -1,7 +1,6 @@
 import logging
 
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +8,7 @@ class VPCC(Base):
     def __init__(self):
         super().__init__()
 
-    def encode(self, in_pcfile, bin_file):
+    def make_encode_cmd(self, in_pcfile, bin_file):
         cmd = [
             self._algs_cfg['encoder'],
             f'--uncompressedDataPath={in_pcfile}',
@@ -31,9 +30,9 @@ class VPCC(Base):
             logger.error("V-PCC only supports point cloud with color, please check the input point cloud.")
             raise
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
-    def decode(self, bin_file, out_pcfile):
+    def make_decode_cmd(self, bin_file, out_pcfile):
         cmd = [
             self._algs_cfg['decoder'],
             f'--compressedStreamPath={bin_file}',
@@ -46,7 +45,7 @@ class VPCC(Base):
             '--computeChecksum=0'
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
 
 

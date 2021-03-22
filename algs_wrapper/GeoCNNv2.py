@@ -1,5 +1,4 @@
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 class GeoCNNv2(Base):
     def __init__(self):
@@ -17,7 +16,7 @@ class GeoCNNv2(Base):
             '--resolution', str(self._pc_scale)
         ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd
 
     def decode(self, bin_file, out_pcfile, gpu_id):
         cmd = [
@@ -29,6 +28,6 @@ class GeoCNNv2(Base):
             '--model_config', self._algs_cfg['model_config']
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'], gpu_id=gpu_id)
+        return cmd
 
 

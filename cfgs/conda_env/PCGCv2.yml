@@ -1,4 +1,4 @@
-name: pcgc_v2
+name: PCGCv2
 channels:
   - pytorch
   - anaconda
@@ -137,4 +137,4 @@ dependencies:
     - wcwidth==0.2.5
     - webencodings==0.5.1
     - widgetsnbextension==3.5.1
-prefix: /home/chenghao/anaconda3/envs/pcgc_v2
+prefix: /home/chenghao/anaconda3/envs/PCGCv2

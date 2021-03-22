@@ -1,5 +1,4 @@
 from algs_wrapper.base import Base
-from utils.processing import execute_cmd
 
 class Draco(Base):
     def __init__(self):
@@ -18,7 +17,7 @@ class Draco(Base):
             '-cl', str(self._algs_cfg[self.rate]['cl'])
         ]
         
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
 
     def decode(self, bin_file, out_pcfile):
         cmd = [
@@ -27,4 +26,4 @@ class Draco(Base):
             '-o', out_pcfile
         ]
 
-        assert execute_cmd(cmd, cwd=self._algs_cfg['rootdir'])
+        return cmd
