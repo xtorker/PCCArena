@@ -16,205 +16,129 @@ logger = logging.getLogger(__name__)
 # [TODO]
 # Find a better way handle the log parsing and writing
 # Current version is hard to maintain.
-def summarize_one_setup(log_dir: Union[str, Path]) -> None:
-    """Summarize the evaluation results for an experimental setup.
+def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
+    """Summarize the evaluation results for an experimental setup. Store
+    raw data into .csv file and summarize the avg., stdev., max., and 
+    min. into .log file.
     
     Parameters
     ----------
     log_dir : `Union[str, Path]`
         The directory of the evaluation log files.
+    color : `int`, optional
+        1 for dataset with color, 0 otherwise. Defaults to 0.
     """
     log_files = glob_file(log_dir, '**/*.log', fullpath=True)
 
-    chosen_metrics = [
-        'Encoding time (s)           : ',
-        'Decoding time (s)           : ',
-        'Source point cloud size (kB): ',
-        'Total binary files size (kB): ',
-        'Compression ratio           : ',
-        'bpp (bits per point)        : ',
-        'Asym. Chamfer dist. (1->2) p2pt: ',
-        'Asym. Chamfer dist. (2->1) p2pt: ',
-        'Chamfer dist.              p2pt: ',
-        'CD-PSNR (dB)               p2pt: ',
-        'Hausdorff distance         p2pt: ',
-        'Asym. Chamfer dist. (1->2) p2pl: ',
-        'Asym. Chamfer dist. (2->1) p2pl: ',
-        'Chamfer dist.              p2pl: ',
-        'CD-PSNR (dB)               p2pl: ',
-        'Hausdorff distance         p2pl: ',
-        'Y-CPSNR (dB)                   : ',
-        'U-CPSNR (dB)                   : ',
-        'V-CPSNR (dB)                   : ',
-        'Hybrid geo-color               : ',
-    ]
+    chosen_metrics_text = {
+        'encT':        'Encoding time (s)           : ',
+        'decT':        'Decoding time (s)           : ',
+        'bpp':         'bpp (bits per point)        : ',
+        'acd12_p2pt':  'Asym. Chamfer dist. (1->2) p2pt: ',
+        'acd21_p2pt':  'Asym. Chamfer dist. (2->1) p2pt: ',
+        'cd_p2pt':     'Chamfer dist.              p2pt: ',
+        'cdpsnr_p2pt': 'CD-PSNR (dB)               p2pt: ',
+        'h_p2pt':      'Hausdorff distance         p2pt: ',
+        'acd12_p2pl':  'Asym. Chamfer dist. (1->2) p2pl: ',
+        'acd21_p2pl':  'Asym. Chamfer dist. (2->1) p2pl: ',
+        'cd_p2pl':     'Chamfer dist.              p2pl: ',
+        'cdpsnr_p2pl': 'CD-PSNR (dB)               p2pl: ',
+        'h_p2pl':      'Hausdorff distance         p2pl: ',
+    }
+    if color == 1:
+        chosen_metrics_text.update({
+            'y_cpsnr':     'Y-CPSNR (dB)                   : ',
+            'u_cpsnr':     'U-CPSNR (dB)                   : ',
+            'v_cpsnr':     'V-CPSNR (dB)                   : ',
+            'hybrid':      'Hybrid geo-color               : ',
+        })
 
     # escape special characters
-    chosen_metrics = [re.escape(pattern) for pattern in chosen_metrics]
-    
-    max_val = {
-        'Y-CPSNR (dB)                   : ': 100,
-        'U-CPSNR (dB)                   : ': 100,
-        'V-CPSNR (dB)                   : ': 100
+    chosen_metrics = {
+        key: re.escape(pattern) for key, pattern in chosen_metrics_text.items()
     }
-    
-    found_val = [ [] for i in range(len(chosen_metrics))]
 
+    found_val = {key: [] for key in chosen_metrics.keys()}
+
+    # Parsing data from each log file
     for log in log_files:
         with open(log, 'r') as f:
-            for line in f:
-                for idx, pattern in enumerate(chosen_metrics):
+            for metric, pattern in chosen_metrics.items():
+                isfound = False
+                for line in f:
                     m = re.search(f'(?<={pattern}).*', line)
                     if m:
                         if m.group() == 'inf':
-                            # [TODO]
-                            # fix it with dict(metric, pattern)
-                            found_val[idx].append(float(100))
+                            found_val[metric].append(np.inf)
                         elif m.group() == 'nan':
-                            found_val[idx].append(np.nan)
+                            found_val[metric].append(np.nan)
                         else:
-                            found_val[idx].append(float(m.group()))
+                            found_val[metric].append(float(m.group()))
+                        isfound = True
+                        break
+                if not isfound:
+                    # Not found that metric result
+                    found_val[metric].append(None)
 
-    summary_log_path = (
+    # Save raw data (with None and np.inf) into .csv file
+    alg_name = Path(log_dir).parents[2].stem
+    ds_name = Path(log_dir).parents[1].stem
+    rate = Path(log_dir).parents[0].stem
+
+    summary_csv = (
         Path(log_dir).parent
-        .joinpath(
-            f'{Path(log_dir).parents[2].stem}_'
-            f'{Path(log_dir).parents[1].stem}_'
-            f'{Path(log_dir).parents[0].stem}_'
-            'summary.log'
-        )
+        .joinpath(f'{alg_name}_{ds_name}_{rate}_summary.csv')
     )
+    
+    with open(summary_csv, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        # write header
+        header = [metric_name for metric_name in chosen_metrics.keys()]
+        csvwriter.writerow(header)
+        # write results
+        rows = zip(*[list_ for list_ in found_val.values()])
+        for row in rows:
+            csvwriter.writerow(row)
 
-    with open(summary_log_path, 'w') as f:
+    # Summarize the results and save them into the .log file
+    summary_log = summary_csv.with_suffix('.log')
+    
+    with open(summary_log, 'w') as f:
         lines = [
             f"PCC-Arena Evaluator {__version__}",
             f"Summary of the log directory: {log_dir}"
             "\n",
-            f"***** Average *****",
-            f"========== Time & Binary Size ==========",
-            f"avg. Encoding time (s)           : {np.mean(found_val[0])}",
-            f"avg. Decoding time (s)           : {np.mean(found_val[1])}",
-            f"avg. Source point cloud size (kB): {np.mean(found_val[2])}",
-            f"avg. Total binary files size (kB): {np.mean(found_val[3])}",
-            f"avg. Compression ratio           : {np.mean(found_val[4])}",
-            f"avg. bpp (bits per point)        : {np.mean(found_val[5])}",
-            "\n",
-            f"========== Objective Quality ===========",
-            f"avg. Asym. Chamfer dist. (1->2) p2pt: {np.mean(found_val[6])}",
-            f"avg. Asym. Chamfer dist. (2->1) p2pt: {np.mean(found_val[7])}",
-            f"avg. Chamfer dist.              p2pt: {np.mean(found_val[8])}",
-            f"avg. CD-PSNR (dB)               p2pt: {np.mean(found_val[9])}",
-            f"avg. Hausdorff distance         p2pt: {np.mean(found_val[10])}",
-            f"----------------------------------------",
-            f"avg. Asym. Chamfer dist. (1->2) p2pl: {np.mean(found_val[11])}",
-            f"avg. Asym. Chamfer dist. (2->1) p2pl: {np.mean(found_val[12])}",
-            f"avg. Chamfer dist.              p2pl: {np.mean(found_val[13])}",
-            f"avg. CD-PSNR (dB)               p2pl: {np.mean(found_val[14])}",
-            f"avg. Hausdorff distance         p2pl: {np.mean(found_val[15])}",
-            f"----------------------------------------",
-            f"avg. Y-CPSNR (dB)                   : {np.mean(found_val[16])}",
-            f"avg. U-CPSNR (dB)                   : {np.mean(found_val[17])}",
-            f"avg. V-CPSNR (dB)                   : {np.mean(found_val[18])}",
-            "\n",
-            f"============== QoE Metric ==============",
-            f"avg. Hybrid geo-color               : {np.mean(found_val[19])}",
-            "\n",
         ]
-        lines += [
-            "\n",
-            f"***** Standard Deviation *****",
-            f"========== Time & Binary Size ==========",
-            f"stdev. Encoding time (s)           : {np.std(found_val[0])}",
-            f"stdev. Decoding time (s)           : {np.std(found_val[1])}",
-            f"stdev. Source point cloud size (kB): {np.std(found_val[2])}",
-            f"stdev. Total binary files size (kB): {np.std(found_val[3])}",
-            f"stdev. Compression ratio           : {np.std(found_val[4])}",
-            f"stdev. bpp (bits per point)        : {np.std(found_val[5])}",
-            "\n",
-            f"========== Objective Quality ===========",
-            f"stdev. Asym. Chamfer dist. (1->2) p2pt: {np.std(found_val[6])}",
-            f"stdev. Asym. Chamfer dist. (2->1) p2pt: {np.std(found_val[7])}",
-            f"stdev. Chamfer dist.              p2pt: {np.std(found_val[8])}",
-            f"stdev. CD-PSNR (dB)               p2pt: {np.std(found_val[9])}",
-            f"stdev. Hausdorff distance         p2pt: {np.std(found_val[10])}",
-            f"----------------------------------------",
-            f"stdev. Asym. Chamfer dist. (1->2) p2pl: {np.std(found_val[11])}",
-            f"stdev. Asym. Chamfer dist. (2->1) p2pl: {np.std(found_val[12])}",
-            f"stdev. Chamfer dist.              p2pl: {np.std(found_val[13])}",
-            f"stdev. CD-PSNR (dB)               p2pl: {np.std(found_val[14])}",
-            f"stdev. Hausdorff distance         p2pl: {np.std(found_val[15])}",
-            f"----------------------------------------",
-            f"stdev. Y-CPSNR (dB)                   : {np.std(found_val[16])}",
-            f"stdev. U-CPSNR (dB)                   : {np.std(found_val[17])}",
-            f"stdev. V-CPSNR (dB)                   : {np.std(found_val[18])}",
-            "\n",
-            f"============== QoE Metric ==============",
-            f"stdev. Hybrid geo-color               : {np.std(found_val[19])}",
-        ]
-        lines += [
-            "\n",
-            f"***** Maximum *****",
-            f"========== Time & Binary Size ==========",
-            f"max. Encoding time (s)           : {np.max(found_val[0])}",
-            f"max. Decoding time (s)           : {np.max(found_val[1])}",
-            f"max. Source point cloud size (kB): {np.max(found_val[2])}",
-            f"max. Total binary files size (kB): {np.max(found_val[3])}",
-            f"max. Compression ratio           : {np.max(found_val[4])}",
-            f"max. bpp (bits per point)        : {np.max(found_val[5])}",
-            "\n",
-            f"========== Objective Quality ===========",
-            f"max. Asym. Chamfer dist. (1->2) p2pt: {np.max(found_val[6])}",
-            f"max. Asym. Chamfer dist. (2->1) p2pt: {np.max(found_val[7])}",
-            f"max. Chamfer dist.              p2pt: {np.max(found_val[8])}",
-            f"max. CD-PSNR (dB)               p2pt: {np.max(found_val[9])}",
-            f"max. Hausdorff distance         p2pt: {np.max(found_val[10])}",
-            f"----------------------------------------",
-            f"max. Asym. Chamfer dist. (1->2) p2pl: {np.max(found_val[11])}",
-            f"max. Asym. Chamfer dist. (2->1) p2pl: {np.max(found_val[12])}",
-            f"max. Chamfer dist.              p2pl: {np.max(found_val[13])}",
-            f"max. CD-PSNR (dB)               p2pl: {np.max(found_val[14])}",
-            f"max. Hausdorff distance         p2pl: {np.max(found_val[15])}",
-            f"----------------------------------------",
-            f"max. Y-CPSNR (dB)                   : {np.max(found_val[16])}",
-            f"max. U-CPSNR (dB)                   : {np.max(found_val[17])}",
-            f"max. V-CPSNR (dB)                   : {np.max(found_val[18])}",
-            "\n",
-            f"============== QoE Metric ==============",
-            f"max. Hybrid geo-color               : {np.max(found_val[19])}",
-        ]
-        lines += [
-            "\n",
-            f"***** Minimum *****",
-            f"========== Time & Binary Size ==========",
-            f"min. Encoding time (s)           : {np.min(found_val[0])}",
-            f"min. Decoding time (s)           : {np.min(found_val[1])}",
-            f"min. Source point cloud size (kB): {np.min(found_val[2])}",
-            f"min. Total binary files size (kB): {np.min(found_val[3])}",
-            f"min. Compression ratio           : {np.min(found_val[4])}",
-            f"min. bpp (bits per point)        : {np.min(found_val[5])}",
-            "\n",
-            f"========== Objective Quality ===========",
-            f"min. Asym. Chamfer dist. (1->2) p2pt: {np.min(found_val[6])}",
-            f"min. Asym. Chamfer dist. (2->1) p2pt: {np.min(found_val[7])}",
-            f"min. Chamfer dist.              p2pt: {np.min(found_val[8])}",
-            f"min. CD-PSNR (dB)               p2pt: {np.min(found_val[9])}",
-            f"min. Hausdorff distance         p2pt: {np.min(found_val[10])}",
-            f"----------------------------------------",
-            f"min. Asym. Chamfer dist. (1->2) p2pl: {np.min(found_val[11])}",
-            f"min. Asym. Chamfer dist. (2->1) p2pl: {np.min(found_val[12])}",
-            f"min. Chamfer dist.              p2pl: {np.min(found_val[13])}",
-            f"min. CD-PSNR (dB)               p2pl: {np.min(found_val[14])}",
-            f"min. Hausdorff distance         p2pl: {np.min(found_val[15])}",
-            f"----------------------------------------",
-            f"min. Y-CPSNR (dB)                   : {np.min(found_val[16])}",
-            f"min. U-CPSNR (dB)                   : {np.min(found_val[17])}",
-            f"min. V-CPSNR (dB)                   : {np.min(found_val[18])}",
-            "\n",
-            f"============== QoE Metric ==============",
-            f"min. Hybrid geo-color               : {np.min(found_val[19])}",
-        ]
+        
+        statistics = {
+            'Avg.': np.nanmean,
+            'Stdev.': np.nanstd,
+            'Max.': np.nanmax,
+            'Min.': np.nanmin,
+        }
+        
+        for stat, op in statistics.items():
+            tmp_lines = [f"***** {stat} *****"]
+            for key, pattern in chosen_metrics_text.items():
+                tmp_nparray = np.array(found_val[key], dtype=np.float)
+                tmp_lines.append(f"{stat} {pattern}{op(tmp_nparray)}")
+            
+            tmp_lines.insert(1, "========== Time & Binary Size ==========")
+            tmp_lines.insert(5, "\n")
+            tmp_lines.insert(6, "========== Objective Quality ===========")
+            tmp_lines.insert(12, "----------------------------------------")
+            if color == 1:
+                tmp_lines.insert(18, "----------------------------------------")
+                tmp_lines.insert(22, "\n")
+                tmp_lines.insert(23, "============== QoE Metric ==============")
+                tmp_lines.insert(25, "\n")
+            
+            tmp_lines.append("\n")
+            lines += tmp_lines
+
         f.writelines('\n'.join(lines))
-    return 0
+
+    return
 
 def summarize_all_to_csv(exp_dir):
     # [TODO]

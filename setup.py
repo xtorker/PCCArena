@@ -13,22 +13,25 @@ def find_and_replace(filename, pattern, string):
         print(re.sub(f'(?<={pattern}).*', string, line), end='')
 
 def setup_config(args):
+    # create dataset directory or make a symbolic link
     Path(args.ds_rootdir).mkdir(parents=True, exist_ok=True)
-    
     isDefaultPath = (args.ds_rootdir == 'datasets')
     if isDefaultPath:
-        pass
+        logger.info('Created directory datasets/')
     else:
         os.symlink(args.ds_rootdir, 'datasets')
+        logger.info(f"Made a symbolic link to {args.ds_rootdir}")
 
+    # create experiment directory or make a symbolic link
     Path(args.exp_rootdir).mkdir(parents=True, exist_ok=True)
-    
     isDefaultPath = (args.exp_rootdir == 'experiments')
     if isDefaultPath:
-        pass
+        logger.info('Created directory experiments/')
     else:
         os.symlink(args.exp_rootdir, 'experiments')
+        logger.info(f"Made a symbolic link to {args.ds_rootdir}")
     
+    # glob all the config files to be setup
     algs_cfg_files = glob_file(
         'cfgs/algs', '*.yml', fullpath=True, verbose=True
     )

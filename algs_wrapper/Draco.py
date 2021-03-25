@@ -4,7 +4,7 @@ class Draco(Base):
     def __init__(self):
         super().__init__()
 
-    def encode(self, in_pcfile, bin_file):
+    def make_encode_cmd(self, in_pcfile, bin_file):
         cmd = [
             self._algs_cfg['encoder'],
             '-i', in_pcfile,
@@ -19,7 +19,7 @@ class Draco(Base):
         
         return cmd
 
-    def decode(self, bin_file, out_pcfile):
+    def make_decode_cmd(self, bin_file, out_pcfile):
         cmd = [
             self._algs_cfg['decoder'],
             '-i', bin_file,

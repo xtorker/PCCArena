@@ -26,7 +26,7 @@ class Base(metaclass=abc.ABCMeta):
         self._algs_cfg = load_cfg(algs_cfg_file)
         self._use_gpu = self._algs_cfg['use_gpu']
         self._failure_cnt = 0
-        self._debug = False
+        self.debug = False
 
     @abc.abstractmethod
     def make_encode_cmd(self) -> list[str]:
@@ -76,7 +76,7 @@ class Base(metaclass=abc.ABCMeta):
                 "error occurs."
             )
         else:
-            self.debug = False
+            self._debug = False
             logger.info(
                 "Debug mode is off. Any failure during the experiments will "
                 "be counted and skipped."
@@ -139,7 +139,11 @@ class Base(metaclass=abc.ABCMeta):
 
         parallel(prun, pc_files, self._use_gpu, nbprocesses)
         
-        summarize_one_setup(Path(exp_dir).joinpath('evl'))
+        logger.info(f"Total count of failures: {self._failure_cnt}")
+        
+        summarize_one_setup(
+            Path(exp_dir).joinpath('evl'), color=ds_cfg[ds_name]['color']
+        )
 
     def run(
             self,
@@ -170,7 +174,8 @@ class Base(metaclass=abc.ABCMeta):
             The maximum length of the ``pcfile`` among x, y, and z axes.
             Used as an encoding parameter in several PCC algorithms.
         color : `int`, optional
-            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 0.
+            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 
+            0.
         resolution : `int`, optional
             Maximum NN distance of the ``pcfile``. Only used for 
             evaluation. If the resolution is not specified, it will be 
@@ -178,7 +183,8 @@ class Base(metaclass=abc.ABCMeta):
         gpu_queue : `BaseProxy`, optional
             A multiprocessing Manager.Queue() object. The queue stores 
             the GPU device IDs get from GPUtil.getAvailable(). Must be 
-            assigned if running a PCC algorithm using GPUs.
+            assigned if running a PCC algorithm using GPUs. Defaults to 
+            None.
         """
         self._pc_scale = scale
         self._color = color
@@ -190,28 +196,31 @@ class Base(metaclass=abc.ABCMeta):
         enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
         dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
 
-        if self._use_gpu is True:
-            gpu_id = gpu_queue.get()
-            returncode, enc_time = self._run_command(enc_cmd, gpu_id)
-            returncode, dec_time = self._run_command(dec_cmd, gpu_id)
-            gpu_queue.put(gpu_id)
-        else:
-            returncode, enc_time = self._run_command(enc_cmd)
-            returncode, dec_time = self._run_command(dec_cmd)
+        # use mutable variable
+        enc_time = [-1.0]
+        dec_time = [-1.0]
 
-        if returncode != 0:
+        if self._run_command(enc_cmd, enc_time, gpu_queue):
+            pass
+        else:
             # failed on running encoding/decoding commands
             # skip the evaluation and logging phase
             return
-        
+        if self._run_command(dec_cmd, dec_time, gpu_queue):
+            pass
+        else:
+            # failed on running encoding/decoding commands
+            # skip the evaluation and logging phase
+            return
+
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
             out_pcfile,
             color,
             resolution,
-            enc_time,
-            dec_time,
+            enc_time[0],
+            dec_time[0],
             [bin_file]
         )
         with open(evl_log, 'w') as f:
@@ -264,8 +273,42 @@ class Base(metaclass=abc.ABCMeta):
             str(evl_log)
         )
 
-    def _run_command(self, cmd: list[str], gpu_id=None) -> float:
-        if gpu_id is not None:
+    def _run_command(
+            self,
+            cmd: list[str],
+            execution_time: list[float],
+            gpu_queue: BaseProxy = None
+        ) -> bool:
+        """Run the encoding and decoding command. Based on the `debug`
+        flag, it will raise the ``CalledProcessError`` exception or add
+        the count of failures silently. Error messages will log into 
+        files with timestamp in ``logs/``.
+        
+        Parameters
+        ----------
+        cmd : `list[str]`
+            Command to execute. In the same format with what subprocess
+            use.
+        execution_time : `list[float]`
+            A list to store the execution_time.
+        gpu_queue : `BaseProxy`, optional
+            A multiprocessing Manager.Queue() object. The queue stores 
+            the GPU device IDs get from GPUtil.getAvailable(). Must be 
+            assigned if running a PCC algorithm using GPUs. Defaults to 
+            None.
+        
+        Returns
+        -------
+        `bool`
+            True is successfully executed, False otherwise.
+        
+        Raises
+        ------
+        `e`
+            Exception ``subprocess.CalledProcessError``.
+        """
+        if gpu_queue is not None:
+            gpu_id = gpu_queue.get()
             # Inject environment variable `CUDA_VISIBLE_DEVICES` to ``cmd``.
             env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu_id))
         else:
@@ -308,10 +351,14 @@ class Base(metaclass=abc.ABCMeta):
                 f"Check {log_file} for more informations."
             )
             
+            if gpu_queue is not None:
+                gpu_queue.put(gpu_id)
+            
             if self._debug is True:
                 raise e
             else:
                 self._failure_cnt += 1
-                return 1, -1
+                return False
         else:
-            return 0, end_time - start_time
+            execution_time[0] = end_time - start_time
+            return True

@@ -10,7 +10,7 @@ class PCGCv1(Base):
     def __init__(self):
         super().__init__()
 
-    def encode(self, in_pcfile, bin_file, gpu_id):
+    def make_encode_cmd(self, in_pcfile, bin_file):
         cmd = [
             self._algs_cfg['python'],
             self._algs_cfg['test_script'],
@@ -24,7 +24,7 @@ class PCGCv1(Base):
         
         return cmd
 
-    def decode(self, bin_file, out_pcfile, gpu_id):
+    def make_decode_cmd(self, bin_file, out_pcfile):
         cmd = [
             self._algs_cfg['python'],
             self._algs_cfg['test_script'],

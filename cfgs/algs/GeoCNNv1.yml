@@ -8,14 +8,14 @@ use_gpu: False
 r1:
   checkpoint_dir: models/ModelNet40_vox64_000001
 
-# r2:
-#   checkpoint_dir: models/ModelNet40_vox64_000005
-
 r2:
-  checkpoint_dir: models/ModelNet40_vox64_00001
-
-# r4:
-#   checkpoint_dir: models/ModelNet40_vox64_00005
+  checkpoint_dir: models/ModelNet40_vox64_000005
 
 r3:
+  checkpoint_dir: models/ModelNet40_vox64_00001
+
+r4:
+  checkpoint_dir: models/ModelNet40_vox64_00005
+
+r5:
   checkpoint_dir: models/ModelNet40_vox64_0001

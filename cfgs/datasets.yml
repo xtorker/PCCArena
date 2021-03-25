@@ -16,13 +16,21 @@ Debug_SNCC:
     color: 1
     resolution: null
 
-TestMPEG:
-    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
-    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
-    test_pattern: 'longdress_vox10_105*.ply'
+SNC_Test100:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024_test_sample100]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024_test_sample100]
+    test_pattern: '**/test/*.ply'
+    scale: 1024
+    color: 0
+    resolution: null
+
+SNCC_Test100:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024_test_sample100]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024_test_sample100]
+    test_pattern: '**/test/*.ply'
     scale: 1024
     color: 1
-    resolution: 1024
+    resolution: null
 
 SNC_Test1000:
     dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024_test_sample1000]
@@ -59,3 +67,35 @@ SNCC:
     scale: 1024
     color: 1
     resolution: null
+
+8i_longdress:
+    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
+    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
+    test_pattern: 'longdress_vox10_105*.ply'
+    scale: 1024
+    color: 1
+    resolution: 1024
+
+8i_loot:
+    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/loot/Ply
+    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/loot/Ply
+    test_pattern: 'loot_vox10_100*.ply'
+    scale: 1024
+    color: 1
+    resolution: 1024
+
+8i_redandblack:
+    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/redandblack/Ply
+    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/redandblack/Ply
+    test_pattern: 'redandblack_vox10_145*.ply'
+    scale: 1024
+    color: 1
+    resolution: 1024
+
+8i_soldier:
+    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/soldier/Ply
+    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/soldier/Ply
+    test_pattern: 'soldier_vox10_053*.ply'
+    scale: 1024
+    color: 1
+    resolution: 1024

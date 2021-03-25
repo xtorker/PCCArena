@@ -7,7 +7,7 @@ class GeoCNNv1(Base):
     def __init__(self):
         super().__init__()
 
-    def encode(self, in_pcfile, bin_file):
+    def make_encode_cmd(self, in_pcfile, bin_file):
         input_dir = Path(in_pcfile).parent
         input_pattern = Path(in_pcfile).name
         output_dir = Path(bin_file).parent
@@ -23,7 +23,7 @@ class GeoCNNv1(Base):
         
         return cmd
 
-    def decode(self, bin_file, out_pcfile):
+    def make_decode_cmd(self, bin_file, out_pcfile):
         input_dir = Path(bin_file).parent
         input_pattern = Path(bin_file).name
         output_dir = Path(out_pcfile).parent

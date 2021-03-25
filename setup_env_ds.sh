@@ -70,10 +70,10 @@ rm geocnn_v2.tar.bz2
 cd ..
 
 ## PCGCv1
-git clone https://github.com/NJUVISION/PCGCv1.git PCGCv1
+git clone https://github.com/xtorker/PCGCv1.git PCGCv1
 
 ## PCGCv2
-git clone https://github.com/NJUVISION/PCGCv2.git PCGCv2
+git clone https://github.com/xtorker/PCGCv2.git PCGCv2
 
 
 

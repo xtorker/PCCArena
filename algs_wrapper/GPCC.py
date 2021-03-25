@@ -4,7 +4,7 @@ class GPCC(Base):
     def __init__(self):
         super().__init__()
 
-    def encode(self, in_pcfile, bin_file):
+    def make_encode_cmd(self, in_pcfile, bin_file):
         cmd = [
             self._algs_cfg['encoder'],
             f'--uncompressedDataPath={in_pcfile}',
@@ -20,7 +20,7 @@ class GPCC(Base):
         
         return cmd
 
-    def decode(self, bin_file, out_pcfile):
+    def make_decode_cmd(self, bin_file, out_pcfile):
         cmd = [
             self._algs_cfg['decoder'],
             f'--compressedStreamPath={bin_file}',
