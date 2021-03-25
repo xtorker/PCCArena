@@ -1,56 +1,40 @@
 ds_rootdir: &ds_rootdir /mnt/data6/chenghao/PCC_datasets/
 
 Debug_SNC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024/02954340/val]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024/02954340/val]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024/02954340/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNC_normal_scale1024/02954340/val]
     test_pattern: '*.ply'
     scale: 1024
     color: 0
     resolution: null
 
 Debug_SNCC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024/02954340/val]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024/02954340/val]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024/02954340/val]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNCC_normal_scale1024/02954340/val]
     test_pattern: '*.ply'
     scale: 1024
     color: 1
     resolution: null
 
 SNC_Test100:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024_test_sample100]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024_test_sample100]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024_test_sample100]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNC_normal_scale1024_test_sample100]
     test_pattern: '**/test/*.ply'
     scale: 1024
     color: 0
     resolution: null
 
 SNCC_Test100:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024_test_sample100]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024_test_sample100]
-    test_pattern: '**/test/*.ply'
-    scale: 1024
-    color: 1
-    resolution: null
-
-SNC_Test1000:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024_test_sample1000]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024_test_sample1000]
-    test_pattern: '**/test/*.ply'
-    scale: 1024
-    color: 0
-    resolution: null
-
-SNCC_Test1000:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024_test_sample1000]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024_test_sample1000]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024_test_sample100]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNCC_normal_scale1024_test_sample100]
     test_pattern: '**/test/*.ply'
     scale: 1024
     color: 1
     resolution: null
 
 SNC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/geo_scale1024]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/geo_normal_scale1024]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNC_normal_scale1024]
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'
@@ -59,8 +43,8 @@ SNC:
     resolution: null
 
 SNCC:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/color_scale1024]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/color_normal_scale1024]
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNCC_normal_scale1024]
     train_pattern: '**/train/*.ply'
     test_pattern: '**/test/*.ply'
     val_pattern: '**/val/*.ply'

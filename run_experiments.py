@@ -16,8 +16,8 @@ def main():
     draco = Draco()
     for rate in range(8):
        draco.rate = f'r{rate+1}'
-       draco.run_dataset('SNC_Test1000', 'experiments')
-       draco.run_dataset('SNCC_Test1000', 'experiments')
+       draco.run_dataset('SNC_Test100', 'experiments')
+       draco.run_dataset('SNCC_Test100', 'experiments')
     
     gpcc = GPCC()
     for rate in range(8):
