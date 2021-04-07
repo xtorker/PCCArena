@@ -55,7 +55,7 @@ cd ../..
 ## VPCC
 git clone --depth 1 --branch release-v12.0 https://github.com/MPEGGroup/mpeg-pcc-tmc2.git VPCC
 cd VPCC
-mkdir build && cd build && cmake .. && make
+./build.sh
 cd ../..
 
 ## GeoCNNv1
@@ -74,6 +74,8 @@ git clone https://github.com/xtorker/PCGCv1.git PCGCv1
 
 ## PCGCv2
 git clone https://github.com/xtorker/PCGCv2.git PCGCv2
+
+cd ..
 
 
 

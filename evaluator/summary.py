@@ -143,8 +143,8 @@ def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
 def summarize_all_to_csv(exp_dir):
     # [TODO]
     # Unfinished
-    summary_log_files = sorted(
-        glob_file(exp_dir, '*_summary.log', fullpath=True)
+    exp_results = sorted(
+        glob_file(exp_dir, '*_summary.csv', fullpath=True)
     )
     csvfile = Path(exp_dir).joinpath('summary.csv')
     
@@ -167,119 +167,31 @@ def summarize_all_to_csv(exp_dir):
         'v_cpsnr',
         'hybrid'
     ]
-    
-    patterns = {
-        'encT':        'Encoding time (s)           : ',
-        'decT':        'Decoding time (s)           : ',
-        'bpp':         'bpp (bits per point)        : ',
-        'acd12_p2pt':  'Asym. Chamfer dist. (1->2) p2pt: ',
-        'acd21_p2pt':  'Asym. Chamfer dist. (2->1) p2pt: ',
-        'cd_p2pt':     'Chamfer dist.              p2pt: ',
-        'cdpsnr_p2pt': 'CD-PSNR (dB)               p2pt: ',
-        'h_p2pt':      'Hausdorff distance         p2pt: ',
-        'acd12_p2pl':  'Asym. Chamfer dist. (1->2) p2pl: ',
-        'acd21_p2pl':  'Asym. Chamfer dist. (2->1) p2pl: ',
-        'cd_p2pl':     'Chamfer dist.              p2pl: ',
-        'cdpsnr_p2pl': 'CD-PSNR (dB)               p2pl: ',
-        'h_p2pl':      'Hausdorff distance         p2pl: ',
-        'y_cpsnr':     'Y-CPSNR (dB)                   : ',
-        'u_cpsnr':     'U-CPSNR (dB)                   : ',
-        'v_cpsnr':     'V-CPSNR (dB)                   : ',
-        'hybrid':      'Hybrid geo-color               : ',
-    }
-    # escape special characters
-    for key in patterns:
-        patterns[key] = re.escape(patterns[key])
 
     with open(csvfile, 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         header = [
-            'PCC_algs',
-            'Datasets',
-            'Rate',
-            'Avg. Encoding Time',
-            'Avg. Decoding Time',
-            'Avg. bpp',
-            'Avg. Asym. Chamfer Distance 1->2 (p2pt)',
-            'Avg. Asym. Chamfer Distance 2->1 (p2pt)',
-            'Avg. Chamfer Distance (p2pt)',
-            'Avg. CD-PSNR (p2pt)',
-            'Avg. Hausdorff Distance (p2pt)',
-            'Avg. Asym. Chamfer Distance 1->2 (p2pl)',
-            'Avg. Asym. Chamfer Distance 2->1 (p2pl)',
-            'Avg. Chamfer Distance (p2pl)',
-            'Avg. CD-PSNR (p2pl)',
-            'Avg. Hausdorff Distance (p2pl)',
-            'Avg. Y-CPSNR',
-            'Avg. U-CPSNR',
-            'Avg. V-CPSNR',
-            'Avg. Hybrid Geo-Color',
-            'Stdev. Encoding Time',
-            'Stdev. Decoding Time',
-            'Stdev. bpp',
-            'Stdev. Asym. Chamfer Distance 1->2 (p2pt)',
-            'Stdev. Asym. Chamfer Distance 2->1 (p2pt)',
-            'Stdev. Chamfer Distance (p2pt)',
-            'Stdev. CD-PSNR (p2pt)',
-            'Stdev. Hausdorff Distance (p2pt)',
-            'Stdev. Asym. Chamfer Distance 1->2 (p2pl)',
-            'Stdev. Asym. Chamfer Distance 2->1 (p2pl)',
-            'Stdev. Chamfer Distance (p2pl)',
-            'Stdev. CD-PSNR (p2pl)',
-            'Stdev. Hausdorff Distance (p2pl)',
-            'Stdev. Y-CPSNR',
-            'Stdev. U-CPSNR',
-            'Stdev. V-CPSNR',
-            'Stdev. Hybrid Geo-Color',
-            'Max. Encoding Time',
-            'Max. Decoding Time',
-            'Max. bpp',
-            'Max. Asym. Chamfer Distance 1->2 (p2pt)',
-            'Max. Asym. Chamfer Distance 2->1 (p2pt)',
-            'Max. Chamfer Distance (p2pt)',
-            'Max. CD-PSNR (p2pt)',
-            'Max. Hausdorff Distance (p2pt)',
-            'Max. Asym. Chamfer Distance 1->2 (p2pl)',
-            'Max. Asym. Chamfer Distance 2->1 (p2pl)',
-            'Max. Chamfer Distance (p2pl)',
-            'Max. CD-PSNR (p2pl)',
-            'Max. Hausdorff Distance (p2pl)',
-            'Max. Y-CPSNR',
-            'Max. U-CPSNR',
-            'Max. V-CPSNR',
-            'Max. Hybrid Geo-Color',
-            'Min. Encoding Time',
-            'Min. Decoding Time',
-            'Min. bpp',
-            'Min. Asym. Chamfer Distance 1->2 (p2pt)',
-            'Min. Asym. Chamfer Distance 2->1 (p2pt)',
-            'Min. Chamfer Distance (p2pt)',
-            'Min. CD-PSNR (p2pt)',
-            'Min. Hausdorff Distance (p2pt)',
-            'Min. Asym. Chamfer Distance 1->2 (p2pl)',
-            'Min. Asym. Chamfer Distance 2->1 (p2pl)',
-            'Min. Chamfer Distance (p2pl)',
-            'Min. CD-PSNR (p2pl)',
-            'Min. Hausdorff Distance (p2pl)',
-            'Min. Y-CPSNR',
-            'Min. U-CPSNR',
-            'Min. V-CPSNR',
-            'Min. Hybrid Geo-Color',
+            'algs',
+            'datasets',
+            'rate',
         ]
+        header += chosen_metrics
         csvwriter.writerow(header)
-        for log in summary_log_files:
+        
+        for log in exp_results:
             alg_name = Path(log).parents[2].stem
             ds_name = Path(log).parents[1].stem
             rate = Path(log).parents[0].stem
             
             with open(log, 'r') as f:
                 row = [alg_name, ds_name, rate]
-                for line in f:
-                    for metric in chosen_metrics:
-                        m = re.search(f'(?<={patterns[metric]}).*', line)
-                        if m:
-                            row.append(m.group())
-            csvwriter.writerow(row)
+                f_csv = csv.reader(f, delimiter=',')
+                for idx, line in enumerate(f_csv):
+                    if idx == 0:
+                        # skip the header in the *_summary.csv file
+                        pass
+                    else:
+                        csvwriter.writerow(row + line)
 
 def summarize_all_to_mat(exp_dir):
     summary_log_files = glob_file(exp_dir, '*_summary.log', fullpath=True)

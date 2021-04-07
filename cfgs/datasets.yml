@@ -52,6 +52,22 @@ SNCC:
     color: 1
     resolution: null
 
+MN40_Test100:
+    dataset_dir: /mnt/data5/chenghao/MN40_scale1024_test_sample100
+    dataset_w_normal_dir: /mnt/data5/chenghao/MN40_normal_scale1024_test_sample100
+    test_pattern: '**/test/*.ply'
+    scale: 1024
+    color: 0
+    resolution: null
+
+CAPOD_100:
+    dataset_dir: /mnt/data5/chenghao/CAPOD_scale1024_sample100
+    dataset_w_normal_dir: /mnt/data5/chenghao/CAPOD_normal_scale1024_sample100
+    test_pattern: '**/*.ply'
+    scale: 1024
+    color: 0
+    resolution: null
+
 8i_longdress:
     dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
     dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply

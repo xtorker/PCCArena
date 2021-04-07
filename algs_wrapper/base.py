@@ -212,7 +212,6 @@ class Base(metaclass=abc.ABCMeta):
             # failed on running encoding/decoding commands
             # skip the evaluation and logging phase
             return
-
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
@@ -345,8 +344,9 @@ class Base(metaclass=abc.ABCMeta):
                 f.writelines('\n'.join(lines))
             
             logger.error(
-                f"Error occurs when executing command: ",
-                f"{''.join(str(s)+' ' for s in cmd)}",
+                f"Error occurs when executing command: "
+                "\n"
+                f"{''.join(str(s)+' ' for s in cmd)}"
                 "\n"
                 f"Check {log_file} for more informations."
             )
@@ -360,5 +360,7 @@ class Base(metaclass=abc.ABCMeta):
                 self._failure_cnt += 1
                 return False
         else:
+            if gpu_queue is not None:
+                gpu_queue.put(gpu_id)
             execution_time[0] = end_time - start_time
             return True

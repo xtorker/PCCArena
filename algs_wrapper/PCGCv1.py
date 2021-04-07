@@ -69,7 +69,8 @@ class PCGCv1(Base):
             The maximum length of the ``pcfile`` among x, y, and z axes.
             Used as an encoding parameter in several PCC algorithms.
         color : `int`, optional
-            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 0.
+            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 
+            0.
         resolution : `int`, optional
             Maximum NN distance of the ``pcfile``. Only used for 
             evaluation. If the resolution is not specified, it will be 
@@ -77,7 +78,8 @@ class PCGCv1(Base):
         gpu_queue : `BaseProxy`, optional
             A multiprocessing Manager.Queue() object. The queue stores 
             the GPU device IDs get from GPUtil.getAvailable(). Must be 
-            assigned if running a PCC algorithm using GPUs.
+            assigned if running a PCC algorithm using GPUs. Defaults to 
+            None.
         """
         self._pc_scale = scale
         self._color = color
@@ -86,6 +88,26 @@ class PCGCv1(Base):
             self._set_filepath(pcfile, src_dir, nor_dir, exp_dir)
         )
         
+        # enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
+        # dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
+
+        # use mutable variable
+        enc_time = [-1.0]
+        dec_time = [-1.0]
+
+        # if self._run_command(enc_cmd, enc_time, gpu_queue):
+        #     pass
+        # else:
+        #     # failed on running encoding/decoding commands
+        #     # skip the evaluation and logging phase
+        #     return
+        # if self._run_command(dec_cmd, dec_time, gpu_queue):
+        #     pass
+        # else:
+        #     # failed on running encoding/decoding commands
+        #     # skip the evaluation and logging phase
+        #     return
+
         # [TODO] Consider to extract a method to collect bin files to 
         # avoid overwrite the run() method.
         
@@ -94,32 +116,14 @@ class PCGCv1(Base):
         bin_files = glob_file(
             Path(bin_file).parent, Path(bin_file).stem+'*', fullpath=True
         )
-
-        enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
-        dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
-
-        if self._use_gpu is True:
-            gpu_id = gpu_queue.get()
-            returncode, enc_time = self._run_command(enc_cmd, gpu_id)
-            returncode, dec_time = self._run_command(dec_cmd, gpu_id)
-            gpu_queue.put(gpu_id)
-        else:
-            returncode, enc_time = self._run_command(enc_cmd)
-            returncode, dec_time = self._run_command(dec_cmd)
-
-        if returncode != 0:
-            # failed on running encoding/decoding commands
-            # skip the evaluation and logging phase
-            return
-        
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
             out_pcfile,
             color,
             resolution,
-            enc_time,
-            dec_time,
+            enc_time[0],
+            dec_time[0],
             bin_files
         )
         with open(evl_log, 'w') as f:

@@ -3,6 +3,7 @@ channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
+  - apr=1.6.3=he40df45_0
   - bzip2=1.0.8=h7b6447c_0
   - ca-certificates=2021.1.19=h06a4308_1
   - certifi=2020.12.5=py39h06a4308_0
@@ -26,8 +27,10 @@ dependencies:
   - pyyaml=5.4.1=py39h27cfd23_1
   - readline=8.1=h27cfd23_0
   - rhash=1.4.1=h3c74f83_1
+  - serf=1.3.9=h1c830df_0
   - setuptools=52.0.0=py39h06a4308_0
   - sqlite=3.33.0=h62c20be_0
+  - svn=1.9.7=h30a3245_0
   - tk=8.6.10=hbc83047_0
   - tqdm=4.56.0=pyhd3eb1b0_0
   - tzdata=2020f=h52ac0ba_0
