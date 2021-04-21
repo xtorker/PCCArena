@@ -1,4 +1,5 @@
 import logging
+from re import T
 
 from algs_wrapper.base import Base
 
@@ -25,7 +26,7 @@ class VPCC(Base):
             '--computeChecksum=0'
         ]
         try:
-            assert self._color == 1
+            assert self._color is True
         except AssertionError:
             logger.error("V-PCC only supports point cloud with color, please check the input point cloud.")
             raise

@@ -33,9 +33,9 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--color',
-        type=int,
-        default=0,
-        help="1 for calculating color metric, 0 otherwise."
+        type=bool,
+        default=False,
+        help="True for calculating color metric, false otherwise."
     )
     parser.add_argument(
         '--resolution',

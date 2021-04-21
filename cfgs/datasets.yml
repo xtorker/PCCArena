@@ -68,34 +68,66 @@ CAPOD_100:
     color: 0
     resolution: null
 
-8i_longdress:
-    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
-    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/longdress/Ply
-    test_pattern: 'longdress_vox10_105*.ply'
+8i_longdress_25:
+    dataset_dir: /mnt/data5/chenghao/longdress_vox10_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/longdress_vox10_normal_sample25
+    test_pattern: '*.ply'
     scale: 1024
     color: 1
     resolution: 1024
 
-8i_loot:
-    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/loot/Ply
-    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/loot/Ply
-    test_pattern: 'loot_vox10_100*.ply'
+8i_loot_25:
+    dataset_dir: /mnt/data5/chenghao/loot_vox10_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/loot_vox10_normal_sample25
+    test_pattern: '*.ply'
     scale: 1024
     color: 1
     resolution: 1024
 
-8i_redandblack:
-    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/redandblack/Ply
-    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/redandblack/Ply
-    test_pattern: 'redandblack_vox10_145*.ply'
+8i_soldier_25:
+    dataset_dir: /mnt/data5/chenghao/soldier_vox10_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/soldier_vox10_normal_sample25
+    test_pattern: '*.ply'
     scale: 1024
     color: 1
     resolution: 1024
 
-8i_soldier:
-    dataset_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/soldier/Ply
-    dataset_w_normal_dir: /mnt/data6/chenghao/MPEG_dataset/8i/8iVFBv2/soldier/Ply
-    test_pattern: 'soldier_vox10_053*.ply'
+8i_redandblack_25:
+    dataset_dir: /mnt/data5/chenghao/redandblack_vox10_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/redandblack_vox10_normal_sample25
+    test_pattern: '*.ply'
     scale: 1024
     color: 1
+    resolution: 1024
+
+8i_longdress_geo_25:
+    dataset_dir: /mnt/data5/chenghao/longdress_vox10_geo_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/longdress_vox10_geo_normal_sample25
+    test_pattern: '*.ply'
+    scale: 1024
+    color: 0
+    resolution: 1024
+
+8i_loot_geo_25:
+    dataset_dir: /mnt/data5/chenghao/loot_vox10_geo_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/loot_vox10_geo_normal_sample25
+    test_pattern: '*.ply'
+    scale: 1024
+    color: 0
+    resolution: 1024
+
+8i_soldier_geo_25:
+    dataset_dir: /mnt/data5/chenghao/soldier_vox10_geo_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/soldier_vox10_geo_normal_sample25
+    test_pattern: '*.ply'
+    scale: 1024
+    color: 0
+    resolution: 1024
+
+8i_redandblack_geo_25:
+    dataset_dir: /mnt/data5/chenghao/redandblack_vox10_geo_sample25
+    dataset_w_normal_dir: /mnt/data5/chenghao/redandblack_vox10_geo_normal_sample25
+    test_pattern: '*.ply'
+    scale: 1024
+    color: 0
     resolution: 1024

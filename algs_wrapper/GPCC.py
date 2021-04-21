@@ -13,7 +13,7 @@ class GPCC(Base):
             '--mergeDuplicatedPoints=1',
             '--mode=0'
         ]
-        if self._color == 1:
+        if self._color is True:
             cmd = cmd + [
                 '--attribute=color'
             ]

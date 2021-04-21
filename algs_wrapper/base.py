@@ -152,7 +152,7 @@ class Base(metaclass=abc.ABCMeta):
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path],
             scale: int,
-            color: int = 0,
+            color: bool = False,
             resolution: int = None,
             gpu_queue: BaseProxy = None
         ) -> None:
@@ -173,9 +173,9 @@ class Base(metaclass=abc.ABCMeta):
         scale : `int`
             The maximum length of the ``pcfile`` among x, y, and z axes.
             Used as an encoding parameter in several PCC algorithms.
-        color : `int`, optional
-            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 
-            0.
+        color : `bool`, optional
+            True for ``pcfile`` containing color, false otherwise. 
+            Defaults to false.
         resolution : `int`, optional
             Maximum NN distance of the ``pcfile``. Only used for 
             evaluation. If the resolution is not specified, it will be 
@@ -200,18 +200,20 @@ class Base(metaclass=abc.ABCMeta):
         enc_time = [-1.0]
         dec_time = [-1.0]
 
-        if self._run_command(enc_cmd, enc_time, gpu_queue):
+        if self._run_command(enc_cmd, enc_time, gpu_queue) is True:
             pass
         else:
             # failed on running encoding/decoding commands
             # skip the evaluation and logging phase
             return
-        if self._run_command(dec_cmd, dec_time, gpu_queue):
+        if self._run_command(dec_cmd, dec_time, gpu_queue) is True:
             pass
         else:
             # failed on running encoding/decoding commands
             # skip the evaluation and logging phase
             return
+        
+        assert(Path(out_pcfile).exists)
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
@@ -315,11 +317,12 @@ class Base(metaclass=abc.ABCMeta):
         
         try:
             start_time = time.time()
-            ret = sp.run(
+            _ = sp.run(
                 cmd, 
                 cwd=self._algs_cfg['rootdir'],
-                env=env, 
                 capture_output=True,
+                text=True,
+                env=env, 
                 check=True
             )
             end_time = time.time()
@@ -336,10 +339,10 @@ class Base(metaclass=abc.ABCMeta):
                     f"{''.join(str(s)+' ' for s in cmd)}",
                     "\n",
                     "===== stdout =====",
-                    f"{e.stdout.decode('utf-8')}",
+                    f"{e.stdout}",
                     "\n",
                     "===== stderr =====",
-                    f"{e.stderr.decode('utf-8')}",
+                    f"{e.stderr}",
                 ]
                 f.writelines('\n'.join(lines))
             

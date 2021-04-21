@@ -47,7 +47,7 @@ def parallel(
             order = 'first',
             limit = 8,
             maxLoad = 0.5,
-            maxMemory = 0.2,
+            maxMemory = 0.5,
             includeNan=False,
             excludeID=[],
             excludeUUID=[]

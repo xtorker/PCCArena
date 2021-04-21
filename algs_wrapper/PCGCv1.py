@@ -47,7 +47,7 @@ class PCGCv1(Base):
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path],
             scale: int,
-            color: int = 0,
+            color: bool = False,
             resolution: int = None,
             gpu_queue: BaseProxy = None
         ) -> None:
@@ -68,9 +68,9 @@ class PCGCv1(Base):
         scale : `int`
             The maximum length of the ``pcfile`` among x, y, and z axes.
             Used as an encoding parameter in several PCC algorithms.
-        color : `int`, optional
-            1 for ``pcfile`` containing color, 0 otherwise. Defaults to 
-            0.
+        color : `bool`, optional
+            True for ``pcfile`` containing color, false otherwise. 
+            Defaults to false.
         resolution : `int`, optional
             Maximum NN distance of the ``pcfile``. Only used for 
             evaluation. If the resolution is not specified, it will be 
@@ -88,29 +88,26 @@ class PCGCv1(Base):
             self._set_filepath(pcfile, src_dir, nor_dir, exp_dir)
         )
         
-        # enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
-        # dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
+        enc_cmd = self.make_encode_cmd(in_pcfile, bin_file)
+        dec_cmd = self.make_decode_cmd(bin_file, out_pcfile)
 
         # use mutable variable
         enc_time = [-1.0]
         dec_time = [-1.0]
 
-        # if self._run_command(enc_cmd, enc_time, gpu_queue):
-        #     pass
-        # else:
-        #     # failed on running encoding/decoding commands
-        #     # skip the evaluation and logging phase
-        #     return
-        # if self._run_command(dec_cmd, dec_time, gpu_queue):
-        #     pass
-        # else:
-        #     # failed on running encoding/decoding commands
-        #     # skip the evaluation and logging phase
-        #     return
+        if self._run_command(enc_cmd, enc_time, gpu_queue):
+            pass
+        else:
+            # failed on running encoding/decoding commands
+            # skip the evaluation and logging phase
+            return
+        if self._run_command(dec_cmd, dec_time, gpu_queue):
+            pass
+        else:
+            # failed on running encoding/decoding commands
+            # skip the evaluation and logging phase
+            return
 
-        # [TODO] Consider to extract a method to collect bin files to 
-        # avoid overwrite the run() method.
-        
         # grab all the encoded binary files with same filename, but 
         # different suffix
         bin_files = glob_file(

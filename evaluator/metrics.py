@@ -140,7 +140,7 @@ class ViewIndependentMetrics(BaseMetrics):
             self,
             ref_pc: Union[str, Path],
             target_pc: Union[str, Path],
-            color: int = 0,
+            color: bool = False,
             resolution: int = None,
             enc_t: float = None,
             dec_t: float = None,
@@ -156,8 +156,9 @@ class ViewIndependentMetrics(BaseMetrics):
             normal to calculate the p2plane metrics.
         target_pc : `Union[str, Path]`
             Full path of the target point.
-        color : `int`, optional
-            1 for calculating color metric, 0 otherwise. Defaults to 0.
+        color : `bool`, optional
+            True for calculating color metric, false otherwise. Defaults
+            to false.
         resolution : `int`, optional
             Maximum NN distance of the ``ref_pc``. If the resolution is 
             not specified, it will be calculated on the fly. Defaults to
@@ -213,7 +214,7 @@ class ViewIndependentMetrics(BaseMetrics):
             'CD,PSNR   (p2plane): ',
             'h.        (p2plane): ',
         ]
-        if self._color == 1:
+        if self._color is True:
             chosen_metrics += [
                 'c[0],PSNRF         : ',
                 'c[1],PSNRF         : ',
@@ -252,7 +253,7 @@ class ViewIndependentMetrics(BaseMetrics):
             f"CD-PSNR (dB)               p2pl: {found_val[8]}",
             f"Hausdorff distance         p2pl: {found_val[9]}",
         ]
-        if self._color == 1:
+        if self._color is True:
             lines += [
                 f"----------------------------------------",
                 f"Y-CPSNR (dB)                   : {found_val[10]}",
@@ -284,7 +285,7 @@ class ViewIndependentMetrics(BaseMetrics):
             self._pc_error_bin,
             f'--fileA={self._ref_pc}',
             f'--fileB={self._target_pc}',
-            f'--color={self._color}',
+            f'--color={1 if self._color is True else 0}',
             '--hausdorff=1',
             f'--resolution={self._resolution}',
         ]

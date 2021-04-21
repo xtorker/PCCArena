@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # [TODO]
 # Find a better way handle the log parsing and writing
 # Current version is hard to maintain.
-def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
+def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
     """Summarize the evaluation results for an experimental setup. Store
     raw data into .csv file and summarize the avg., stdev., max., and 
     min. into .log file.
@@ -26,7 +26,7 @@ def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
     log_dir : `Union[str, Path]`
         The directory of the evaluation log files.
     color : `int`, optional
-        1 for dataset with color, 0 otherwise. Defaults to 0.
+        True for dataset with color, false otherwise. Defaults to false.
     """
     log_files = glob_file(log_dir, '**/*.log', fullpath=True)
 
@@ -45,7 +45,7 @@ def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
         'cdpsnr_p2pl': 'CD-PSNR (dB)               p2pl: ',
         'h_p2pl':      'Hausdorff distance         p2pl: ',
     }
-    if color == 1:
+    if color is True:
         chosen_metrics_text.update({
             'y_cpsnr':     'Y-CPSNR (dB)                   : ',
             'u_cpsnr':     'U-CPSNR (dB)                   : ',
@@ -127,7 +127,7 @@ def summarize_one_setup(log_dir: Union[str, Path], color: int = 0) -> None:
             tmp_lines.insert(5, "\n")
             tmp_lines.insert(6, "========== Objective Quality ===========")
             tmp_lines.insert(12, "----------------------------------------")
-            if color == 1:
+            if color is True:
                 tmp_lines.insert(18, "----------------------------------------")
                 tmp_lines.insert(22, "\n")
                 tmp_lines.insert(23, "============== QoE Metric ==============")
