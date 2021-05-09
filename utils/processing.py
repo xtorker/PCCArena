@@ -1,4 +1,8 @@
+import os
 import logging
+import pkgutil
+import importlib
+import subprocess as sp
 from functools import partial
 from typing import Callable, Iterable
 from multiprocessing import Pool, Manager
@@ -7,6 +11,15 @@ import GPUtil
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
+
+def load_modules(modules_path):
+    for finder, name, _ in pkgutil.iter_modules(modules_path):
+        try:
+            importlib.import_module('{}.{}'.format(finder.path, name))
+        except ImportError as e:
+            logger.debug(e)
+
+    return Base.__subclasses__()
 
 def parallel(
         func: Callable,

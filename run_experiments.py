@@ -28,7 +28,8 @@ def main():
         # draco.run_dataset('8i_loot_geo_25', 'experiments')
         # draco.run_dataset('8i_soldier_geo_25', 'experiments')
         # draco.run_dataset('8i_redandblack_geo_25', 'experiments')
-    
+        # draco.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
+        
     gpcc = GPCC()
     for rate in range(8):
         gpcc.rate = f'r{rate+1}'
@@ -44,6 +45,7 @@ def main():
         # gpcc.run_dataset('8i_loot_geo_25', 'experiments')
         # gpcc.run_dataset('8i_soldier_geo_25', 'experiments')
         # gpcc.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # gpcc.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
 
     vpcc = VPCC()
     for rate in range(5):
@@ -53,6 +55,13 @@ def main():
         # vpcc.run_dataset('8i_loot_25', 'experiments')
         # vpcc.run_dataset('8i_soldier_25', 'experiments')
         # vpcc.run_dataset('8i_redandblack_25', 'experiments')
+        # vpcc.run_dataset('SNC_Test100', 'experiments')
+        # vpcc.run_dataset('MN40_Test100', 'experiments')
+        # vpcc.run_dataset('CAPOD_100', 'experiments')
+        # vpcc.run_dataset('8i_longdress_geo_25', 'experiments')
+        # vpcc.run_dataset('8i_loot_geo_25', 'experiments')
+        # vpcc.run_dataset('8i_soldier_geo_25', 'experiments')
+        # vpcc.run_dataset('8i_redandblack_geo_25', 'experiments')
 
     geocnn_v1 = GeoCNNv1()
     for rate in range(5):
@@ -62,10 +71,11 @@ def main():
         # geocnn_v1.run_dataset('SNC_Test100', 'experiments', nbprocesses=2)
         # geocnn_v1.run_dataset('MN40_Test100', 'experiments', nbprocesses=2)
         # geocnn_v1.run_dataset('CAPOD_100', 'experiments', nbprocesses=2)
-        geocnn_v1.run_dataset('8i_longdress_geo_25', 'experiments', nbprocesses=2)
-        geocnn_v1.run_dataset('8i_loot_geo_25', 'experiments', nbprocesses=2)
-        geocnn_v1.run_dataset('8i_soldier_geo_25', 'experiments', nbprocesses=2)
-        geocnn_v1.run_dataset('8i_redandblack_geo_25', 'experiments', nbprocesses=2)
+        # geocnn_v1.run_dataset('8i_longdress_geo_25', 'experiments', nbprocesses=2)
+        # geocnn_v1.run_dataset('8i_loot_geo_25', 'experiments', nbprocesses=2)
+        # geocnn_v1.run_dataset('8i_soldier_geo_25', 'experiments', nbprocesses=2)
+        # geocnn_v1.run_dataset('8i_redandblack_geo_25', 'experiments', nbprocesses=2)
+        # geocnn_v1.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
 
     geocnn_v2 = GeoCNNv2()
     for rate in range(4):
@@ -73,10 +83,11 @@ def main():
         # geocnn_v2.run_dataset('SNC_Test100', 'experiments')
         # geocnn_v2.run_dataset('MN40_Test100', 'experiments')
         # geocnn_v2.run_dataset('CAPOD_100', 'experiments')
-        geocnn_v2.run_dataset('8i_longdress_geo_25', 'experiments')
-        geocnn_v2.run_dataset('8i_loot_geo_25', 'experiments')
-        geocnn_v2.run_dataset('8i_soldier_geo_25', 'experiments')
-        geocnn_v2.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # geocnn_v2.run_dataset('8i_longdress_geo_25', 'experiments')
+        # geocnn_v2.run_dataset('8i_loot_geo_25', 'experiments')
+        # geocnn_v2.run_dataset('8i_soldier_geo_25', 'experiments')
+        # geocnn_v2.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # geocnn_v2.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
 
     pcgc_v1 = PCGCv1()
     for rate in range(6):
@@ -84,10 +95,11 @@ def main():
         # pcgc_v1.run_dataset('SNC_Test100', 'experiments')
         # pcgc_v1.run_dataset('MN40_Test100', 'experiments')
         # pcgc_v1.run_dataset('CAPOD_100', 'experiments')
-        pcgc_v1.run_dataset('8i_longdress_geo_25', 'experiments')
-        pcgc_v1.run_dataset('8i_loot_geo_25', 'experiments')
-        pcgc_v1.run_dataset('8i_soldier_geo_25', 'experiments')
-        pcgc_v1.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # pcgc_v1.run_dataset('8i_longdress_geo_25', 'experiments')
+        # pcgc_v1.run_dataset('8i_loot_geo_25', 'experiments')
+        # pcgc_v1.run_dataset('8i_soldier_geo_25', 'experiments')
+        # pcgc_v1.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # pcgc_v1.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
     
     pcgc_v2 = PCGCv2()
     for rate in range(7):
@@ -95,10 +107,11 @@ def main():
         # pcgc_v2.run_dataset('SNC_Test100', 'experiments')
         # pcgc_v2.run_dataset('MN40_Test100', 'experiments')
         # pcgc_v2.run_dataset('CAPOD_100', 'experiments')
-        pcgc_v2.run_dataset('8i_longdress_geo_25', 'experiments')
-        pcgc_v2.run_dataset('8i_loot_geo_25', 'experiments')
-        pcgc_v2.run_dataset('8i_soldier_geo_25', 'experiments')
-        pcgc_v2.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # pcgc_v2.run_dataset('8i_longdress_geo_25', 'experiments')
+        # pcgc_v2.run_dataset('8i_loot_geo_25', 'experiments')
+        # pcgc_v2.run_dataset('8i_soldier_geo_25', 'experiments')
+        # pcgc_v2.run_dataset('8i_redandblack_geo_25', 'experiments')
+        # pcgc_v2.run_dataset('CAPOD_10', 'experiments', nbprocesses=1)
 
 if __name__ == '__main__':
     main()

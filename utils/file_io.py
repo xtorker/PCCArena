@@ -1,7 +1,7 @@
 import ast
 import logging
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import yaml
 
@@ -59,7 +59,7 @@ def glob_file(
         pattern: str,
         fullpath: bool = False,
         verbose: bool = False
-    ) -> list[Path]:
+    ) -> List[Path]:
     """Recursively glob the files in ``src_dir`` with input ``pattern``.
 
     Parameters
@@ -76,7 +76,7 @@ def glob_file(
 
     Returns
     -------
-    `list[Path]`
+    `List[Path]`
         Files that match the glob pattern.
 
     Raises

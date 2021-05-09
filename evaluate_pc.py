@@ -2,14 +2,14 @@ import argparse
 import logging.config
 
 from utils.file_io import get_logging_config
-from evaluator.metrics import ViewIndependentMetrics
+from evaluator.evaluator import Evaluator
 
 def evaluate_pc(args):
-    VIMetrics = ViewIndependentMetrics()
-    ret = VIMetrics.evaluate(
-        args.ref_pc, args.target_pc, 
-        color=args.color, resolution=args.resolution
+    evaluator = Evaluator(
+        args.ref_pc,
+        args.target_pc
     )
+    ret = evaluator.evaluate()
     print(ret)
     
 if __name__ == '__main__':

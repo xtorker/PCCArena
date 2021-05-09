@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union
+from typing import Union, Tuple
 
 from algs_wrapper.base import Base
 
@@ -53,7 +53,7 @@ class GeoCNNv1(Base):
             src_dir: Union[str, Path],
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path]
-        ) -> tuple[str, str, str, str, str]:
+        ) -> Tuple[str, str, str, str, str]:
         """Set up the experiment file paths, including encoded binary, 
         decoded point cloud, and evaluation log.
         
@@ -71,7 +71,7 @@ class GeoCNNv1(Base):
         
         Returns
         -------
-        `tuple[str, str, str, str, str]`
+        `Tuple[str, str, str, str, str]`
             The full path of input point cloud, input point cloud with 
             normal, encoded binary file, output point cloud, and 
             evaluation log file.

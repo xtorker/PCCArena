@@ -107,7 +107,8 @@ class PCGCv1(Base):
             # failed on running encoding/decoding commands
             # skip the evaluation and logging phase
             return
-
+        
+        assert(Path(out_pcfile).exists())
         # grab all the encoded binary files with same filename, but 
         # different suffix
         bin_files = glob_file(

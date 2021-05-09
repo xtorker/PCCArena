@@ -1,19 +1,24 @@
 import logging
 import argparse
+import logging.config
 from pathlib import Path
 from functools import partial
 from multiprocessing import Pool
 
 from tqdm import tqdm
 
+from utils.file_io import glob_file
+from utils.processing import parallel
 from utils.file_io import get_logging_config
+from utils.pc_utils import paint_uni_color_on_pc
 
 def from_mesh_ds():
-
+    pass
 def from_pc_ds():
+    pass
 
 def work():
-    return
+    pass
 
 
 if __name__ == '__main__':
@@ -39,14 +44,19 @@ if __name__ == '__main__':
         help=""
     )
     parser.add_argument(
-        'dest_dir',
+        '-c',
+        '--color',
+        nargs='+',
         help=""
     )
-    parser.add_argument(
-        'dest_dir',
-        help=""
+    args = parser.parse_args()
+    
+    files = glob_file(args.src_dir, args.glob_pattern, verbose=True)
+    pfunc = partial(
+        paint_uni_color_on_pc,
+        src_dir=args.src_dir,
+        dest_dir=args.dest_dir,
+        color=args.color
     )
-    parser.add_argument(
-        'dest_dir',
-        help=""
-    )
+    
+    parallel(pfunc, files)

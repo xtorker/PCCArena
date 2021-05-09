@@ -6,7 +6,9 @@ import pandas as pd
 import subprocess as sp
 from typing import Union
 from pathlib import Path
-from pyntcloud import PyntCloud
+import numpy.typing as npt
+# from pyntcloud import PyntCloud
+import open3d as o3d
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +27,7 @@ def sample_from_mesh(
     
     infile = Path(src_dir).joinpath(mesh_file)
     outfile = Path(dest_dir).joinpath(mesh_file).with_suffix('.ply')
+    outfile.parent.mkdir(parents=True, exist_ok=True)
     
     cmd = [
         'cloudcompare.CloudCompare',
@@ -83,6 +86,7 @@ def calculate_normal(
     
     infile = Path(src_dir).joinpath(pc_file)
     outfile = Path(dest_dir).joinpath(pc_file).with_suffix('.ply')
+    outfile.parent.mkdir(parents=True, exist_ok=True)
     
     cmd = [
         'cloudcompare.CloudCompare',
@@ -127,32 +131,38 @@ def normalize(
     ) -> None:
     infile = Path(src_dir).joinpath(pc_file)
     outfile = Path(dest_dir).joinpath(pc_file)
+    outfile.parent.mkdir(parents=True, exist_ok=True)
     
-    pc = PyntCloud.from_file(str(infile))
-    coords = ['x', 'y', 'z']
-    points = pc.points[coords].values
-    points[:,0] = points[:,0] - np.min(points[:,0])
-    points[:,1] = points[:,1] - np.min(points[:,1])
-    points[:,2] = points[:,2] - np.min(points[:,2])
+    pc = o3d.io.read_point_cloud(infile)
+    points = np.asarray(pc.points)
+    points = points - np.min(points, axis=0)
+    # pc = PyntCloud.from_file(str(infile))
+    # coords = ['x', 'y', 'z']
+    # points = pc.points[coords].values
+    # points[:,0] = points[:,0] - np.min(points[:,0])
+    # points[:,1] = points[:,1] - np.min(points[:,1])
+    # points[:,2] = points[:,2] - np.min(points[:,2])
+    # pc.points[coords] = points
+    # pc.to_file(str(outfile))
     points = points / np.max(points) * scale
-    pc.points[coords] = points
+    pc.points = o3d.utility.Vector3dVector(points)
+    o3d.io.write_point_cloud(outfile, pc)
 
-    pc.to_file(str(outfile))
-
-def paint_uni_color_on_pc(
-        pc_file: Union[str, Path],
-        src_dir: Union[str, Path],
-        dest_dir: Union[str, Path],
-        color: np.ndarray[3, 1]
-    ) -> None:
-    infile = Path(src_dir).joinpath(pc_file)
-    outfile = Path(dest_dir).joinpath(pc_file)
+# def paint_uni_color_on_pc(
+#         pc_file: Union[str, Path],
+#         src_dir: Union[str, Path],
+#         dest_dir: Union[str, Path],
+#         color: npt.ArrayLike
+#     ) -> None:
+#     infile = Path(src_dir).joinpath(pc_file)
+#     outfile = Path(dest_dir).joinpath(pc_file)
+#     outfile.parent.mkdir(parents=True, exist_ok=True)
     
-    pc = PyntCloud.from_file(str(infile))
-    rgb = ['red', 'green', 'blue']
+#     pc = PyntCloud.from_file(str(infile))
+#     rgb = ['red', 'green', 'blue']
     
-    color_df = pd.DataFrame([color], columns=rgb, index=pc.points.index)
-    color_df = color_df.astype(np.uint8) # .ply use uchar for rgb values
-    pc.points[rgb] = color_df
+#     color_df = pd.DataFrame([color], columns=rgb, index=pc.points.index)
+#     color_df = color_df.astype(np.uint8) # .ply use uchar for rgb values
+#     pc.points[rgb] = color_df
     
-    pc.to_file(str(outfile))
+#     pc.to_file(str(outfile))

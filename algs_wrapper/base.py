@@ -6,8 +6,8 @@ import logging
 import datetime
 import subprocess as sp
 from pathlib import Path
-from typing import Union
 from functools import partial
+from typing import Union, List, Tuple
 from multiprocessing.managers import BaseProxy
 
 from utils.processing import parallel
@@ -29,11 +29,11 @@ class Base(metaclass=abc.ABCMeta):
         self.debug = False
 
     @abc.abstractmethod
-    def make_encode_cmd(self) -> list[str]:
+    def make_encode_cmd(self) -> List[str]:
         return NotImplemented
 
     @abc.abstractmethod
-    def make_decode_cmd(self) -> list[str]:
+    def make_decode_cmd(self) -> List[str]:
         return NotImplemented
 
     @property
@@ -213,7 +213,10 @@ class Base(metaclass=abc.ABCMeta):
             # skip the evaluation and logging phase
             return
         
-        assert(Path(out_pcfile).exists)
+        assert(Path(out_pcfile).exists())
+        # if not Path(out_pcfile).exists():
+        #     return
+        
         VIMetrics = ViewIndependentMetrics()
         ret = VIMetrics.evaluate(
             nor_pcfile,
@@ -233,7 +236,7 @@ class Base(metaclass=abc.ABCMeta):
             src_dir: Union[str, Path],
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path]
-        ) -> tuple[str, str, str, str, str]:
+        ) -> Tuple[str, str, str, str, str]:
         """Set up the experiment file paths, including encoded binary, 
         decoded point cloud, and evaluation log.
         
@@ -251,7 +254,7 @@ class Base(metaclass=abc.ABCMeta):
         
         Returns
         -------
-        `tuple[str, str, str, str, str]`
+        `Tuple[str, str, str, str, str]`
             The full path of input point cloud, input point cloud with 
             normal, encoded binary file, output point cloud, and 
             evaluation log file.
@@ -276,8 +279,8 @@ class Base(metaclass=abc.ABCMeta):
 
     def _run_command(
             self,
-            cmd: list[str],
-            execution_time: list[float],
+            cmd: List[str],
+            execution_time: List[float],
             gpu_queue: BaseProxy = None
         ) -> bool:
         """Run the encoding and decoding command. Based on the `debug`
@@ -287,10 +290,10 @@ class Base(metaclass=abc.ABCMeta):
         
         Parameters
         ----------
-        cmd : `list[str]`
+        cmd : `List[str]`
             Command to execute. In the same format with what subprocess
             use.
-        execution_time : `list[float]`
+        execution_time : `List[float]`
             A list to store the execution_time.
         gpu_queue : `BaseProxy`, optional
             A multiprocessing Manager.Queue() object. The queue stores 

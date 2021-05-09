@@ -30,6 +30,7 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
     """
     log_files = glob_file(log_dir, '**/*.log', fullpath=True)
 
+    # [TODO] add reconstructed point cloud path to .csv
     chosen_metrics_text = {
         'encT':        'Encoding time (s)           : ',
         'decT':        'Decoding time (s)           : ',
@@ -141,7 +142,7 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
     return
 
 def summarize_all_to_csv(exp_dir):
-    # [TODO]
+    # [TODO] add reconstructed point cloud path to .csv
     # Unfinished
     exp_results = sorted(
         glob_file(exp_dir, '*_summary.csv', fullpath=True)
@@ -192,67 +193,3 @@ def summarize_all_to_csv(exp_dir):
                         pass
                     else:
                         csvwriter.writerow(row + line)
-
-def summarize_all_to_mat(exp_dir):
-    summary_log_files = glob_file(exp_dir, '*_summary.log', fullpath=True)
-    ret = nested_dict()
-    matfile = Path(exp_dir).joinpath('summary.mat')
-    
-    chosen_metrics = [
-        'encT',
-        'decT',
-        'bpp',
-        'cd_p2pt',
-        'cdpsnr_p2pt',
-        'h_p2pt',
-        'cd_p2pl',
-        'cdpsnr_p2pl',
-        'h_p2pl',
-        'y_cpsnr',
-        'u_cpsnr',
-        'v_cpsnr',
-        'hybrid'
-    ]
-    
-    patterns = {
-        'encT':        'Encoding time (s)           : ',
-        'decT':        'Decoding time (s)           : ',
-        'bpp':         'bpp (bits per point)        : ',
-        'cd_p2pt':     'Chamfer dist.              p2pt: ',
-        'cdpsnr_p2pt': 'CD-PSNR (dB)               p2pt: ',
-        'h_p2pt':      'Hausdorff distance         p2pt: ',
-        'cd_p2pl':     'Chamfer dist.              p2pl: ',
-        'cdpsnr_p2pl': 'CD-PSNR (dB)               p2pl: ',
-        'h_p2pl':      'Hausdorff distance         p2pl: ',
-        'y_cpsnr':     'Y-CPSNR (dB)                   : ',
-        'u_cpsnr':     'U-CPSNR (dB)                   : ',
-        'v_cpsnr':     'V-CPSNR (dB)                   : ',
-        'hybrid':      'Hybrid geo-color               : ',
-    }
-    # escape special characters
-    for key in patterns:
-        patterns[key] = re.escape(patterns[key])
-
-    for log in summary_log_files:
-        alg_name = Path(log).parents[2].stem
-        ds_name = Path(log).parents[1].stem
-        rate = Path(log).parents[0].stem
-
-        with open(log, 'r') as f:
-            for line in f:
-                for metric in chosen_metrics:
-                    m = re.search(f'(?<={patterns[metric]}).*', line)
-                    if m:
-                        if m.group() == 'nan':
-                            break
-                        else:
-                            # search for ["avg", "stdev", "max", and "min"]
-                            statistic = re.search(f'.*(?=. {patterns[metric]})', line).group()
-                            val = float(m.group())
-                            # ret[alg_name][ds_name][rate][metric][statistic] = val
-                            ret[statistic][metric][ds_name][alg_name][rate] = val
-    savemat(matfile, ret)
-
-def nested_dict():
-    # https://stackoverflow.com/a/652226
-    return defaultdict(nested_dict)

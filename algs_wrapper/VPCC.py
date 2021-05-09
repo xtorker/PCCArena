@@ -25,11 +25,11 @@ class VPCC(Base):
             '--computeMetrics=0',
             '--computeChecksum=0'
         ]
-        try:
-            assert self._color is True
-        except AssertionError:
-            logger.error("V-PCC only supports point cloud with color, please check the input point cloud.")
-            raise
+        # try:
+        #     assert self._color is True
+        # except AssertionError:
+        #     logger.error("V-PCC only supports point cloud with color, please check the input point cloud.")
+        #     raise
         
         return cmd
 
