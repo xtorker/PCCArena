@@ -1,4 +1,4 @@
-rootdir: /home/chenghao/pcc_algs/mpeg-pcc-tmc2-release-v12.0/
+rootdir: /home/chenghao/PCC_Arena/algorithms/mpeg-pcc-tmc2-release-v12.0/
 encoder: bin/PccAppEncoder
 decoder: bin/PccAppDecoder
 bin_suffix: .bin

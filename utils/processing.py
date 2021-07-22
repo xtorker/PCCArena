@@ -1,25 +1,27 @@
 import os
 import logging
 import pkgutil
+import threading
 import importlib
-import subprocess as sp
+from queue import Queue
 from functools import partial
 from typing import Callable, Iterable
 from multiprocessing import Pool, Manager
+from multiprocessing.pool import ThreadPool
 
 import GPUtil
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
-def load_modules(modules_path):
-    for finder, name, _ in pkgutil.iter_modules(modules_path):
-        try:
-            importlib.import_module('{}.{}'.format(finder.path, name))
-        except ImportError as e:
-            logger.debug(e)
+# def load_modules(modules_path):
+#     for finder, name, _ in pkgutil.iter_modules(modules_path):
+#         try:
+#             importlib.import_module('{}.{}'.format(finder.path, name))
+#         except ImportError as e:
+#             logger.debug(e)
 
-    return Base.__subclasses__()
+#     return Base.__subclasses__()
 
 def parallel(
         func: Callable,
@@ -54,6 +56,8 @@ def parallel(
     `ValueError`
         No available GPU.
     """
+    assert len(filelist) > 0
+
     if use_gpu is True:
         # Get the number of available GPUs
         deviceIDs = GPUtil.getAvailable(
@@ -76,12 +80,13 @@ def parallel(
         
         manager = Manager()
         gpu_queue = manager.Queue()
+        gpu_queue = Queue()
         for id in deviceIDs:
             gpu_queue.put(id)
         pfunc = partial(func, gpu_queue=gpu_queue)
     else:
         process = nbprocesses
         pfunc = func
-    
+
     with Pool(process) as pool:
         list(tqdm(pool.imap_unordered(pfunc, filelist), total=len(filelist)))

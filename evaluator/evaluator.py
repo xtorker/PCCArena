@@ -16,13 +16,15 @@ class Evaluator():
             target_pc: Union[str, Path],
             bin_file: Union[str, Path] = None,
             enc_t: float = None,
-            dec_t: float = None
+            dec_t: float = None,
+            o3d_vis = None
         ):
-        self._ref_pc = ref_pc
-        self._target_pc = target_pc
-        self._bin_file = bin_file
+        self._ref_pc = Path(ref_pc)
+        self._target_pc = Path(target_pc)
+        self._bin_file = Path(bin_file) if bin_file else None
         self._enc_t = enc_t
         self._dec_t = dec_t
+        self._o3d_vis = o3d_vis
         self._results = ''
 
     def evaluate(self):
@@ -32,11 +34,11 @@ class Evaluator():
         # log running time and bitrate
         self._log_running_time_and_filesize()
         
+        # ProjMetrics = ProjectionBasedMetrics(self._ref_pc, self._target_pc, self._o3d_vis)
         PointMetrics = PointBasedMetrics(self._ref_pc, self._target_pc)
-        ProjMetrics = ProjectionBasedMetrics(self._ref_pc, self._target_pc)
         
+        # self._results += ProjMetrics.evaluate()
         self._results += PointMetrics.evaluate()
-        self._results += ProjMetrics.evaluate()
         
         # [TODO] Dynamic Import Modules
         # for metrics_cls in load_modules():
@@ -66,7 +68,7 @@ class Evaluator():
         """
         
         # number of points in reference point cloud
-        pc = o3d.io.read_point_cloud(self._ref_pc)
+        pc = o3d.io.read_point_cloud(str(self._ref_pc))
         num_points = len(pc.points)
 
         # file size of reference point cloud in `kB`
@@ -79,14 +81,14 @@ class Evaluator():
             compression_ratio = bin_size / ref_pc_size  # kB
             bpp = (bin_size * 1000 * 8) / num_points
         else:
-            bin_size = compression_ratio = bpp = "Not Avaliable"
+            bin_size = compression_ratio = bpp = -1
 
         # check if running time is initialized in constructor
         if self._enc_t and self._dec_t:
             enc_t = f"{self._enc_t:0.4f}"
             dec_t = f"{self._dec_t:0.4f}"
         else:
-            enc_t = dec_t = "Not Avaliable"
+            enc_t = dec_t = -1
 
         lines = [
             f"========== Time & Binary Size ==========",

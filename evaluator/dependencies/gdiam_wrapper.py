@@ -47,7 +47,7 @@ def findMaxNNdistance(pc_file: Union[str, Path]) -> str:
     )
     
     tmp_file = Path(pc_file).with_suffix('.xyz')
-    pc = o3d.io.read_point_cloud(pc_file)
+    pc = o3d.io.read_point_cloud(str(pc_file))
     points = np.asarray(pc.points)
     num_points = len(points)
     # pc = PyntCloud.from_file(str(pc_file))

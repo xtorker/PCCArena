@@ -1,4 +1,4 @@
-rootdir: /home/chenghao/pcc_algs/mpeg-pcc-tmc13-release-v12.0/
+rootdir: /home/chenghao/PCC_Arena/algorithms/mpeg-pcc-tmc13-release-v12.0/
 encoder: build/tmc3/tmc3
 decoder: build/tmc3/tmc3
 bin_suffix: .bin

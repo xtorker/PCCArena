@@ -1,12 +1,11 @@
 python: /home/chenghao/anaconda3/envs/geocnn_v2/bin/python
-rootdir: /home/chenghao/pcc_algs/geocnn_v2
+rootdir: /home/chenghao/PCC_Arena/algorithms/geocnn_v2
 encoder: src/compress_octree.py
 decoder: src/decompress_octree.py
 bin_suffix: .bin
 use_gpu: True
 model_config: c3p
 opt_metrics: d1_mse
-resolution: 1024
 
 r1:
   checkpoint_dir: models/c3p/2.00e-05

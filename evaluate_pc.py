@@ -1,13 +1,18 @@
 import argparse
 import logging.config
 
+import open3d as o3d
+from xvfbwrapper import Xvfb
+
 from utils.file_io import get_logging_config
 from evaluator.evaluator import Evaluator
 
 def evaluate_pc(args):
+    o3d_vis = o3d.visualization.Visualizer()
     evaluator = Evaluator(
         args.ref_pc,
-        args.target_pc
+        args.target_pc,
+        o3d_vis=o3d_vis
     )
     ret = evaluator.evaluate()
     print(ret)
@@ -47,4 +52,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
+    disp = Xvfb()
+    disp.start()
     evaluate_pc(args)
+    disp.stop()

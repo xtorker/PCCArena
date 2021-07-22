@@ -133,36 +133,9 @@ def normalize(
     outfile = Path(dest_dir).joinpath(pc_file)
     outfile.parent.mkdir(parents=True, exist_ok=True)
     
-    pc = o3d.io.read_point_cloud(infile)
+    pc = o3d.io.read_point_cloud(str(infile))
     points = np.asarray(pc.points)
     points = points - np.min(points, axis=0)
-    # pc = PyntCloud.from_file(str(infile))
-    # coords = ['x', 'y', 'z']
-    # points = pc.points[coords].values
-    # points[:,0] = points[:,0] - np.min(points[:,0])
-    # points[:,1] = points[:,1] - np.min(points[:,1])
-    # points[:,2] = points[:,2] - np.min(points[:,2])
-    # pc.points[coords] = points
-    # pc.to_file(str(outfile))
     points = points / np.max(points) * scale
     pc.points = o3d.utility.Vector3dVector(points)
     o3d.io.write_point_cloud(outfile, pc)
-
-# def paint_uni_color_on_pc(
-#         pc_file: Union[str, Path],
-#         src_dir: Union[str, Path],
-#         dest_dir: Union[str, Path],
-#         color: npt.ArrayLike
-#     ) -> None:
-#     infile = Path(src_dir).joinpath(pc_file)
-#     outfile = Path(dest_dir).joinpath(pc_file)
-#     outfile.parent.mkdir(parents=True, exist_ok=True)
-    
-#     pc = PyntCloud.from_file(str(infile))
-#     rgb = ['red', 'green', 'blue']
-    
-#     color_df = pd.DataFrame([color], columns=rgb, index=pc.points.index)
-#     color_df = color_df.astype(np.uint8) # .ply use uchar for rgb values
-#     pc.points[rgb] = color_df
-    
-#     pc.to_file(str(outfile))

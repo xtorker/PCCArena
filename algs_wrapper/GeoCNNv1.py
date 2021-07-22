@@ -53,7 +53,7 @@ class GeoCNNv1(Base):
             src_dir: Union[str, Path],
             nor_dir: Union[str, Path],
             exp_dir: Union[str, Path]
-        ) -> Tuple[str, str, str, str, str]:
+        ) -> None:
         """Set up the experiment file paths, including encoded binary, 
         decoded point cloud, and evaluation log.
         

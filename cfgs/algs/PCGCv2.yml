@@ -1,5 +1,5 @@
 python: /home/chenghao/anaconda3/envs/pcgc_v2/bin/python
-rootdir: /home/chenghao/pcc_algs/PCGCv2/
+rootdir: /home/chenghao/PCC_Arena/algorithms/PCGCv2/
 test_script: test.py
 bin_suffix: '.bin'
 use_gpu: True

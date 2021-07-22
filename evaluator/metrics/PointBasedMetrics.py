@@ -65,7 +65,6 @@ class PointBasedMetrics(MetricBase):
         `str`
             The formatted evaluation results.
         """
-        self._resolution = findMaxNNdistance(self._ref_pc)
         
         self._get_quality_metrics()
         
@@ -163,10 +162,10 @@ class PointBasedMetrics(MetricBase):
         `str`
             The result of objective quality metrics.
         """
-        # # [TODO]
-        # # Integrate findMaxNNdistance into mpeg-pcc-dmetric
-        # if self._resolution is None:
-        #     self._resolution = findMaxNNdistance(self._ref_pc)
+        # [TODO]
+        # Integrate findMaxNNdistance into mpeg-pcc-dmetric
+        if self._resolution is None:
+            self._resolution = findMaxNNdistance(self._ref_pc)
 
         cmd = [
             self._pc_error_bin,

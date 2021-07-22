@@ -1,5 +1,5 @@
 python: /home/chenghao/anaconda3/envs/geocnn_v1/bin/python
-rootdir: /home/chenghao/pcc_algs/geocnn_v1
+rootdir: /home/chenghao/PCC_Arena/algorithms/geocnn_v1
 encoder: src/compress.py
 decoder: src/decompress.py
 bin_suffix: .bin

@@ -14,8 +14,8 @@ class MetricBase(metaclass=abc.ABCMeta):
         ) -> None:
         self._ref_pc = ref_pc
         self._target_pc = target_pc
-        self._has_color = o3d.io.read_point_cloud(self._ref_pc).has_colors()
-        self._has_normal = o3d.io.read_point_cloud(self._ref_pc).has_normals()
+        self._has_color = o3d.io.read_point_cloud(str(self._ref_pc)).has_colors()
+        self._has_normal = o3d.io.read_point_cloud(str(self._ref_pc)).has_normals()
         self._results = []
     
     @abc.abstractmethod

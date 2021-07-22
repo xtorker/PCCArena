@@ -32,9 +32,15 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
 
     # [TODO] add reconstructed point cloud path to .csv
     chosen_metrics_text = {
+        'pc_file':     'Target Point Cloud: ',
         'encT':        'Encoding time (s)           : ',
         'decT':        'Decoding time (s)           : ',
         'bpp':         'bpp (bits per point)        : ',
+        'y_psnr':      'Y-PSNR (dB)                    : ',
+        'cb_psnr':     'Cb-PSNR (dB)                   : ',
+        'cr_psnr':     'Cr-PSNR (dB)                   : ',
+        'ssim':        'SSIM                           : ',
+        'vmaf':        'VMAF                           : ',
         'acd12_p2pt':  'Asym. Chamfer dist. (1->2) p2pt: ',
         'acd21_p2pt':  'Asym. Chamfer dist. (2->1) p2pt: ',
         'cd_p2pt':     'Chamfer dist.              p2pt: ',
@@ -64,9 +70,10 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
     # Parsing data from each log file
     for log in log_files:
         with open(log, 'r') as f:
+            flines = f.readlines()
             for metric, pattern in chosen_metrics.items():
                 isfound = False
-                for line in f:
+                for line in flines:
                     m = re.search(f'(?<={pattern}).*', line)
                     if m:
                         if m.group() == 'inf':
@@ -74,7 +81,10 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
                         elif m.group() == 'nan':
                             found_val[metric].append(np.nan)
                         else:
-                            found_val[metric].append(float(m.group()))
+                            if metric == 'pc_file':
+                                found_val[metric].append(str(m.group()))
+                            else:
+                                found_val[metric].append(float(m.group()))
                         isfound = True
                         break
                 if not isfound:
@@ -101,43 +111,44 @@ def summarize_one_setup(log_dir: Union[str, Path], color: bool = False) -> None:
         for row in rows:
             csvwriter.writerow(row)
 
-    # Summarize the results and save them into the .log file
-    summary_log = summary_csv.with_suffix('.log')
+    # # Summarize the results and save them into the .log file
+    # summary_log = summary_csv.with_suffix('.log')
     
-    with open(summary_log, 'w') as f:
-        lines = [
-            f"PCC-Arena Evaluator {__version__}",
-            f"Summary of the log directory: {log_dir}"
-            "\n",
-        ]
+    # with open(summary_log, 'w') as f:
+    #     lines = [
+    #         f"PCC-Arena Evaluator {__version__}",
+    #         f"Summary of the log directory: {log_dir}"
+    #         "\n",
+    #     ]
         
-        statistics = {
-            'Avg.': np.nanmean,
-            'Stdev.': np.nanstd,
-            'Max.': np.nanmax,
-            'Min.': np.nanmin,
-        }
+    #     statistics = {
+    #         'Avg.': np.nanmean,
+    #         'Stdev.': np.nanstd,
+    #         'Max.': np.nanmax,
+    #         'Min.': np.nanmin,
+    #     }
         
-        for stat, op in statistics.items():
-            tmp_lines = [f"***** {stat} *****"]
-            for key, pattern in chosen_metrics_text.items():
-                tmp_nparray = np.array(found_val[key], dtype=np.float)
-                tmp_lines.append(f"{stat} {pattern}{op(tmp_nparray)}")
+    #     for stat, op in statistics.items():
+    #         tmp_lines = [f"***** {stat} *****"]
+    #         for key, pattern in chosen_metrics_text.items():
+    #             tmp_nparray = np.array(found_val[key], dtype=np.float)
+    #             tmp_lines.append(f"{stat} {pattern}{op(tmp_nparray)}")
             
-            tmp_lines.insert(1, "========== Time & Binary Size ==========")
-            tmp_lines.insert(5, "\n")
-            tmp_lines.insert(6, "========== Objective Quality ===========")
-            tmp_lines.insert(12, "----------------------------------------")
-            if color is True:
-                tmp_lines.insert(18, "----------------------------------------")
-                tmp_lines.insert(22, "\n")
-                tmp_lines.insert(23, "============== QoE Metric ==============")
-                tmp_lines.insert(25, "\n")
+    #         tmp_lines.insert(1, "========== Time & Binary Size ==========")
+    #         tmp_lines.insert(5, "\n")
+    #         tmp_lines.insert(6, "========== Objective Quality ===========")
+    #         tmp_lines.insert(12, "----------------------------------------")
+    #         tmp_lines.insert(18, "----------------------------------------")
+    #         if color is True:
+    #             tmp_lines.insert(18, "----------------------------------------")
+    #             tmp_lines.insert(22, "\n")
+    #             tmp_lines.insert(23, "============== QoE Metric ==============")
+    #             tmp_lines.insert(25, "\n")
             
-            tmp_lines.append("\n")
-            lines += tmp_lines
+    #         tmp_lines.append("\n")
+    #         lines += tmp_lines
 
-        f.writelines('\n'.join(lines))
+    #     f.writelines('\n'.join(lines))
 
     return
 
@@ -150,9 +161,15 @@ def summarize_all_to_csv(exp_dir):
     csvfile = Path(exp_dir).joinpath('summary.csv')
     
     chosen_metrics = [
+        'pc_file',
         'encT',
         'decT',
         'bpp',
+        'y_psnr',
+        'cb_psnr',
+        'cr_psnr',
+        'ssim',
+        'vmaf',
         'acd12_p2pt',
         'acd21_p2pt',
         'cd_p2pt',

@@ -6,7 +6,6 @@ Debug_SNC:
     test_pattern: '*.ply'
     scale: 1024
     color: False
-    resolution: null
 
 Debug_SNCC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024/02954340/val]
@@ -14,7 +13,6 @@ Debug_SNCC:
     test_pattern: '*.ply'
     scale: 1024
     color: True
-    resolution: null
 
 SNC_Test100:
     dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024_test_sample100]
@@ -22,15 +20,6 @@ SNC_Test100:
     test_pattern: '**/test/*.ply'
     scale: 1024
     color: False
-    resolution: null
-
-SNCC_Test100:
-    dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024_test_sample100]
-    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNCC_normal_scale1024_test_sample100]
-    test_pattern: '**/test/*.ply'
-    scale: 1024
-    color: True
-    resolution: null
 
 # # Special dataset for V-PCC geo_only experiments
 # SNC_Test100:
@@ -39,7 +28,13 @@ SNCC_Test100:
 #     test_pattern: '**/test/*.ply'
 #     scale: 1024
 #     color: False
-#     resolution: null
+
+SNCC_Test100:
+    dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024_test_sample100]
+    dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNCC_normal_scale1024_test_sample100]
+    test_pattern: '**/test/**/*.ply'
+    scale: 1024
+    color: True
 
 SNC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024]
@@ -49,7 +44,6 @@ SNC:
     val_pattern: '**/val/*.ply'
     scale: 1024
     color: False
-    resolution: null
 
 SNCC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/SNCC_scale1024]
@@ -59,146 +53,4 @@ SNCC:
     val_pattern: '**/val/*.ply'
     scale: 1024
     color: True
-    resolution: null
 
-MN40_Test100:
-    dataset_dir: /mnt/data5/chenghao/MN40_scale1024_test_sample100
-    dataset_w_normal_dir: /mnt/data5/chenghao/MN40_normal_scale1024_test_sample100
-    test_pattern: '**/test/*.ply'
-    scale: 1024
-    color: False
-    resolution: null
-
-# # Special dataset for V-PCC geo_only experiments
-# MN40_Test100:
-#     dataset_dir: /mnt/data5/chenghao/MN40_white_scale1024_test_sample100
-#     dataset_w_normal_dir: /mnt/data5/chenghao/MN40_white_normal_scale1024_test_sample100
-#     test_pattern: '**/test/*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: null
-
-CAPOD_10:
-    dataset_dir: /mnt/data5/chenghao/CAPOD_scale1024_sample10
-    dataset_w_normal_dir: /mnt/data5/chenghao/CAPOD_normal_scale1024_sample10
-    test_pattern: '**/*.ply'
-    scale: 1024
-    color: False
-    resolution: null
-
-CAPOD_100:
-    dataset_dir: /mnt/data5/chenghao/CAPOD_scale1024_sample100
-    dataset_w_normal_dir: /mnt/data5/chenghao/CAPOD_normal_scale1024_sample100
-    test_pattern: '**/*.ply'
-    scale: 1024
-    color: False
-    resolution: null
-
-# # Special dataset for V-PCC geo_only experiments
-# CAPOD_100:
-#     dataset_dir: /mnt/data5/chenghao/CAPOD_white_scale1024_sample100
-#     dataset_w_normal_dir: /mnt/data5/chenghao/CAPOD_white_normal_scale1024_sample100
-#     test_pattern: '**/*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: null
-
-8i_longdress_25:
-    dataset_dir: /mnt/data5/chenghao/longdress_vox10_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/longdress_vox10_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: True
-    resolution: 1024
-
-8i_loot_25:
-    dataset_dir: /mnt/data5/chenghao/loot_vox10_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/loot_vox10_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: True
-    resolution: 1024
-
-8i_soldier_25:
-    dataset_dir: /mnt/data5/chenghao/soldier_vox10_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/soldier_vox10_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: True
-    resolution: 1024
-
-8i_redandblack_25:
-    dataset_dir: /mnt/data5/chenghao/redandblack_vox10_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/redandblack_vox10_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: True
-    resolution: 1024
-
-# 8i_longdress_geo_25:
-#     dataset_dir: /mnt/data5/chenghao/longdress_vox10_geo_sample25
-#     dataset_w_normal_dir: /mnt/data5/chenghao/longdress_vox10_geo_normal_sample25
-#     test_pattern: '*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: 1024
-
-# 8i_loot_geo_25:
-#     dataset_dir: /mnt/data5/chenghao/loot_vox10_geo_sample25
-#     dataset_w_normal_dir: /mnt/data5/chenghao/loot_vox10_geo_normal_sample25
-#     test_pattern: '*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: 1024
-
-# 8i_soldier_geo_25:
-#     dataset_dir: /mnt/data5/chenghao/soldier_vox10_geo_sample25
-#     dataset_w_normal_dir: /mnt/data5/chenghao/soldier_vox10_geo_normal_sample25
-#     test_pattern: '*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: 1024
-
-# 8i_redandblack_geo_25:
-#     dataset_dir: /mnt/data5/chenghao/redandblack_vox10_geo_sample25
-#     dataset_w_normal_dir: /mnt/data5/chenghao/redandblack_vox10_geo_normal_sample25
-#     test_pattern: '*.ply'
-#     scale: 1024
-#     color: False
-#     resolution: 1024
-
-# Special dataset for V-PCC geo_only experiments
-8i_longdress_geo_25:
-    dataset_dir: /mnt/data5/chenghao/longdress_vox10_white_geo_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/longdress_vox10_white_geo_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: False
-    resolution: 1024
-
-# Special dataset for V-PCC geo_only experiments
-8i_loot_geo_25:
-    dataset_dir: /mnt/data5/chenghao/loot_vox10_white_geo_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/loot_vox10_white_geo_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: False
-    resolution: 1024
-
-# Special dataset for V-PCC geo_only experiments
-8i_soldier_geo_25:
-    dataset_dir: /mnt/data5/chenghao/soldier_vox10_white_geo_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/soldier_vox10_white_geo_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: False
-    resolution: 1024
-
-# Special dataset for V-PCC geo_only experiments
-8i_redandblack_geo_25:
-    dataset_dir: /mnt/data5/chenghao/redandblack_vox10_white_geo_sample25
-    dataset_w_normal_dir: /mnt/data5/chenghao/redandblack_vox10_white_geo_normal_sample25
-    test_pattern: '*.ply'
-    scale: 1024
-    color: False
-    resolution: 1024
