@@ -27,5 +27,5 @@ python run_experiments.py
 ## Add More PCC Algorithms
 1. Put the whole PCC algorithm project folder under algorithms/
 2. Write a specific wrapper for it and put it under algs_wrapper/
-3. Write a json file for configuring any coding parameters and rate control parameters, and put it under cfgs/algs/
-4. (Optional) If the PCC algorithm need specific virtual environment, make sure to indicate the python path in the json file (Step 3).
+3. Write a YAML file for configuring any coding parameters and rate control parameters, and put it under cfgs/algs/
+4. (Optional) If the PCC algorithm need specific virtual environment, make sure to indicate the python path in the YAML file (Step 3).
