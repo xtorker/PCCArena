@@ -16,6 +16,9 @@ cd PCC_Arena
 conda env create -f cfgs/conda_env/pcc_arena.yml
 conda activate pcc_arena
 python setup.py
+```
+Make sure you have downloaded "**mpeg-pcc-dmetric-master.tar.gz (v0.13.5)**" from http://mpegx.int-evry.fr/software/MPEG/PCC/mpeg-pcc-dmetric and put it under evaluator/dependencies
+```bash=
 ./setup_env_ds.sh
 ```
 

@@ -16,27 +16,6 @@ conda env create -f cfgs/conda_env/PCGCv2.yml
 
 
 
-cd datasets
-# ========== In [root]/datasets/ ==========
-wget http://teddy.cs.nthu.edu.tw/SNC_scale1024_test_sample100.tar.xz
-tar Jxvf SNC_scale1024_test_sample100.tar.xz
-rm SNC_scale1024_test_sample100.tar.xz
-
-wget http://teddy.cs.nthu.edu.tw/SNC_normal_scale1024_test_sample100.tar.xz
-tar Jxvf SNC_normal_scale1024_test_sample100.tar.xz
-rm SNC_normal_scale1024_test_sample100.tar.xz
-
-wget http://teddy.cs.nthu.edu.tw/SNCC_scale1024_test_sample100.tar.xz
-tar Jxvf SNCC_scale1024_test_sample100.tar.xz
-rm SNCC_scale1024_test_sample100.tar.xz
-
-wget http://teddy.cs.nthu.edu.tw/SNCC_normal_scale1024_test_sample100.tar.xz
-tar Jxvf SNCC_normal_scale1024_test_sample100.tar.xz
-rm SNCC_normal_scale1024_test_sample100.tar.xz
-cd ..
-
-
-
 cd algorithms
 # ========== In [root]/algs/ ==========
 
@@ -63,11 +42,6 @@ git clone https://github.com/mauriceqch/pcc_geo_cnn.git GeoCNNv1
 
 ## GeoCNNv2
 git clone https://github.com/mauriceqch/pcc_geo_cnn_v2.git GeoCNNv2
-cd GeoCNNv2
-wget http://teddy.cs.nthu.edu.tw/geocnn_v2.tar.bz2
-tar jxvf geocnn_v2.tar.bz2
-rm geocnn_v2.tar.bz2
-cd ..
 
 ## PCGCv1
 git clone https://github.com/xtorker/PCGCv1.git PCGCv1
@@ -79,8 +53,8 @@ cd ..
 
 
 
-cd evaluator
-# ========== In [root]/evaluator/ ==========
+cd evaluator/dependencies
+# ========== In [root]/evaluator/dependencies ==========
 
 # MPEG pcc dmetric
 # Download mpeg-pcc-dmetric-master.tar.gz v0.13.5 
@@ -97,4 +71,4 @@ tar zxvf libgdiam-1.0.3.tar.gz
 patch -sp0 < libgdiam-1.0.3.patch
 cd libgdiam-1.0.3
 mkdir build && cd build && cmake .. && make
-cd ../../..
+cd ../../../..
