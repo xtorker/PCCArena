@@ -1,5 +1,12 @@
 ds_rootdir: &ds_rootdir /mnt/data6/chenghao/PCC_datasets/
 
+Sample_SNC:
+    dataset_dir: !join [*ds_rootdir, SNC_scale1024]
+    dataset_w_normal_dir: !join [*ds_rootdir, SNC_normal_scale1024]
+    test_pattern: '*.ply'
+    scale: 1024
+    color: False
+
 Debug_SNC:
     dataset_dir: !join [*ds_rootdir, ShapeNet/SNC_scale1024/02954340/val]
     dataset_w_normal_dir: !join [*ds_rootdir, ShapeNet/SNC_normal_scale1024/02954340/val]
