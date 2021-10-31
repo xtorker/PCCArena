@@ -22,6 +22,10 @@ Make sure you have downloaded "**mpeg-pcc-dmetric-master.tar.gz (v0.13.5)**" fro
 ./setup_env_ds.sh
 ```
 
+## Prepare Datasets
+To skip this step, we have prepare an sample SNC dataset on https://drive.google.com/drive/folders/1HQS0tzTF-ukifNXxrYqld2yT1bHOcMQQ?usp=sharing.
+Please download and extract it under datasets/
+
 ## Run Experiments
 ```bash=
 python run_experiments.py
