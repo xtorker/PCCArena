@@ -17,6 +17,7 @@ class MetricBase(metaclass=abc.ABCMeta):
         self._has_color = o3d.io.read_point_cloud(str(self._ref_pc)).has_colors()
         self._has_normal = o3d.io.read_point_cloud(str(self._ref_pc)).has_normals()
         self._results = []
+        self._resolution = None
     
     @abc.abstractmethod
     def evaluate(self) -> str:
