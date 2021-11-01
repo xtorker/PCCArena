@@ -49,6 +49,8 @@ git clone https://github.com/xtorker/PCGCv1.git PCGCv1
 ## PCGCv2
 git clone https://github.com/xtorker/PCGCv2.git PCGCv2
 
+cd ..
+
 
 cd evaluator/dependencies
 # ========== In [root]/evaluator/dependencies ==========
