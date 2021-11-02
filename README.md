@@ -24,8 +24,10 @@ chmod +x setup_env_ds.sh
 ```
 
 ## Prepare Datasets
-To skip this step, we have prepare an sample SNC dataset on https://drive.google.com/drive/folders/1HQS0tzTF-ukifNXxrYqld2yT1bHOcMQQ?usp=sharing.
-Please download and extract it under datasets/
+<!-- To skip this step, we have prepare an sample SNC dataset on https://drive.google.com/drive/folders/1HQS0tzTF-ukifNXxrYqld2yT1bHOcMQQ?usp=sharing.
+Please download and extract it under datasets/ -->
+
+Please download pre-trained dataset for geocnnv1 and v2.
 
 ## Run Experiments
 ```bash=

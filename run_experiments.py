@@ -16,10 +16,10 @@ def main():
     LOGGING_CONFIG = get_logging_config('utils/logging.conf')
     logging.config.dictConfig(LOGGING_CONFIG)
 
-    # draco = Draco()
-    # for rate in range(8):
-    #     draco.rate = f'r{rate+1}'
-    #     draco.run_dataset('Sample_SNC', 'experiments')
+    draco = Draco()
+    for rate in range(8):
+        draco.rate = f'r{rate+1}'
+        draco.run_dataset('Sample_SNC', 'experiments')
         # draco.run_dataset('SNC_Test100', 'experiments')
         # draco.run_dataset('SNCC_Test100', 'experiments')
         # draco.run_dataset('MN40_Test100', 'experiments')
@@ -33,10 +33,10 @@ def main():
         # draco.run_dataset('8i_soldier_geo_25', 'experiments')
         # draco.run_dataset('8i_redandblack_geo_25', 'experiments')
         
-    # gpcc = GPCC()
-    # for rate in range(8):
-    #     gpcc.rate = f'r{rate+1}'
-    #     gpcc.run_dataset('Sample_SNC', 'experiments')
+    gpcc = GPCC()
+    for rate in range(8):
+        gpcc.rate = f'r{rate+1}'
+        gpcc.run_dataset('Sample_SNC', 'experiments')
         # gpcc.run_dataset('SNC_Test100', 'experiments')
         # gpcc.run_dataset('SNCC_Test100', 'experiments')
         # gpcc.run_dataset('MN40_Test100', 'experiments')
