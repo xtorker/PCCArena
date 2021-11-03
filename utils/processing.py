@@ -80,7 +80,8 @@ def parallel(
         
         manager = Manager()
         gpu_queue = manager.Queue()
-        gpu_queue = Queue()
+        # gpu_queue = Queue()
+        
         for id in deviceIDs:
             gpu_queue.put(id)
         pfunc = partial(func, gpu_queue=gpu_queue)
