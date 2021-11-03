@@ -59,12 +59,12 @@ def main():
     #     vpcc.run_dataset('8i_soldier_25', 'experiments')
     #     vpcc.run_dataset('8i_redandblack_25', 'experiments')
 
-    # geocnn_v1 = GeoCNNv1()
-    # for rate in range(5):
-    #     geocnn_v1.rate = f'r{rate+1}'
+    geocnn_v1 = GeoCNNv1()
+    for rate in range(5):
+        geocnn_v1.rate = f'r{rate+1}'
         # `nbprocesses` depends on your available memory
         # 1 process may cost up to 51 GB memory
-        # geocnn_v1.run_dataset('Sample_SNC', 'experiments')
+        geocnn_v1.run_dataset('Sample_SNC', 'experiments')
         # geocnn_v1.run_dataset('SNC_Test100', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('MN40_Test100', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('CAPOD_100', 'experiments', nbprocesses=1)
@@ -73,10 +73,10 @@ def main():
         # geocnn_v1.run_dataset('8i_soldier_geo_25', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('8i_redandblack_geo_25', 'experiments', nbprocesses=1)
 
-    # geocnn_v2 = GeoCNNv2()
-    # for rate in range(4):
-    #     geocnn_v2.rate = f'r{rate+1}'
-    #     geocnn_v2.run_dataset('Sample_SNC', 'experiments')
+    geocnn_v2 = GeoCNNv2()
+    for rate in range(4):
+        geocnn_v2.rate = f'r{rate+1}'
+        geocnn_v2.run_dataset('Sample_SNC', 'experiments')
     #     geocnn_v2.run_dataset('SNC_Test100', 'experiments')
     #     geocnn_v2.run_dataset('MN40_Test100', 'experiments')
     #     geocnn_v2.run_dataset('CAPOD_100', 'experiments')
@@ -97,10 +97,10 @@ def main():
         # pcgc_v1.run_dataset('8i_soldier_geo_25', 'experiments')
         # pcgc_v1.run_dataset('8i_redandblack_geo_25', 'experiments')
     
-    # pcgc_v2 = PCGCv2()
-    # for rate in range(7):
-    #     pcgc_v2.rate = f'r{rate+1}'
-    #     pcgc_v2.run_dataset('Sample_SNC', 'experiments')
+    pcgc_v2 = PCGCv2()
+    for rate in range(7):
+        pcgc_v2.rate = f'r{rate+1}'
+        pcgc_v2.run_dataset('Sample_SNC', 'experiments')
         # pcgc_v2.run_dataset('SNC_Test100', 'experiments')
         # pcgc_v2.run_dataset('MN40_Test100', 'experiments')
         # pcgc_v2.run_dataset('CAPOD_100', 'experiments')
