@@ -59,12 +59,12 @@ def main():
     #     vpcc.run_dataset('8i_soldier_25', 'experiments')
     #     vpcc.run_dataset('8i_redandblack_25', 'experiments')
 
-    # geocnn_v1 = GeoCNNv1()
-    # for rate in range(5):
-    #     geocnn_v1.rate = f'r{rate+1}'
-    #     # `nbprocesses` depends on your available memory
-    #     # 1 process may cost up to 51 GB memory
-    #     geocnn_v1.run_dataset('Sample_SNC', 'experiments', nbprocesses=1)
+    geocnn_v1 = GeoCNNv1()
+    for rate in range(5):
+        geocnn_v1.rate = f'r{rate+1}'
+        # `nbprocesses` depends on your available memory
+        # 1 process may cost up to 51 GB memory
+        geocnn_v1.run_dataset('Sample_SNC', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('SNC_Test100', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('MN40_Test100', 'experiments', nbprocesses=1)
         # geocnn_v1.run_dataset('CAPOD_100', 'experiments', nbprocesses=1)
