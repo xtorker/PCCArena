@@ -46,7 +46,7 @@ ln -s /home/token/geocnnv2_models/ algorithms/GeoCNNv2/models
 python run_experiments.py
 ```
 ## All-in-one bash script for installation and running experiments
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LhtEQsvSghM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Youtube Video Link](https://youtu.be/LhtEQsvSghM)
 Full script for reference
 ```
 # Clean conda environment
@@ -64,7 +64,7 @@ conda activate pcc_arena
 python setup.py
 chmod +x setup_env_ds.sh
 ./setup_env_ds.sh
-```
+
 # You can either link or unzip Pre-trained model to algorithms/GeoCNNv1 and v2
 # the following is using softlink
 rm -rf algorithms/GeoCNNv1/models
