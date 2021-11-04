@@ -46,7 +46,8 @@ ln -s /home/token/geocnnv2_models/ algorithms/GeoCNNv2/models
 python run_experiments.py
 ```
 ## All-in-one bash script for installation and running experiments
-[Youtube Video Link](https://youtu.be/LhtEQsvSghM)
+[Youtube Video Link of running all-in-one script](https://youtu.be/LhtEQsvSghM)
+
 Full script for reference.
 
 Run script by ```bash -i yourscript.sh```
