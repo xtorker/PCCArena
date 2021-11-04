@@ -48,6 +48,7 @@ python run_experiments.py
 ## All-in-one bash script for installation and running experiments
 [Youtube Video Link](https://youtu.be/LhtEQsvSghM)
 Full script for reference
+run script by ```bash -i yourscript.sh```
 ```
 # Clean conda environment
 conda env remove -n pcc_arena
