@@ -72,3 +72,5 @@ cd libgdiam-1.0.3
 mkdir build && cd build && cmake .. && make
 cd ../../../..
 patch -u algorithms/PCGCv2/test.py test.patch
+mv checkpoints/ algorithms/PCGCv1/
+mv ckpts/ algorithms/PCGCv2/
