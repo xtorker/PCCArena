@@ -16,12 +16,9 @@ sh Anaconda3-2020.11-Linux-x86_64.sh
 source .bashrc
 ```
 - SVN
+- xvfb (if running on the system without gui)
 ```
-sudo apt-get install subversion
-```
-- xvfb (if running on system without gui)
-```
-sudo apt install git gcc g++ xvfb -y
+sudo apt install git gcc g++ xvfb subversion -y
 ```
 
 ## Quick Start
@@ -47,7 +44,7 @@ conda activate pcc_arena
 ```
 python setup.py
 ```
-- Step 6: Grant execute permission.
+- Step 6: Grant executed permission.
 ```
 chmod +x setup_env_ds.sh
 ```
@@ -68,8 +65,8 @@ tar -Jxvf geocnn_v2_pretrained_models.tar.xz algorithms/GeoCNNv2/models
 ```
 
 - Step10: Run experiments in PCC Arena.
-We have two types of python files for experimenting. One is an short version for quick start, another is a full version.
-Short version only runs one compression rate for each algorithm and doesn't run the algorithms which require lots of memory (e.g., GeoCNNv1 requires more than 50GB).
+We have two types of python files for experimenting. One is a short version for testing, and the other is a full version.
+The short version only runs one compression rate for each algorithm and doesn't run the algorithms which require lots of memory (e.g., GeoCNNv1 requires more than 50GB).
 ```
 # Short version
 python run_experiments_short.py
@@ -152,4 +149,4 @@ python run_experiments.py
 1. Put the whole PCC algorithm project folder under algorithms/
 2. Write a specific wrapper for it and put it under algs_wrapper/
 3. Write a YAML file for configuring any coding parameters and rate control parameters, and put it under cfgs/algs/
-4. (Optional) If the PCC algorithm need specific virtual environment, make sure to indicate the python path in the YAML file (Step 3).
+4. (Optional) If the PCC algorithm needs specific virtual environment, make sure to indicate the python path in the YAML file (Step 3).
