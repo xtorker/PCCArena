@@ -8,6 +8,12 @@ Ubuntu 20.04
 - git
 - gcc
 - g++
+- CUDA (CUDA 11.5)
+CUDA download guide: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+- SVN
+```
+sudo apt-get install subversion
+```
 - xvfb (if running on system without gui)
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
@@ -59,9 +65,16 @@ unzip geocnnv1_models.zip -C algorithms/GeoCNNv1
 tar -Jxvf geocnn_v2_pretrained_models.tar.xz algorithms/GeoCNNv2
 ```
 
-- Step10: Run sample experiments in PCC Arena.
+- Step10: Run experiments in PCC Arena.
+We have two types of python files for experimenting. One is an short version for quick start, another is a full version.
+Short version only runs one compression rate for each algorithm and doesn't run the algorithms which require lots of memory (e.g., GeoCNNv1 requires more than 50GB).
 ```
+# Short version
 python run_experiments_short.py
+```
+```
+# Full version
+python run_experiments.py
 ```
 <!-- ## Clean the conda environment
 ```bash=
