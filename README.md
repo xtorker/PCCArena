@@ -4,17 +4,18 @@
 Ubuntu 20.04
 
 ## Prerequisites
+- git
+- gcc
+- g++
+- CUDA (CUDA 11.5)
+
+CUDA download guide: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 - Ananconda 3
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 sh Anaconda3-2020.11-Linux-x86_64.sh
 source .bashrc
 ```
-- git
-- gcc
-- g++
-- CUDA (CUDA 11.5)
-CUDA download guide: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 - SVN
 ```
 sudo apt-get install subversion
