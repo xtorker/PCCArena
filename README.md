@@ -9,7 +9,12 @@ Ubuntu 20.04
 - gcc
 - g++
 - xvfb (if running on system without gui)
-
+```
+wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+sh Anaconda3-2020.11-Linux-x86_64.sh
+source .bashrc
+sudo apt install git gcc g++ xvfb -y
+```
 ## Clean the conda environment
 ```bash=
 # Clean conda environment if exists
