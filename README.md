@@ -7,6 +7,11 @@ Ubuntu 20.04
 - git
 - gcc
 - g++
+- subversion
+- xvfb
+```
+sudo apt install git gcc g++ subversion xvfb -y
+```
 - CUDA (CUDA 11.5)
 download guide: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 - Ananconda 3
@@ -15,11 +20,7 @@ wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 sh Anaconda3-2020.11-Linux-x86_64.sh
 source .bashrc
 ```
-- SVN
-- xvfb (if running on the system without gui)
-```
-sudo apt install git gcc g++ xvfb subversion -y
-```
+
 
 ## Quick Start
 To download and set up PCC Arena, please type the following commands.
