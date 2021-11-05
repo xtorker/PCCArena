@@ -65,7 +65,7 @@ unzip geocnnv1_models.zip -C algorithms/GeoCNNv1/models
 tar -Jxvf geocnn_v2_pretrained_models.tar.xz algorithms/GeoCNNv2/models
 ```
 
-- Step10: Run experiments in PCC Arena.
+- Step 10: Run experiments in PCC Arena.
 We have two types of python files for experimenting. One is a short version for testing, and the other is a full version.
 The short version only runs one compression rate for each algorithm and doesn't run the algorithms which require lots of memory (e.g., GeoCNNv1 requires more than 50GB).
 ```
