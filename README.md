@@ -57,7 +57,7 @@ chmod +x setup_env_ds.sh
 ```
 
 - Step 8: Download the pretrained models of GeoCNNv1 and GeoCNNv2 using the following links. Save them in the current directory.
-GeoCNNv1: https://drive.google.com/file/d/1aeQL9xrpRxbNGWj4eQutsCnNB6irbT8l/view?usp=sharing
+GeoCNNv1: https://drive.google.com/file/d/1S0llGslYHcOVYWfl4tqvyN08rO7IHcKu/view?usp=sharing
 GeoCNNv2:
 https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=sharing
 
