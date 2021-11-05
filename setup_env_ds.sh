@@ -9,7 +9,6 @@ if [ ! -f evaluator/dependencies/mpeg-pcc-dmetric-master.tar.gz ]; then
 fi
 
 # Cleaning conda environments 
-conda env remove -n pcc_arena
 conda env remove -n GeoCNNv1
 conda env remove -n GeoCNNv2
 conda env remove -n PCGCv1
