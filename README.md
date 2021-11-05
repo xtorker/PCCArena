@@ -5,6 +5,11 @@ Ubuntu 20.04
 
 ## Prerequisites
 - Ananconda 3
+```
+wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+sh Anaconda3-2020.11-Linux-x86_64.sh
+source .bashrc
+```
 - git
 - gcc
 - g++
@@ -16,9 +21,6 @@ sudo apt-get install subversion
 ```
 - xvfb (if running on system without gui)
 ```
-wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
-sh Anaconda3-2020.11-Linux-x86_64.sh
-source .bashrc
 sudo apt install git gcc g++ xvfb -y
 ```
 
