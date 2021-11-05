@@ -15,7 +15,55 @@ sh Anaconda3-2020.11-Linux-x86_64.sh
 source .bashrc
 sudo apt install git gcc g++ xvfb -y
 ```
-## Clean the conda environment
+
+## Quick Start
+To download and set up PCC Arena, please type the following commands.
+
+- Step 1: Clone the github project.
+```
+git clone https://github.com/TokenHung/PCCArena.git
+```
+- Step 2: Change the current directory.
+```
+cd PCCArena
+```
+- Step 3: Create the conda environment pcc_arena.
+```
+conda env create -f cfgs/conda_env/pcc_arena.yml
+```
+- Step 4: Activate the environment pcc_arena.
+```
+conda activate pcc_arena
+```
+- Step 5: Set up the environments.
+```
+python setup.py
+```
+- Step 6: Grant execute permission.
+```
+chmod +x setup_env_ds.sh
+```
+- Step 7: Run environment setup script.
+```
+./setup_env_ds.sh
+```
+
+- Step 8: Download the pretrained models of GeoCNNv1 and GeoCNNv2 using the following links. Save them in the current directory.
+GeoCNNv1: https://drive.google.com/file/d/1aeQL9xrpRxbNGWj4eQutsCnNB6irbT8l/view?usp=sharing
+GeoCNNv2:
+https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=sharing
+
+- Step 9: Uncompress the models into algorithms/GeoCNNv1 and algorithms/GeoCNNv2.
+```
+unzip geocnnv1_models.zip -C algorithms/GeoCNNv1
+tar -Jxvf geocnn_v2_pretrained_models.tar.xz algorithms/GeoCNNv2
+```
+
+- Step10: Run sample experiments in PCC Arena.
+```
+python run_experiments_short.py
+```
+<!-- ## Clean the conda environment
 ```bash=
 # Clean conda environment if exists
 conda env remove -n pcc_arena
@@ -84,7 +132,7 @@ ln -sfn /mnt/data4/token/geocnnv2_models/ algorithms/GeoCNNv2/models
 conda init bash
 conda activate pcc_arena
 python run_experiments.py
-```
+``` -->
 ## Add More PCC Algorithms
 1. Put the whole PCC algorithm project folder under algorithms/
 2. Write a specific wrapper for it and put it under algs_wrapper/
