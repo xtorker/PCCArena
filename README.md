@@ -7,13 +7,14 @@ Ubuntu 20.04
 - git
 - gcc
 - g++
+- cmake
 - subversion
 - xvfb
 - libblas-dev 
 - libatlas-base-dev
 - nvidia-cuda-toolkit
 ```
-sudo apt install git gcc g++ subversion xvfb libblas-dev libatlas-base-dev nvidia-cuda-toolkit -y
+sudo apt install git gcc g++ cmake subversion xvfb libblas-dev libatlas-base-dev -y
 ```
 - Ananconda 3
 ```
@@ -56,14 +57,14 @@ chmod +x setup_env_ds.sh
 ```
 
 - Step 8: Download the pretrained models of GeoCNNv1 and GeoCNNv2 using the following links. Save them in the current directory.
-GeoCNNv1: https://drive.google.com/file/d/1S0llGslYHcOVYWfl4tqvyN08rO7IHcKu/view?usp=sharing
+GeoCNNv1: https://drive.google.com/file/d/1ayWqNHwvihAludemIF2l9NZSi6ofWHYy/view?usp=sharing
 GeoCNNv2:
 https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=sharing
 
 - Step 9: Uncompress the models into algorithms/GeoCNNv1 and algorithms/GeoCNNv2.
 ```
-unzip geocnnv1_models.zip -d algorithms/GeoCNNv1/models
-tar -Jxvf geocnn_v2_pretrained_models.tar.xz -C algorithms/GeoCNNv2
+tar xvf geocnn_v1_pretrained_models.tar -C algorithms/GeoCNNv1/models
+tar -Jxvf geocnn_v2_pretrained_models.tar.xz -C algorithms/GeoCNNv2/models
 ```
 
 - Step 10: Run experiments in PCC Arena.
@@ -97,8 +98,7 @@ chmod +x setup_env_ds.sh
 ./setup_env_ds.sh
 ```
 ## Download the pretrained models for GeoCNNv1 and GeoCNNv2
-v1 - https://drive.google.com/file/d/1aeQL9xrpRxbNGWj4eQutsCnNB6irbT8l/view?usp=sharing
-
+v1 - https://drive.google.com/file/d/1ayWqNHwvihAludemIF2l9NZSi6ofWHYy/view?usp=sharing
 v2 - https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=sharing
 ```
 # you can either link or unzip Pre-trained model to algorithms/GeoCNNv1 and v2
