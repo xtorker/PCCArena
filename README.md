@@ -12,7 +12,6 @@ Ubuntu 20.04
 - xvfb
 - libblas-dev 
 - libatlas-base-dev
-- nvidia-cuda-toolkit
 ```
 sudo apt install git gcc g++ cmake subversion xvfb libblas-dev libatlas-base-dev -y
 ```
@@ -64,7 +63,7 @@ https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=shari
 - Step 9: Uncompress the models into algorithms/GeoCNNv1 and algorithms/GeoCNNv2.
 ```
 tar xvf geocnn_v1_pretrained_models.tar -C algorithms/GeoCNNv1/models
-tar -Jxvf geocnn_v2_pretrained_models.tar.xz -C algorithms/GeoCNNv2/models
+tar -Jxvf geocnn_v2_pretrained_models.tar.xz -C algorithms/GeoCNNv2
 ```
 
 - Step 10: Run experiments in PCC Arena.
@@ -78,6 +77,8 @@ python run_experiments_short.py
 # Full version
 python run_experiments.py
 ```
+- Step 11: Check the results (binaries, point cloud, metrics) in ```expereiments/{algorithm}/{rate}```
+
 <!-- ## Clean the conda environment
 ```bash=
 # Clean conda environment if exists
