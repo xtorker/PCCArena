@@ -9,11 +9,12 @@ Ubuntu 20.04
 - g++
 - subversion
 - xvfb
+- libblas-dev 
+- libatlas-base-dev
+- nvidia-cuda-toolkit
 ```
-sudo apt install git gcc g++ subversion xvfb -y
+sudo apt install git gcc g++ subversion xvfb libblas-dev libatlas-base-dev nvidia-cuda-toolkit -y
 ```
-- CUDA (CUDA 11.5)
-download guide: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 - Ananconda 3
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
