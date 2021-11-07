@@ -8,6 +8,12 @@ if [ ! -f evaluator/dependencies/mpeg-pcc-dmetric-master.tar.gz ]; then
     exit 0
 fi
 
+# Cleaning conda environments 
+conda env remove -n GeoCNNv1
+conda env remove -n GeoCNNv2
+conda env remove -n PCGCv1
+conda env remove -n PCGCv2
+
 # ========== In [root] ==========
 conda env create -f cfgs/conda_env/GeoCNNv1.yml
 conda env create -f cfgs/conda_env/GeoCNNv2.yml
@@ -35,7 +41,7 @@ cd ../..
 git clone --depth 1 --branch release-v12.0 https://github.com/MPEGGroup/mpeg-pcc-tmc2.git VPCC
 cd VPCC
 ./build.sh
-cd ../..
+cd ..
 
 ## GeoCNNv1
 git clone https://github.com/mauriceqch/pcc_geo_cnn.git GeoCNNv1
@@ -50,7 +56,6 @@ git clone https://github.com/xtorker/PCGCv1.git PCGCv1
 git clone https://github.com/xtorker/PCGCv2.git PCGCv2
 
 cd ..
-
 
 
 cd evaluator/dependencies
@@ -72,3 +77,7 @@ patch -sp0 < libgdiam-1.0.3.patch
 cd libgdiam-1.0.3
 mkdir build && cd build && cmake .. && make
 cd ../../../..
+
+# ========== In [root] ==========
+mv checkpoints/ algorithms/PCGCv1/
+mv ckpts/ algorithms/PCGCv2/
