@@ -77,5 +77,7 @@ patch -sp0 < libgdiam-1.0.3.patch
 cd libgdiam-1.0.3
 mkdir build && cd build && cmake .. && make
 cd ../../../..
+
+# ========== In [root] ==========
 mv checkpoints/ algorithms/PCGCv1/
 mv ckpts/ algorithms/PCGCv2/
