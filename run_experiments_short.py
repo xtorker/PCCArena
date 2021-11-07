@@ -54,12 +54,10 @@ def main():
         # gpcc.run_dataset('8i_soldier_geo_25', 'experiments')
         # gpcc.run_dataset('8i_redandblack_geo_25', 'experiments')
 
-    # vpcc = VPCC()
-    # for rate in range(1):
-    #     vpcc.rate = f'r{rate+1}'
-    #     # vpcc.run_dataset('Sample_SNC', 'experiments')
-    #     # vpcc.run_dataset('Debug_SNC', 'experiments')
-    #     vpcc.run_dataset('Debug_SNCC', 'experiments', nbprocesses=1)
+    vpcc = VPCC()
+    for rate in range(1):
+        vpcc.rate = f'r{rate+1}'
+        vpcc.run_dataset('Debug_SNCC', 'experiments')
         # vpcc.run_dataset('SNCC_Test100', 'experiments')
         # vpcc.run_dataset('8i_longdress_25', 'experiments')
         # vpcc.run_dataset('8i_loot_25', 'experiments')
