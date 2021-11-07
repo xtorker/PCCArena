@@ -80,7 +80,7 @@ python run_experiments.py
 - Step 11: Check the results (binaries, point cloud, metrics) in ```expereiments/{algorithm}/{rate}```
 
 ## Setup demo video
-https://youtu.be/odD83dMKbP0
+https://youtu.be/tIOUSJMDAUU
 
 <!-- ## Clean the conda environment
 ```bash=
