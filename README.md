@@ -12,8 +12,9 @@ Ubuntu 20.04
 - xvfb
 - libblas-dev 
 - libatlas-base-dev
+- nvidia-cuda-toolkit
 ```
-sudo apt install git gcc g++ cmake subversion xvfb libblas-dev libatlas-base-dev -y
+sudo apt install git gcc g++ cmake subversion xvfb libblas-dev libatlas-base-dev nvidia-cuda-toolkit -y
 ```
 - Ananconda 3
 ```
