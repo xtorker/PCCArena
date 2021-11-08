@@ -62,7 +62,7 @@ https://drive.google.com/file/d/1w5jue_dgR8Xw3D5gvZV1lXDA36NO5T_4/view?usp=shari
 
 - Step 9: Uncompress the models into algorithms/GeoCNNv1 and algorithms/GeoCNNv2.
 ```
-tar xvf geocnn_v1_pretrained_models.tar -C algorithms/GeoCNNv1/models
+tar xvf geocnn_v1_pretrained_models.tar -C algorithms/GeoCNNv1
 tar -Jxvf geocnn_v2_pretrained_models.tar.xz -C algorithms/GeoCNNv2
 ```
 
