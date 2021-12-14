@@ -29,7 +29,7 @@ To download and set up PCC Arena, please type the following commands.
 
 - Step 1: Clone the github project.
 ```
-git clone https://github.com/TokenHung/PCCArena.git
+git clone https://github.com/xtorker/PCCArena.git
 ```
 - Step 2: Change the current directory.
 ```
