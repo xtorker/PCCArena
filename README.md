@@ -1,5 +1,10 @@
 # PCC Arena
 
+## ⛔️ DEPRECATED 
+This repository will not be maintained in the future.
+
+*** Please refer to https://github.com/nmsl-nthu/PCCArena for the latest version. ***
+
 ## Environments
 Ubuntu 20.04
 
